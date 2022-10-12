@@ -43,13 +43,16 @@ For Dell, the BMC address format is ```idrac-virtualmedia://<out-of-band-ip>/red
 
 For HP, the BMC address format is ```redfish-virtualmedia://<out-of-band-ip>/redfish/v1/Systems/1```
 
+---
 If your server doesn't support virtual media, you'll need to specify either the redfish or ipmi address of the server:
 
 ```redfish://<out-of-band-ip>/redfish/v1/Systems/1```
 
 ```ipmi://<out-of-band-ip>```
 
-And then boot the server manually using the Discovery ISO (the ISO URL is printed when the playbook is executed).
+and then boot the server manually using the Discovery ISO (the ISO URL is printed when the playbook is executed).
+
+Even though you are manually booting the ISO, if you don't provide a redfish/ipmi address in the install-config.yaml file, then the Multicluster Engine won't automatically approve the node, and it won't apply the proper settings (hostname, role, etc) to the node.
 # Ansible Playbook Workflow
 * Create a ClusterImageSet so that the installer knows which version of OpenShift to install.
 * Create a namespace for the install.

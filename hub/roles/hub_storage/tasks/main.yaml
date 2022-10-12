@@ -4,6 +4,7 @@
     kind: StorageClass
   register: storage_classes
 
+# the assisted service requires storage
 - name: Check for default storage class
   ansible.builtin.set_fact:
     has_default_storage: "{{ item['metadata']['name'] }}"
@@ -20,6 +21,7 @@
     name: ocs-storagecluster-cephfs
   register: odf
 
+# ODF is preferred if it is available
 - name: Set default storage class to CephFS
   when: (has_default_storage is not defined) and (odf.resources | length | int == 1)
   kubernetes.core.k8s:
@@ -32,6 +34,8 @@
           storageclass.kubernetes.io/is-default-class: "true"
     state: present
 
+# this is admittedly hacky, but storage is required
+# if ODF is not available, some PersistentVolumes are created on the first worker node using local folders
 - name: Setup local storage
   when: (has_default_storage is not defined and odf.resources | length | int == 0) or (has_default_storage == "local-storage")
   block:

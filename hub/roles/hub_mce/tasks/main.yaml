@@ -1,3 +1,5 @@
+# this allows the Baremetal Operator to boot and manage hosts for other clusters
+# it also enables the operator on SNO clusters, where it is off by default
 - name: Configure Baremetal Operator
   kubernetes.core.k8s:
     definition:
@@ -9,6 +11,29 @@
         watchAllNamespaces: true
         provisioningNetwork: "Disabled"
     state: present
+
+- name: Configure mirror registry on hub
+  block:
+    # this config map is used on the hub cluster so that the SSL cert for the mirror registry is trusted by the hub
+    # this is required because the hub performs some validation against the mirror registry during a spoke installation
+    - name: Create mirror registry config map for hub
+      when: mirror_ssl_cert is defined
+      kubernetes.core.k8s:
+        template: hub-mirror-cert.yaml.j2
+        state: present
+
+    - name: Trust mirror registry on hub cluster
+      when: mirror_ssl_cert is defined
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: config.openshift.io/v1
+          kind: Image
+          metadata:
+            name: cluster
+          spec:
+            additionalTrustedCA:
+              name: mirror-registry-cert
+        state: present
 
 - name: Install MCE Operator
   block:
@@ -117,29 +142,11 @@
       retries: 20
       delay: 10
 
+    # this config map is referenced by the AgentServiceConfig, these mirror settings are copied to the spoke clusters
     - name: Create mirror registry config map for spoke
       when: mirror_url is defined
       kubernetes.core.k8s:
         template: mirror-cm.yaml.j2
-        state: present
-
-    - name: Create mirror registry config map for hub
-      when: mirror_ssl_cert is defined
-      kubernetes.core.k8s:
-        template: hub-mirror-cert.yaml.j2
-        state: present
-
-    - name: Trust mirror registry on hub cluster
-      when: mirror_ssl_cert is defined
-      kubernetes.core.k8s:
-        definition:
-          apiVersion: config.openshift.io/v1
-          kind: Image
-          metadata:
-            name: cluster
-          spec:
-            additionalTrustedCA:
-              name: mirror-registry-cert
         state: present
 
     # see https://github.com/openshift/assisted-service/pull/2747

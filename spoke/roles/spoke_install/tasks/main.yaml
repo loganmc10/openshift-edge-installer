@@ -1,5 +1,6 @@
 - name: Install spoke cluster
   block:
+    # defines which OpenShift version is going to be installed on the spoke
     - name: Create ClusterImageSet
       kubernetes.core.k8s:
         definition:
@@ -49,6 +50,7 @@
           type: kubernetes.io/dockerconfigjson
         state: present
 
+    # these manifests are applied early in the install process, often they are MachineConfigs, applying them early helps avoid extra reboots
     - name: Create manifest config maps
       when: installManifestsFolder is defined
       loop: "{{ lookup('ansible.builtin.fileglob', lookup('ansible.builtin.vars', 'installManifestsFolder') + '/*', wantlist=True) | sort }}"
@@ -97,6 +99,7 @@
       retries: 100
       delay: 10
 
+    # this only needs to be used if the host doesn't support Virtual Media
     - name: Get Discovery ISO URL
       kubernetes.core.k8s_info:
         api_version: agent-install.openshift.io/v1beta1
