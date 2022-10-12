@@ -59,6 +59,6 @@ platform:
               - destination: 0.0.0.0/0
                 next-hop-address: <default_gateway>
                 next-hop-interface: eno1
-pullSecret: '{"auths":{"<mirror_url>:8443":{"auth":"aW5pdDpYaTA0eTk3TFdGR1E4M1ptMW82MnpwcmJrdzV0S2hITg=="},"registry.redhat.io":{"auth":"bm9uZTpub25lCg=="}}}'
+pullSecret: '{"auths":{"<mirror_url>:8443":{"auth":"aW5pdDpYaTA0eTk3TFdGR1E4M1ptMW82MnpwcmJrdzV0S2hITg=="}}}'
 sshKey: |
   ssh-rsa ...

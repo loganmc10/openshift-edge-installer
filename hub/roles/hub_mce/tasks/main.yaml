@@ -142,6 +142,20 @@
               name: mirror-registry-cert
         state: present
 
+    # see https://github.com/openshift/assisted-service/pull/2747
+    - name: Configure Assisted Service to use mirror registry
+      when: mirror_url is defined
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            name: assisted-service-config
+            namespace: multicluster-engine
+          data:
+            PUBLIC_CONTAINER_REGISTRIES: "quay.io,registry.svc.ci.openshift.org,registry.redhat.io"
+        state: present
+
     - name: Configure Assisted Service
       kubernetes.core.k8s:
         template: AgentServiceConfig.yaml.j2
