@@ -1,0 +1,4 @@
+asc_db_size: 10Gi
+asc_fs_size: 20Gi
+asc_im_size: 10Gi
+mce_channel: stable-2.1

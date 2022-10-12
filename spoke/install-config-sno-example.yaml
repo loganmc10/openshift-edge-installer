@@ -1,0 +1,64 @@
+apiVersion: v1
+
+# Additional parameters for openshift-edge-installer
+clusterImageSet: <mirror_url>:8443/openshift/release-images:4.11.6-x86_64 # Required
+additionalNTPSources: # Optional
+  - pool.ntp.org
+installManifestsFolder: install_manifests # Optional
+postInstallManifestsFolder: post_manifests # Optional
+# End additional parameters
+
+baseDomain: <cluster_domain>
+compute:
+  - name: worker
+    replicas: 0
+controlPlane:
+  name: master
+  replicas: 1
+metadata:
+  name: <cluster_name>
+networking:
+  clusterNetwork:
+    - cidr: 10.128.0.0/14
+      hostPrefix: 23
+  networkType: OVNKubernetes
+  serviceNetwork:
+    - 172.30.0.0/16
+platform:
+  baremetal:
+    hosts:
+      - name: openshift-master-0
+        role: master
+        bmc:
+          address: "redfish-virtualmedia://<bmc_ip_address>/redfish/v1/Systems/1"
+          username: <username>
+          password: <password>
+        bootMACAddress: <nic1_mac_address>
+        rootDeviceHints:
+          hctl: "2:0:0:0" # See https://docs.openshift.com/container-platform/4.11/rest_api/provisioning_apis/baremetalhost-metal3-io-v1alpha1.html#spec-rootdevicehints
+        networkConfig:
+          interfaces:
+            - name: eno1
+              type: ethernet
+              macAddress: <nic1_mac_address>
+              state: up
+              ipv4:
+                address:
+                  - ip: <static_ip_address>
+                    prefix-length: <prefix_length>
+                enabled: true
+                dhcp: false
+              ipv6:
+                enabled: false
+          dns-resolver:
+            config:
+              server:
+                - <dns_server_ip>
+          routes:
+            config:
+              - destination: 0.0.0.0/0
+                next-hop-address: <default_gateway>
+                next-hop-interface: eno1
+pullSecret: '{"auths":{"<mirror_url>:8443":{"auth":"aW5pdDpYaTA0eTk3TFdGR1E4M1ptMW82MnpwcmJrdzV0S2hITg=="},"registry.redhat.io":{"auth":"bm9uZTpub25lCg=="}}}'
+sshKey: |
+  ssh-rsa ...

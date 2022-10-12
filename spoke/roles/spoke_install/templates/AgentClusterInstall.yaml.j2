@@ -1,0 +1,37 @@
+apiVersion: extensions.hive.openshift.io/v1beta1
+kind: AgentClusterInstall
+metadata:
+  name: "{{ metadata.name }}"
+  namespace: "{{ metadata.name }}"
+spec:
+  clusterDeploymentRef:
+    name: "{{ metadata.name }}"
+  imageSetRef:
+    name: "{{ metadata.name }}"
+{% if installManifestsFolder is defined %}
+  manifestsConfigMapRefs:
+{% for file in lookup('ansible.builtin.fileglob', lookup('ansible.builtin.vars', 'installManifestsFolder') + '/*', wantlist=True) %}
+    - name: "manifest-{{ loop.index0 }}"
+{% endfor %}
+{% endif %}
+{% if platform.baremetal.apiVIP is defined %}
+  apiVIP: "{{ platform.baremetal.apiVIP }}"
+{% endif %}
+{% if platform.baremetal.ingressVIP is defined %}
+  ingressVIP: "{{ platform.baremetal.ingressVIP }}"
+{% endif %}
+  networking:
+    {{ networking | to_nice_yaml | trim | indent(4) }}
+{% if controlPlane.replicas == 1 %}
+    userManagedNetworking: true
+{% else %}
+    userManagedNetworking: false
+{% endif %}
+  provisionRequirements:
+    controlPlaneAgents: {{ controlPlane.replicas }}
+{% for item in compute %}
+{% if item.name == "worker" and item.replicas > 0 %}
+    workerAgents: 2
+{% endif %}
+{% endfor %}
+  sshPublicKey: "{{ sshKey }}"

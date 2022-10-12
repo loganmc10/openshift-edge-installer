@@ -1,0 +1,8 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: redhat-operators
+  namespace: openshift-marketplace
+spec:
+  image: <mirror_url>:8443/redhat/redhat-operator-index:v4.11
+  sourceType: grpc

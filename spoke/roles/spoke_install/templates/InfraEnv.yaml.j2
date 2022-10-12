@@ -1,0 +1,22 @@
+apiVersion: agent-install.openshift.io/v1beta1
+kind: InfraEnv
+metadata:
+  name: "{{ metadata.name }}"
+  namespace: "{{ metadata.name }}"
+spec:
+  clusterRef:
+    name: "{{ metadata.name }}"
+    namespace: "{{ metadata.name }}"
+  sshAuthorizedKey: "{{ sshKey }}"
+  agentLabelSelector:
+    matchLabels:
+      cluster-name: "{{ metadata.name }}"
+  pullSecretRef:
+    name: assisted-deployment-pull-secret
+  nmStateConfigLabelSelector:
+    matchLabels:
+      nmstate-cluster: "{{ metadata.name }}"
+{% if additionalNTPSources is defined %}
+  additionalNTPSources:
+    {{ additionalNTPSources | to_nice_yaml | trim | indent(4) }}
+{% endif %}

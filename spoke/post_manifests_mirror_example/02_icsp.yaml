@@ -1,0 +1,17 @@
+apiVersion: operator.openshift.io/v1alpha1
+kind: ImageContentSourcePolicy
+metadata:
+  labels:
+    operators.openshift.org/catalog: "true"
+  name: operator-0
+spec:
+  repositoryDigestMirrors:
+    - mirrors:
+        - <mirror_url>:8443/multicluster-engine
+      source: registry.redhat.io/multicluster-engine
+    - mirrors:
+        - <mirror_url>:8443/redhat
+      source: registry.redhat.io/redhat
+    - mirrors:
+        - <mirror_url>:8443/rhel8
+      source: registry.redhat.io/rhel8

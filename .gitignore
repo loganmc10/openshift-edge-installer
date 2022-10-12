@@ -1,0 +1,5 @@
+install-config.yaml
+mirror-config.yaml
+*-kubeconfig
+install_manifests/
+post_manifests/

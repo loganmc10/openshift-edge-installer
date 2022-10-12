@@ -1,0 +1,108 @@
+- name: Gather storage class info
+  kubernetes.core.k8s_info:
+    api_version: storage.k8s.io/v1
+    kind: StorageClass
+  register: storage_classes
+
+- name: Check for default storage class
+  ansible.builtin.set_fact:
+    has_default_storage: "{{ item['metadata']['name'] }}"
+  loop: "{{ storage_classes.resources }}"
+  when: >
+    ("annotations" in item["metadata"] and
+    "storageclass.kubernetes.io/is-default-class" in item["metadata"]["annotations"] and
+    item["metadata"]["annotations"]["storageclass.kubernetes.io/is-default-class"] == "true")
+
+- name: Check for ODF
+  kubernetes.core.k8s_info:
+    api_version: storage.k8s.io/v1
+    kind: StorageClass
+    name: ocs-storagecluster-cephfs
+  register: odf
+
+- name: Set default storage class to CephFS
+  when: (has_default_storage is not defined) and (odf.resources | length | int == 1)
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: storage.k8s.io/v1
+      kind: StorageClass
+      metadata:
+        name: ocs-storagecluster-cephfs
+        annotations:
+          storageclass.kubernetes.io/is-default-class: "true"
+    state: present
+
+- name: Setup local storage
+  when: (has_default_storage is not defined and odf.resources | length | int == 0) or (has_default_storage == "local-storage")
+  block:
+    - name: Create PV list
+      ansible.builtin.set_fact:
+        pv_list:
+          - { pv_name: "database-storage", pv_size: "{{ asc_db_size }}" }
+          - { pv_name: "filesystem-storage", pv_size: "{{ asc_fs_size }}" }
+          - { pv_name: "image-storage", pv_size: "{{ asc_im_size }}" }
+
+    - name: Create local-storage StorageClass
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: storage.k8s.io/v1
+          kind: StorageClass
+          metadata:
+            name: local-storage
+            annotations:
+              storageclass.kubernetes.io/is-default-class: "true"
+          provisioner: kubernetes.io/no-provisioner
+          volumeBindingMode: WaitForFirstConsumer
+        state: present
+
+    - name: Get node list
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Node
+      register: nodes
+
+    - name: Set first node name
+      ansible.builtin.set_fact:
+        first_node: "{{ nodes.resources[0]['metadata']['name'] }}"
+
+    - name: Check for stale PVs
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: PersistentVolume
+        name: database-storage
+      register: stalepv
+
+    - name: Clean up volumes
+      when: (stalepv.resources | length | int == 1) and (stalepv.resources[0]['status']['phase'] == "Released")
+      ansible.builtin.include_tasks:
+        file: cleanup_pv.yaml
+
+    - name: Create folders
+      ansible.builtin.command: oc debug node/{{ first_node }} -- mkdir -pv /host/var/local/{{ item.pv_name }}
+      loop: "{{ pv_list }}"
+      register: command_result
+      changed_when: '"created directory" in command_result.stdout'
+
+    - name: Create PVs
+      kubernetes.core.k8s:
+        template: PersistentVolume.yaml.j2
+        state: present
+      loop: "{{ pv_list }}"
+  rescue:
+    - name: Clean up volumes
+      ansible.builtin.include_tasks:
+        file: cleanup_pv.yaml
+
+    - name: Remove local-storage StorageClass
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: storage.k8s.io/v1
+          kind: StorageClass
+          metadata:
+            name: local-storage
+        state: absent
+        wait: true
+        wait_timeout: 1200
+
+    - name: End playbook
+      ansible.builtin.meta: end_play

@@ -1,0 +1,15 @@
+apiVersion: agent-install.openshift.io/v1beta1
+kind: NMStateConfig
+metadata:
+  name: "{{ item.name }}"
+  namespace: "{{ metadata.name }}"
+  labels:
+    nmstate-cluster: "{{ metadata.name }}"
+spec:
+  config:
+    {{ item.networkConfig | to_nice_yaml | trim | indent(4) }}
+  interfaces:
+{% for interface in item.networkConfig.interfaces %}
+    - name: "{{ interface.name }}"
+      macAddress: "{{ interface.macAddress }}"
+{% endfor %}

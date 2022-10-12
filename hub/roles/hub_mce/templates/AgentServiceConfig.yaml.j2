@@ -1,0 +1,29 @@
+apiVersion: agent-install.openshift.io/v1beta1
+kind: AgentServiceConfig
+metadata:
+  name: agent
+spec:
+  databaseStorage:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: {{ asc_db_size }}
+  filesystemStorage:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: {{ asc_fs_size }}
+  imageStorage:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: {{ asc_im_size }}
+  osImages:
+    {{ os_images | to_nice_yaml | trim | indent(4) }}
+{% if mirror_url is defined %}
+  mirrorRegistryRef:
+    name: mirror-registry-config-map
+{% endif %}

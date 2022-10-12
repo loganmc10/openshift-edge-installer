@@ -1,0 +1,24 @@
+apiVersion: metal3.io/v1alpha1
+kind: BareMetalHost
+metadata:
+  name: "{{ item.name }}"
+  namespace: "{{ metadata.name }}"
+  annotations:
+    inspect.metal3.io: disabled
+    bmac.agent-install.openshift.io/role: "{{ item.role }}"
+    bmac.agent-install.openshift.io/hostname: "{{ item.name }}"
+  labels:
+    infraenvs.agent-install.openshift.io: "{{ metadata.name }}"
+spec:
+  bootMode: "UEFI"
+  bmc:
+    address: "{{ item.bmc.address }}"
+    disableCertificateVerification: true
+    credentialsName: "{{ item.name }}-bmc-secret"
+  bootMACAddress: "{{ item.bootMACAddress }}"
+  automatedCleaningMode: disabled
+  online: true
+{% if item.rootDeviceHints is defined %}
+  rootDeviceHints:
+    {{ item.rootDeviceHints | to_nice_yaml | trim | indent(4) }}
+{% endif %}

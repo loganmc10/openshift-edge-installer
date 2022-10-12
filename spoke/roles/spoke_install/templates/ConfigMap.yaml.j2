@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "manifest-{{ idx }}"
+  namespace: "{{ metadata.name }}"
+data:
+  {{ item | basename }}: |
+    {{ lookup('ansible.builtin.file', lookup('ansible.builtin.vars', 'item')) | indent(4) }}

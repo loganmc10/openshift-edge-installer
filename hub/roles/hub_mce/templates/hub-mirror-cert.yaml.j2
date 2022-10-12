@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mirror-registry-cert
+  namespace: openshift-config
+data:
+  {{ mirror_url }}..{{ mirror_port }}: |
+    {{ mirror_ssl_cert | indent(4) }}

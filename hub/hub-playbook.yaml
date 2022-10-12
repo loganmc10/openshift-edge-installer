@@ -1,0 +1,8 @@
+- name: Set up Multicluster Engine
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - vars.yaml
+  roles:
+    - {role: 'hub_storage', tags: 'hub_storage'}
+    - {role: 'hub_mce', tags: 'hub_mce'}

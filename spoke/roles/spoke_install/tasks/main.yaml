@@ -1,0 +1,142 @@
+- name: Install spoke cluster
+  block:
+    - name: Create ClusterImageSet
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: hive.openshift.io/v1
+          kind: ClusterImageSet
+          metadata:
+            name: "{{ metadata.name }}"
+          spec:
+            releaseImage: "{{ clusterImageSet }}"
+        state: present
+
+    - name: Create namespace
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: v1
+          kind: Namespace
+          metadata:
+            name: "{{ metadata.name }}"
+        state: present
+
+    - name: Create BMC secrets
+      loop: "{{ platform.baremetal.hosts }}"
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: v1
+          kind: Secret
+          data:
+            password: "{{ item.bmc.password | b64encode }}"
+            username: "{{ item.bmc.username | b64encode }}"
+          metadata:
+            name: "{{ item.name }}-bmc-secret"
+            namespace: "{{ metadata.name }}"
+          type: Opaque
+        state: present
+
+    - name: Create image pull secret
+      loop: "{{ platform.baremetal.hosts }}"
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: v1
+          kind: Secret
+          data:
+            .dockerconfigjson: "{{ pullSecret | b64encode }}"
+          metadata:
+            name: assisted-deployment-pull-secret
+            namespace: "{{ metadata.name }}"
+          type: kubernetes.io/dockerconfigjson
+        state: present
+
+    - name: Create manifest config maps
+      when: installManifestsFolder is defined
+      loop: "{{ lookup('ansible.builtin.fileglob', lookup('ansible.builtin.vars', 'installManifestsFolder') + '/*', wantlist=True) | sort }}"
+      loop_control:
+        index_var: idx
+      kubernetes.core.k8s:
+        template: ConfigMap.yaml.j2
+        state: present
+
+    - name: Create AgentClusterInstall
+      kubernetes.core.k8s:
+        template: AgentClusterInstall.yaml.j2
+        state: present
+
+    - name: Create ClusterDeployment
+      kubernetes.core.k8s:
+        template: ClusterDeployment.yaml.j2
+        state: present
+
+    - name: Create NMStateConfigs
+      loop: "{{ platform.baremetal.hosts }}"
+      when: item.networkConfig is defined
+      kubernetes.core.k8s:
+        template: NMStateConfig.yaml.j2
+        state: present
+
+    - name: Create InfraEnv
+      kubernetes.core.k8s:
+        template: InfraEnv.yaml.j2
+        state: present
+
+    - name: Create BareMetalHosts
+      loop: "{{ platform.baremetal.hosts }}"
+      kubernetes.core.k8s:
+        template: BareMetalHost.yaml.j2
+        state: present
+
+    - name: Get Events URL
+      kubernetes.core.k8s_info:
+        api_version: extensions.hive.openshift.io/v1beta1
+        kind: AgentClusterInstall
+        name: "{{ metadata.name }}"
+        namespace: "{{ metadata.name }}"
+      register: aci
+      until: aci.resources[0]["status"]["debugInfo"]["eventsURL"] is defined
+      retries: 100
+      delay: 10
+
+    - name: Get Discovery ISO URL
+      kubernetes.core.k8s_info:
+        api_version: agent-install.openshift.io/v1beta1
+        kind: InfraEnv
+        name: "{{ metadata.name }}"
+        namespace: "{{ metadata.name }}"
+      register: infraenv
+      until: infraenv.resources[0]["status"]["isoDownloadURL"] is defined
+      retries: 100
+      delay: 10
+
+    - name: Print Events URL
+      ansible.builtin.debug:
+        msg: "{{ aci.resources[0]['status']['debugInfo']['eventsURL'] }}"
+
+    - name: Print Discovery ISO URL
+      ansible.builtin.debug:
+        msg: "{{ infraenv.resources[0]['status']['isoDownloadURL'] }}"
+  rescue:
+    - name: Delete ClusterImageSet
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: hive.openshift.io/v1
+          kind: ClusterImageSet
+          metadata:
+            name: "{{ metadata.name }}"
+        state: absent
+        wait: true
+        wait_timeout: 1200
+
+    - name: Delete namespace
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: v1
+          kind: Namespace
+          metadata:
+            name: "{{ metadata.name }}"
+        state: absent
+        wait: true
+        wait_timeout: 1200
+
+    - name: End playbook
+      ansible.builtin.meta: end_play

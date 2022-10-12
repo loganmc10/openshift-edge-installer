@@ -1,0 +1,23 @@
+name: Build project
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test-code:
+    runs-on: ubuntu-latest
+    container: registry.access.redhat.com/ubi9/ubi:latest
+    steps:
+      - name: Install packages
+        run: |
+          dnf -y update
+          dnf -y install python3-pip git
+          pip3 install ansible-core kubernetes ansible-lint
+          ansible-galaxy collection install kubernetes.core
+      - uses: actions/checkout@v3
+      - name: Check code
+        run: |
+          ansible-lint -x yaml[line-length] hub
+          ansible-lint -x yaml[line-length] spoke
