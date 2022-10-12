@@ -12,29 +12,6 @@
         provisioningNetwork: "Disabled"
     state: present
 
-- name: Configure mirror registry on hub
-  block:
-    # this config map is used on the hub cluster so that the SSL cert for the mirror registry is trusted by the hub
-    # this is required because the hub performs some validation against the mirror registry during a spoke installation
-    - name: Create mirror registry config map for hub
-      when: mirror_ssl_cert is defined
-      kubernetes.core.k8s:
-        template: hub-mirror-cert.yaml.j2
-        state: present
-
-    - name: Trust mirror registry on hub cluster
-      when: mirror_ssl_cert is defined
-      kubernetes.core.k8s:
-        definition:
-          apiVersion: config.openshift.io/v1
-          kind: Image
-          metadata:
-            name: cluster
-          spec:
-            additionalTrustedCA:
-              name: mirror-registry-cert
-        state: present
-
 - name: Install MCE Operator
   block:
     - name: Create namespace

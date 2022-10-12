@@ -1,0 +1,51 @@
+# this role is used to configure the hub cluster so that the SSL cert for the mirror registry is trusted by the hub
+# this is required because the hub performs some validation against the mirror registry during a spoke installation
+- name: Get current image registry config
+  when: mirror_ssl_cert is defined
+  kubernetes.core.k8s_info:
+    api_version: config.openshift.io/v1
+    kind: Image
+    name: cluster
+  register: image_config
+
+- name: Create additionalTrustedCA
+  when: (mirror_ssl_cert is defined) and (image_config.resources[0].spec.additionalTrustedCA is not defined)
+  block:
+    - name: Create mirror registry config map for hub
+      kubernetes.core.k8s:
+        template: hub-mirror-cert.yaml.j2
+        state: present
+
+    - name: Set additionalTrustedCA on hub cluster
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: config.openshift.io/v1
+          kind: Image
+          metadata:
+            name: cluster
+          spec:
+            additionalTrustedCA:
+              name: mirror-registry-cert
+        state: present
+
+- name: Add SSL cert to additionalTrustedCA
+  when: (mirror_ssl_cert is defined) and (image_config.resources[0].spec.additionalTrustedCA is defined)
+  block:
+    - name: Get current config map
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: ConfigMap
+        name: "{{ image_config.resources[0].spec.additionalTrustedCA.name }}"
+        namespace: openshift-config
+      register: image_config_map
+
+    - name: Update config map
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            name: "{{ image_config.resources[0].spec.additionalTrustedCA.name }}"
+            namespace: openshift-config
+          data: "{{ image_config_map.resources[0].data | combine({mirror_url + '..' + mirror_port | string: mirror_ssl_cert}) }}"
+        state: present
