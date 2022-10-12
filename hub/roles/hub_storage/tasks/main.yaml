@@ -37,7 +37,7 @@
 # this is admittedly hacky, but storage is required
 # if ODF is not available, some PersistentVolumes are created on the first worker node using local folders
 - name: Setup local storage
-  when: (has_default_storage is not defined and odf.resources | length | int == 0) or (has_default_storage == "local-storage")
+  when: ((has_default_storage is not defined) and (odf.resources | length | int == 0)) or (has_default_storage == "local-storage")
   block:
     - name: Create PV list
       ansible.builtin.set_fact:
