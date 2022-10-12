@@ -10,9 +10,9 @@
     has_default_storage: "{{ item['metadata']['name'] }}"
   loop: "{{ storage_classes.resources }}"
   when: >
-    ("annotations" in item["metadata"] and
-    "storageclass.kubernetes.io/is-default-class" in item["metadata"]["annotations"] and
-    item["metadata"]["annotations"]["storageclass.kubernetes.io/is-default-class"] == "true")
+    (("annotations" in item["metadata"]) and
+    ("storageclass.kubernetes.io/is-default-class" in item["metadata"]["annotations"]) and
+    (item["metadata"]["annotations"]["storageclass.kubernetes.io/is-default-class"] == "true"))
 
 - name: Check for ODF
   kubernetes.core.k8s_info:
