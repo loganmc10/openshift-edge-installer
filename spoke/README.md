@@ -4,7 +4,7 @@ This playbook installs a spoke cluster.
 * OpenShift 4.10+ hub cluster (can be SNO).
 * Ansible: ```pip install ansible-core```
 * Python Kubernetes module: ```pip install kubernetes```
-* Kubernetes Ansible collection: ```ansible-galaxy collection install kubernetes.core```
+* Kubernetes Ansible collection: ```ansible-galaxy collection install -U kubernetes.core community.general```
 # Usage
 An example install config file is provided in ```install-config-sno-example.yaml```
 

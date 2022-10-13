@@ -99,7 +99,7 @@
         kind: BareMetalHost
         namespace: "{{ metadata.name }}"
       register: bmh_list
-      until: bmh_list | json_query('resources[*].status.provisioning.state') | unique == ["provisioned"]
+      until: bmh_list | community.general.json_query('resources[*].status.provisioning.state') | unique == ["provisioned"]
       retries: 30
       delay: 20
 
