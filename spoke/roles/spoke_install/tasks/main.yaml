@@ -86,6 +86,20 @@
       kubernetes.core.k8s:
         template: BareMetalHost.yaml.j2
         state: present
+      register: create_bmh
+
+    - name: Pause for 15 seconds to let BareMetalHosts settle
+      when: create_bmh.changed
+      ansible.builtin.pause:
+        seconds: 15
+
+    - name: Wait for BareMetalHosts to provision
+      kubernetes.core.k8s_info:
+        api_version: metal3.io/v1alpha1
+        kind: BareMetalHost
+        namespace: "{{ metadata.name }}"
+      register: bmh_list
+      until: bmh_list | json_query('resources[*].status.provisioning.state') | unique == ["provisioned"]
 
     - name: Get Events URL
       kubernetes.core.k8s_info:
