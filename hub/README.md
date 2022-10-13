@@ -3,8 +3,8 @@ This playbook configures the Multicluster Engine on a Hub Cluster.
 # Prerequisites
 * Pre-existing OpenShift 4.10+ cluster (can be SNO).
 * Ansible: ```pip install ansible-core```
-* Python Kubernetes module: ```pip install kubernetes```
-* Kubernetes Ansible collection: ```ansible-galaxy collection install kubernetes.core```
+* Python modules: ```pip install kubernetes jmespath```
+* Kubernetes Ansible collection: ```ansible-galaxy collection install -U kubernetes.core community.general```
 * oc binary (only required if the playbook needs to configure local storage).
 # Usage
 ## Without mirror registry
