@@ -37,7 +37,6 @@
         state: present
 
     - name: Create image pull secret
-      loop: "{{ platform.baremetal.hosts }}"
       kubernetes.core.k8s:
         definition:
           apiVersion: v1
