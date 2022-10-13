@@ -35,3 +35,7 @@ spec:
 {% endif %}
 {% endfor %}
   sshPublicKey: "{{ sshKey }}"
+{% if proxy is defined %}
+  proxy:
+    {{ proxy | to_nice_yaml | trim | indent(4) }}
+{% endif %}
