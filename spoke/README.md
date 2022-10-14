@@ -27,8 +27,6 @@ You can also optionally set a path to extra manifests to be applied after the cl
 ```
 postInstallManifestsFolder: post_manifests
 ```
-See the ```post_manifests_mirror_example``` folder for an example of how to use this to configure a mirror registry CatalogSource.
-
 ---
 To run the playbook:
 ```
@@ -36,6 +34,12 @@ export KUBECONFIG=~/path/to/hub/kubeconfig
 ansible-playbook spoke-playbook.yaml --extra-vars "@install-config.yaml"
 ```
 The Events URL will be printed to the console (so that you can check the progress of the install). A kubeconfig file will be written to the playbook folder with this name: \<cluster-name\>-admin-kubeconfig
+# Disconnected registry
+If the hub cluster was configured to use a mirror registry, then the SSL certificate for the mirror registry will automatically be added to additionalTrustedCA on the spoke. ImageContentSourcePolicys for the base installation will also be added to the spoke, pointing to the mirror registry.
+
+If you want to install Operators on the spoke from the disconnected registry, you'll need to add ImageContentSourcePolicys for those operators, as well as create a CatalogSource pointing to the mirror registry.
+
+See the ```post_manifests_mirror_example``` folder for an example of how you can use the ```postInstallManifestsFolder``` option in the install-config to configure these during the installation process.
 # Automatic installation via virtual media
 Firmware requirements for booting via virtual media are documented [here](https://docs.openshift.com/container-platform/4.11/installing/installing_bare_metal_ipi/ipi-install-prerequisites.html#ipi-install-firmware-requirements-for-installing-with-virtual-media_ipi-install-prerequisites)
 
