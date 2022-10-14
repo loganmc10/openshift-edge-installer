@@ -6,6 +6,9 @@ additionalNTPSources: # Optional
   - pool.ntp.org
 installManifestsFolder: install_manifests # Optional
 postInstallManifestsFolder: post_manifests # Optional
+diskEncryption: # Optional
+  enableOn: "all"
+  mode: "tpmv2"
 # End additional parameters
 
 baseDomain: <cluster_domain>

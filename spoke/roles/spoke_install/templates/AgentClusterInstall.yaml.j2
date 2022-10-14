@@ -43,3 +43,7 @@ spec:
   proxy:
     {{ proxy | to_nice_yaml | trim | indent(4) }}
 {% endif %}
+{% if diskEncryption is defined %}
+  diskEncryption:
+    {{ diskEncryption | to_nice_yaml | trim | indent(4) }}
+{% endif %}

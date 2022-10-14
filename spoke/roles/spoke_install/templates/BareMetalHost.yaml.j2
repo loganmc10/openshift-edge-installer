@@ -10,7 +10,7 @@ metadata:
   labels:
     infraenvs.agent-install.openshift.io: "{{ metadata.name }}"
 spec:
-  bootMode: "UEFI"
+  bootMode: "{{ item.bootMode | default('UEFI') }}"
   bmc:
     address: "{{ item.bmc.address }}"
     disableCertificateVerification: true
