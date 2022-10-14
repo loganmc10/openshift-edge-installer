@@ -3,6 +3,10 @@ kind: AgentClusterInstall
 metadata:
   name: "{{ metadata.name }}"
   namespace: "{{ metadata.name }}"
+{% if fips is defined and fips %}
+  annotations:
+    agent-install.openshift.io/install-config-overrides: '{"fips": true}'
+{% endif %}
 spec:
   clusterDeploymentRef:
     name: "{{ metadata.name }}"
