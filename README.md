@@ -11,4 +11,4 @@ The spoke is installed by creating a slightly modified install-config.yaml file 
 
 ## Notes
 * Connected and disconnected/mirrored installations are both supported.
-* Only baremetal installations are supported.
+* Only baremetal installations are supported for the spoke. The hub can be any platform.
