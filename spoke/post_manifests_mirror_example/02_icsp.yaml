@@ -10,6 +10,15 @@ spec:
         - <mirror_url>:8443/multicluster-engine
       source: registry.redhat.io/multicluster-engine
     - mirrors:
+        - <mirror_url>:8443/openshift4
+      source: registry.redhat.io/openshift4
+    - mirrors:
+        - <mirror_url>:8443/rhceph
+      source: registry.redhat.io/rhceph
+    - mirrors:
+        - <mirror_url>:8443/odf4
+      source: registry.redhat.io/odf4
+    - mirrors:
         - <mirror_url>:8443/redhat
       source: registry.redhat.io/redhat
     - mirrors:

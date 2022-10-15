@@ -37,6 +37,30 @@ data:
 
     [[registry]]
        prefix = ""
+       location = "registry.redhat.io/openshift4"
+       mirror-by-digest-only = false
+
+       [[registry.mirror]]
+       location = "{{ mirror_url }}:{{ mirror_port }}/openshift4"
+
+    [[registry]]
+       prefix = ""
+       location = "registry.redhat.io/rhceph"
+       mirror-by-digest-only = false
+
+       [[registry.mirror]]
+       location = "{{ mirror_url }}:{{ mirror_port }}/rhceph"
+
+    [[registry]]
+       prefix = ""
+       location = "registry.redhat.io/odf4"
+       mirror-by-digest-only = false
+
+       [[registry.mirror]]
+       location = "{{ mirror_url }}:{{ mirror_port }}/odf4"
+
+    [[registry]]
+       prefix = ""
        location = "registry.redhat.io/redhat"
        mirror-by-digest-only = false
 
