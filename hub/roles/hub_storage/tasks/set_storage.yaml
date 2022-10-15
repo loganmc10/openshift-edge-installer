@@ -1,0 +1,19 @@
+- name: Try to set default storage
+  when: >
+    (has_default_storage is not defined) and
+    ((item.metadata.name == "ocs-storagecluster-cephfs") or (item.metadata.name.startswith("odf-lvm-")))
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: storage.k8s.io/v1
+      kind: StorageClass
+      metadata:
+        name: "{{ item.metadata.name }}"
+        annotations:
+          storageclass.kubernetes.io/is-default-class: "true"
+    state: present
+  register: set_storage_class
+
+- name: Set new default storage # noqa no-handler
+  when: set_storage_class.changed
+  ansible.builtin.set_fact:
+    has_default_storage: "{{ set_storage_class.result.metadata.name }}"

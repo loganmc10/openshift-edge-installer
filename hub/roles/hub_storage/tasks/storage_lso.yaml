@@ -1,0 +1,102 @@
+- name: Install LSO namespace
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: openshift-local-storage
+    state: present
+
+- name: Install LSO OperatorGroup
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: operators.coreos.com/v1
+      kind: OperatorGroup
+      metadata:
+        name: local-operator-group
+        namespace: openshift-local-storage
+      spec:
+        targetNamespaces:
+          - openshift-local-storage
+    state: present
+
+- name: Install Local Storage Subscription
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: operators.coreos.com/v1alpha1
+      kind: Subscription
+      metadata:
+        name: local-storage-operator
+        namespace: openshift-local-storage
+      spec:
+        installPlanApproval: Automatic
+        name: local-storage-operator
+        source: "{{ odf_operator_source }}"
+        sourceNamespace: openshift-marketplace
+    state: present
+  register: create_sub
+
+- name: Pause for 15 seconds to let subscription settle # noqa no-handler
+  when: create_sub.changed
+  ansible.builtin.pause:
+    seconds: 15
+
+- name: Wait for operator to be deployed
+  kubernetes.core.k8s_info:
+    api_version: operators.coreos.com/v1alpha1
+    kind: Subscription
+    name: local-storage-operator
+    namespace: openshift-local-storage
+  register: subscription
+  until: subscription.resources[0]["status"]["state"] == "AtLatestKnown"
+  retries: 20
+  delay: 10
+
+- name: Pause for 15 seconds to let CSV settle # noqa no-handler
+  when: create_sub.changed
+  ansible.builtin.pause:
+    seconds: 15
+
+- name: Wait for CSV to be deployed
+  kubernetes.core.k8s_info:
+    api_version: operators.coreos.com/v1alpha1
+    kind: ClusterServiceVersion
+    name: "{{ subscription.resources[0]['status']['installedCSV'] }}"
+    namespace: openshift-local-storage
+  register: csv
+  until: csv.resources[0]["status"]["phase"] == "Succeeded"
+  retries: 20
+  delay: 10
+
+- name: Create LocalVolumeSet
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: local.storage.openshift.io/v1alpha1
+      kind: LocalVolumeSet
+      metadata:
+        name: local-storage
+        namespace: openshift-local-storage
+      spec:
+        deviceInclusionSpec:
+          deviceTypes:
+            - disk
+            - part
+          minSize: 1Gi
+        nodeSelector:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: kubernetes.io/hostname
+                  operator: Exists
+        storageClassName: local-storage
+        tolerations:
+          - effect: NoSchedule
+            key: node.ocs.openshift.io/storage
+            operator: Equal
+            value: "true"
+        volumeMode: Block
+    state: present
+    wait: true
+    wait_timeout: 600
+    wait_condition:
+      type: Available
+      status: "True"
