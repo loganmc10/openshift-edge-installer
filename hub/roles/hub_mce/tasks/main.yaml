@@ -100,7 +100,11 @@
           kind: MultiClusterEngine
           metadata:
             name: multiclusterengine
-          spec: {}
+          spec:
+            overrides:
+              components:
+                - enabled: false
+                  name: console-mce
         state: present
       register: create_mce
 
