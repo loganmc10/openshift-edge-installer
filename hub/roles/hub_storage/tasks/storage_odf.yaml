@@ -31,7 +31,7 @@
     kind: StorageClass
     name: ocs-storagecluster-cephfs
   register: odf_storage_class
-  until: odf_storage_class.resources | length | int = 1
+  until: odf_storage_class.resources | length | int == 1
   retries: 60
   delay: 10
 
