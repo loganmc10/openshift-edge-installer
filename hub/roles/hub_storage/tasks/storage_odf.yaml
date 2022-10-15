@@ -1,0 +1,40 @@
+- name: Setup LSO
+  ansible.builtin.include_tasks:
+    file: storage_lso.yaml
+
+- name: Setup ODF operators
+  loop:
+    - "odf-operator"
+    - "ocs-operator"
+    - "odf-csi-addons-operator"
+    - "mcg-operator"
+  ansible.builtin.include_tasks:
+    file: storage_odf_operators.yaml
+
+- name: Create StorageSystem
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: odf.openshift.io/v1alpha1
+      kind: StorageSystem
+      metadata:
+        name: ocs-storagecluster-storagesystem
+        namespace: openshift-storage
+      spec:
+        kind: storagecluster.ocs.openshift.io/v1
+        name: ocs-storagecluster
+        namespace: openshift-storage
+    state: present
+
+- name: Wait for StorageClass
+  kubernetes.core.k8s_info:
+    api_version: storage.k8s.io/v1
+    kind: StorageClass
+    name: ocs-storagecluster-cephfs
+  register: odf_storage_class
+  until: odf_storage_class.resources | length | int = 1
+  retries: 60
+  delay: 10
+
+- name: Set default storage
+  loop: "{{ odf_storage_class.resources }}"
+  ansible.builtin.include_tasks: set_storage.yaml
