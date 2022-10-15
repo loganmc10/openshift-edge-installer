@@ -49,6 +49,26 @@
           type: kubernetes.io/dockerconfigjson
         state: present
 
+    - name: Disable Samples
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            name: "manifest-disable-samples"
+            namespace: "{{ metadata.name }}"
+          data:
+            disable_samples.yaml: |
+              apiVersion: samples.operator.openshift.io/v1
+              kind: Config
+              metadata:
+                name: cluster
+              spec:
+                architectures:
+                  - x86_64
+                managementState: Removed
+        state: present
+
     # these manifests are applied early in the install process, often they are MachineConfigs, applying them early helps avoid extra reboots
     - name: Create manifest config maps
       when: installManifestsFolder is defined
