@@ -34,11 +34,7 @@ spec:
 {% endif %}
   provisionRequirements:
     controlPlaneAgents: {{ controlPlane.replicas }}
-{% for item in compute %}
-{% if item.name == "worker" and item.replicas > 0 %}
-    workerAgents: 2
-{% endif %}
-{% endfor %}
+    workerAgents: {{ worker_count }}
   sshPublicKey: "{{ sshKey }}"
 {% if proxy is defined %}
   proxy:

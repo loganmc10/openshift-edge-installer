@@ -79,6 +79,11 @@
         template: ConfigMap.yaml.j2
         state: present
 
+    - name: Count workers
+      loop: "{{ compute }}"
+      ansible.builtin.set_fact:
+        worker_count: "{{ worker_count + item.replicas }}"
+
     - name: Create AgentClusterInstall
       kubernetes.core.k8s:
         template: AgentClusterInstall.yaml.j2
