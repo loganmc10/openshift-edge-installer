@@ -9,6 +9,7 @@ postInstallManifestsFolder: post_manifests # Optional
 diskEncryption: # Optional
   enableOn: "all"
   mode: "tpmv2"
+disableConsole: false # Optional
 # End additional parameters
 
 baseDomain: <cluster_domain>

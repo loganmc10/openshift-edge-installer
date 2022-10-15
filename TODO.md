@@ -1,16 +1,6 @@
-# DU Profile support
-Grab the static configs from https://github.com/openshift-kni/cnf-features-deploy/tree/master/ztp/source-crs/extra-manifest (depending on the release branch).
+# Workload partitioning/PerformanceProfile
+Workload partitioning needs to be done during install, and if they are doing this, they should also get a PerformanceProfile
 
-Also need to enable workload partitioning for SNO, for this, they'd need to specify the CPUSet in the install-config
-# Other DU Policies
-https://github.com/openshift-kni/cnf-features-deploy/tree/master/ztp/gitops-subscriptions/argocd/example/policygentemplates
-
-Of note:
-* ReduceMonitoringFootprint.yaml
-* PerformanceProfile.yaml
-* TunedPerformancePatch.yaml
-* ConsoleOperatorDisable.yaml
-* DisableSnoNetworkDiag.yaml
 # ZTPFW features
 In general I think this comes down to 2 things: Make sure the cluster can survive DHCP address changes, and make sure the cluster can survive being offline for a period of time (certificate expiration).
 

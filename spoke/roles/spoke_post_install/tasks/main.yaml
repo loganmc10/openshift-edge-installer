@@ -36,6 +36,30 @@
     wait_sleep: 60
     wait_timeout: 14400
 
+- name: DisableSnoNetworkDiag
+  when: (controlPlane.replicas == 1)
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: operator.openshift.io/v1
+      kind: Network
+      metadata:
+        name: cluster
+      spec:
+        disableNetworkDiagnostics: true
+    state: present
+
+- name: ConsoleOperatorDisable
+  when: (disableConsole is defined) and (disableConsole)
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: operator.openshift.io/v1
+      kind: Console
+      metadata:
+        name: cluster
+      spec:
+        managementState: Removed
+    state: present
+
 - name: Apply post-install manifests
   when: postInstallManifestsFolder is defined
   loop: "{{ lookup('ansible.builtin.fileglob', lookup('ansible.builtin.vars', 'postInstallManifestsFolder') + '/*', wantlist=True) | sort }}"
