@@ -1,13 +1,25 @@
+- name: Label nodes
+  loop: "{{ nodes.resources }}"
+  kubernetes.core.k8s:
+    definition:
+      api_version: v1
+      kind: Node
+      metadata:
+        name: "{{ item.metadata.name }}"
+        labels:
+          cluster.ocs.openshift.io/openshift-storage: ""
+    state: present
+
 - name: Setup LSO
   ansible.builtin.include_tasks:
     file: storage_lso.yaml
 
 - name: Setup ODF operators
   loop:
-    - "odf-operator"
     - "ocs-operator"
-    - "odf-csi-addons-operator"
-    - "mcg-operator"
+    - "odf-operator"
+    #- "odf-csi-addons-operator"
+    #- "mcg-operator"
   ansible.builtin.include_tasks:
     file: storage_odf_operators.yaml
 

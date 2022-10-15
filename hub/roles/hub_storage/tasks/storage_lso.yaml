@@ -85,8 +85,10 @@
         nodeSelector:
           nodeSelectorTerms:
             - matchExpressions:
-                - key: kubernetes.io/hostname
-                  operator: Exists
+                - key: cluster.ocs.openshift.io/openshift-storage
+                  operator: In
+                  values:
+                    - ""
         storageClassName: local-storage
         tolerations:
           - effect: NoSchedule
