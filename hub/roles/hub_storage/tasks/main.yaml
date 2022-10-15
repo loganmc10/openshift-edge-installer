@@ -137,3 +137,17 @@
           metadata:
             name: openshift-local-storage
         state: absent
+
+    - name: Remove StorageClasses
+      loop:
+        - "odf-lvm-vg1"
+        - "ocs-storagecluster-ceph-rgw"
+        - "ocs-storagecluster-cephfs"
+        - "local-storage"
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: storage.k8s.io/v1
+          kind: StorageClass
+          metadata:
+            name: "{{ item }}"
+        state: absent

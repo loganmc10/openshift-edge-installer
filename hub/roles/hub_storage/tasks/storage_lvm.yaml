@@ -46,42 +46,34 @@
   retries: 20
   delay: 10
 
-- name: Install StorageClass
-  block:
-    - name: Install ODF LVMCluster
-      kubernetes.core.k8s:
-        definition:
-          apiVersion: lvm.topolvm.io/v1alpha1
-          kind: LVMCluster
-          metadata:
-            name: odf-lvmcluster
-            namespace: openshift-storage
-          spec:
-            storage:
-              deviceClasses:
-                - name: vg1
-                  thinPoolConfig:
-                    name: thin-pool-1
-                    sizePercent: 90
-                    overprovisionRatio: 10
-        state: present
-
-    - name: Wait for LVMCluster to be deployed
-      kubernetes.core.k8s_info:
-        api_version: lvm.topolvm.io/v1alpha1
-        kind: LVMCluster
+- name: Install ODF LVMCluster
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: lvm.topolvm.io/v1alpha1
+      kind: LVMCluster
+      metadata:
         name: odf-lvmcluster
         namespace: openshift-storage
-      register: lvmcluster
-      until: lvmcluster.resources[0]["status"]["ready"] == true
-      retries: 20
-      delay: 10
-  rescue:
-    - name: Remove StorageClass
-      kubernetes.core.k8s:
-        definition:
-          apiVersion: storage.k8s.io/v1
-          kind: StorageClass
-          metadata:
-            name: odf-lvm-vg1
-        state: absent
+      spec:
+        storage:
+          deviceClasses:
+            - name: vg1
+              thinPoolConfig:
+                name: thin-pool-1
+                sizePercent: 90
+                overprovisionRatio: 10
+    state: present
+
+- name: Wait for StorageClass
+  kubernetes.core.k8s_info:
+    api_version: storage.k8s.io/v1
+    kind: StorageClass
+    name: odf-lvm-vg1
+  register: lvm_storage_class
+  until: lvm_storage_class.resources | length | int = 1
+  retries: 60
+  delay: 10
+
+- name: Set default storage
+  loop: "{{ lvm_storage_class.resources }}"
+  ansible.builtin.include_tasks: set_storage.yaml
