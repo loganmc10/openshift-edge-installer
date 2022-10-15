@@ -23,18 +23,16 @@
   ansible.builtin.include_tasks:
     file: storage_odf_operators.yaml
 
-- name: Create StorageSystem
+- name: Get device count
+  kubernetes.core.k8s_info:
+    api_version: local.storage.openshift.io/v1alpha1
+    kind: LocalVolumeSet
+    name: local-storage
+  register: local_storage
+
+- name: Create StorageCluster
   kubernetes.core.k8s:
-    definition:
-      apiVersion: odf.openshift.io/v1alpha1
-      kind: StorageSystem
-      metadata:
-        name: ocs-storagecluster-storagesystem
-        namespace: openshift-storage
-      spec:
-        kind: storagecluster.ocs.openshift.io/v1
-        name: ocs-storagecluster
-        namespace: openshift-storage
+    template: StorageCluster.yaml.j2
     state: present
 
 - name: Wait for StorageClass
