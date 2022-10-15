@@ -89,6 +89,8 @@
           metadata:
             name: openshift-storage
         state: absent
+        wait: true
+        wait_timeout: 1200
 
     - name: Remove LSO namespace
       kubernetes.core.k8s:
@@ -98,6 +100,8 @@
           metadata:
             name: openshift-local-storage
         state: absent
+        wait: true
+        wait_timeout: 1200
 
     - name: Remove StorageClasses
       loop:
@@ -112,3 +116,5 @@
           metadata:
             name: "{{ item }}"
         state: absent
+        wait: true
+        wait_timeout: 1200

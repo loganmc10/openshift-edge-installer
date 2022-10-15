@@ -1,4 +1,4 @@
-- name: Install ODF Subscription
+- name: Install Subscription
   kubernetes.core.k8s:
     definition:
       apiVersion: operators.coreos.com/v1alpha1
