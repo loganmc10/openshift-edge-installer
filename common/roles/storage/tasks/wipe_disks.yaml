@@ -4,6 +4,6 @@
   ansible.builtin.shell: |
     oc debug node/{{ node.spec.nodeName }} -- chroot /host sgdisk --zap-all {{ item.path }}
 
-- name: Remove old device mappings
+- name: Remove old device mappings # noqa no-changed-when
   ansible.builtin.shell: |
     oc debug node/{{ node.spec.nodeName }} -- chroot /host dmsetup remove_all -f
