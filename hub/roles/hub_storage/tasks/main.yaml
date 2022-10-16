@@ -46,16 +46,7 @@
               cluster.ocs.openshift.io/openshift-storage: ""
         state: present
 
-    - name: Check for LocalVolumeSet
-      kubernetes.core.k8s_info:
-        apiVersion: local.storage.openshift.io/v1alpha1
-        kind: LocalVolumeSet
-        metadata:
-          namespace: openshift-local-storage
-      register: local_volume_set
-
     - name: Clean volumes
-      when: local_volume_set.resources | length | int == 0
       ansible.builtin.include_tasks:
         file: clean_volumes.yaml
 

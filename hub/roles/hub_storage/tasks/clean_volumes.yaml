@@ -22,7 +22,7 @@
     wait_timeout: 1200
   register: volume_discovery
 
-- name: Pause for 30 seconds to let volume discovery settle
+- name: Pause for 30 seconds to let volume discovery settle # noqa no-handler
   ansible.builtin.pause:
     seconds: 30
   when: volume_discovery.changed
@@ -33,7 +33,8 @@
     kind: LocalVolumeDiscoveryResult
   register: discovery_result
 
-- name: Wipe disks
+- name: Wipe disks # noqa no-handler
+  when: volume_discovery.changed # Assume we've already wiped the disks if the discovery has already been done
   loop: "{{ discovery_result.resources }}"
   loop_control:
     loop_var: node
