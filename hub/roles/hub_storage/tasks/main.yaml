@@ -59,6 +59,45 @@
       ansible.builtin.include_tasks:
         file: storage_lvm.yaml
   rescue:
+    - name: Remove StorageCluster
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: ocs.openshift.io/v1
+          kind: StorageCluster
+          metadata:
+            name: ocs-storagecluster
+            namespace: openshift-storage
+        state: absent
+        wait: true
+        wait_timeout: 1200
+      ignore_errors: true # noqa ignore-errors
+
+    - name: Remove ODF LVMCluster
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: lvm.topolvm.io/v1alpha1
+          kind: LVMCluster
+          metadata:
+            name: odf-lvmcluster
+            namespace: openshift-storage
+        state: absent
+        wait: true
+        wait_timeout: 1200
+      ignore_errors: true # noqa ignore-errors
+
+    - name: Remove LocalVolumeSet
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: local.storage.openshift.io/v1alpha1
+          kind: LocalVolumeSet
+          metadata:
+            name: local-storage
+            namespace: openshift-local-storage
+        state: absent
+        wait: true
+        wait_timeout: 1200
+      ignore_errors: true # noqa ignore-errors
+
     - name: Remove ODF namespace
       kubernetes.core.k8s:
         definition:
