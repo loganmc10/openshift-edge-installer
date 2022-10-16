@@ -1,0 +1,42 @@
+- name: Discover local volumes
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: local.storage.openshift.io/v1alpha1
+      kind: LocalVolumeDiscovery
+      metadata:
+        name: auto-discover-devices
+        namespace: openshift-local-storage
+      spec:
+        nodeSelector:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: cluster.ocs.openshift.io/openshift-storage
+                  operator: In
+                  values:
+                    - ""
+    state: present
+    wait: true
+    wait_condition:
+      type: Available
+      status: "True"
+    wait_timeout: 1200
+  register: volume_discovery
+
+- name: Pause for 30 seconds to let volume discovery settle # noqa no-handler
+  ansible.builtin.pause:
+    seconds: 30
+  when: volume_discovery.changed
+
+- name: Get discovery info
+  kubernetes.core.k8s_info:
+    api_version: local.storage.openshift.io/v1alpha1
+    kind: LocalVolumeDiscoveryResult
+    namespace: openshift-local-storage
+  register: discovery_result
+
+- name: Wipe disks # noqa no-handler
+  when: volume_discovery.changed # Assume we've already wiped the disks if the discovery has already been done
+  loop: "{{ discovery_result.resources }}"
+  loop_control:
+    loop_var: node
+  ansible.builtin.include_tasks: wipe_disks.yaml

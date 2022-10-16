@@ -1,0 +1,69 @@
+- name: Create namespace
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: "{{ operator_namespace }}"
+    state: present
+
+- name: Create OperatorGroup
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: operators.coreos.com/v1
+      kind: OperatorGroup
+      metadata:
+        name: "{{ operator_name }}"
+        namespace: "{{ operator_namespace }}"
+      spec:
+        targetNamespaces:
+          - "{{ operator_namespace }}"
+    state: present
+
+- name: Create Subscription
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: operators.coreos.com/v1alpha1
+      kind: Subscription
+      metadata:
+        name: "{{ operator_name }}"
+        namespace: "{{ operator_namespace }}"
+      spec:
+        installPlanApproval: Automatic
+        name: "{{ operator_name }}"
+        source: "{{ operator_source }}"
+        sourceNamespace: openshift-marketplace
+    state: present
+  register: create_sub
+
+- name: Pause for 15 seconds to let subscription settle # noqa no-handler
+  when: create_sub.changed
+  ansible.builtin.pause:
+    seconds: 15
+
+- name: Wait for operator to be deployed
+  kubernetes.core.k8s_info:
+    api_version: operators.coreos.com/v1alpha1
+    kind: Subscription
+    name: "{{ create_sub.result.metadata.name }}"
+    namespace: "{{ create_sub.result.metadata.namespace }}"
+  register: subscription
+  until: subscription.resources[0]["status"]["state"] == "AtLatestKnown"
+  retries: 20
+  delay: 10
+
+- name: Pause for 15 seconds to let CSV settle # noqa no-handler
+  when: create_sub.changed
+  ansible.builtin.pause:
+    seconds: 15
+
+- name: Wait for CSV to be deployed
+  kubernetes.core.k8s_info:
+    api_version: operators.coreos.com/v1alpha1
+    kind: ClusterServiceVersion
+    name: "{{ subscription.resources[0]['status']['installedCSV'] }}"
+    namespace: "{{ create_sub.result.metadata.namespace }}"
+  register: csv
+  until: csv.resources[0]["status"]["phase"] == "Succeeded"
+  retries: 20
+  delay: 10

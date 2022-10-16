@@ -1,0 +1,72 @@
+- name: Create LocalVolumeSet
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: local.storage.openshift.io/v1alpha1
+      kind: LocalVolumeSet
+      metadata:
+        name: local-storage
+        namespace: openshift-local-storage
+      spec:
+        deviceInclusionSpec:
+          deviceTypes:
+            - disk
+          minSize: 1Gi
+        nodeSelector:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: cluster.ocs.openshift.io/openshift-storage
+                  operator: In
+                  values:
+                    - ""
+        storageClassName: local-storage
+        tolerations:
+          - effect: NoSchedule
+            key: node.ocs.openshift.io/storage
+            operator: Equal
+            value: "true"
+        volumeMode: Block
+    state: present
+    wait: true
+    wait_timeout: 600
+    wait_condition:
+      type: DaemonSetsAvailable
+      status: "True"
+
+- name: Install ODF operator
+  ansible.builtin.include_role:
+    name: install_operator
+  vars:
+    operator_name: ocs-operator
+    operator_namespace: openshift-storage
+
+- name: Get device count
+  kubernetes.core.k8s_info:
+    api_version: local.storage.openshift.io/v1alpha1
+    kind: LocalVolumeSet
+    name: local-storage
+    namespace: openshift-local-storage
+  register: local_storage
+
+- name: Create StorageCluster
+  kubernetes.core.k8s:
+    template: StorageCluster.yaml.j2
+    state: present
+    wait: true
+    wait_timeout: 1200
+    wait_condition:
+      type: Available
+      status: "True"
+
+- name: Wait for StorageClass
+  kubernetes.core.k8s_info:
+    api_version: storage.k8s.io/v1
+    kind: StorageClass
+    name: ocs-storagecluster-cephfs
+  register: odf_storage_class
+  until: odf_storage_class.resources | length | int == 1
+  retries: 60
+  delay: 10
+
+- name: Set default storage
+  loop: "{{ odf_storage_class.resources }}"
+  ansible.builtin.include_tasks: set_storage.yaml

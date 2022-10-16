@@ -10,6 +10,7 @@ diskEncryption: # Optional
   enableOn: "all"
   mode: "tpmv2"
 disableConsole: false # Optional
+odfStorage: true # Optional
 # End additional parameters
 
 baseDomain: <cluster_domain>

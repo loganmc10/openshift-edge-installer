@@ -1,0 +1,5 @@
+- name: Clean disk
+  loop: "{{ node.status.discoveredDevices }}"
+  when: (item.type == "disk")
+  ansible.builtin.shell: |
+    oc debug node/{{ node.spec.nodeName }} -- chroot /host sgdisk --zap-all {{ item.path }}

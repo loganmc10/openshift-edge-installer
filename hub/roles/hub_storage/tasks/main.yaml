@@ -14,98 +14,146 @@
     ("storageclass.kubernetes.io/is-default-class" in item["metadata"]["annotations"]) and
     (item["metadata"]["annotations"]["storageclass.kubernetes.io/is-default-class"] == "true"))
 
-- name: Check for ODF
-  kubernetes.core.k8s_info:
-    api_version: storage.k8s.io/v1
-    kind: StorageClass
-    name: ocs-storagecluster-cephfs
-  register: odf
+- name: Check for suitable default storage
+  loop: "{{ storage_classes.resources }}"
+  ansible.builtin.include_tasks: set_storage.yaml
 
-# ODF is preferred if it is available
-- name: Set default storage class to CephFS
-  when: (has_default_storage is not defined) and (odf.resources | length | int == 1)
-  kubernetes.core.k8s:
-    definition:
-      apiVersion: storage.k8s.io/v1
-      kind: StorageClass
-      metadata:
-        name: ocs-storagecluster-cephfs
-        annotations:
-          storageclass.kubernetes.io/is-default-class: "true"
-    state: present
-
-# this is admittedly hacky, but storage is required
-# if ODF is not available, some PersistentVolumes are created on the first worker node using local folders
-- name: Setup local storage
-  when: ((has_default_storage is not defined) and (odf.resources | length | int == 0)) or (has_default_storage == "local-storage")
+- name: Install storage provider
+  when: has_default_storage is not defined
   block:
-    - name: Create PV list
-      ansible.builtin.set_fact:
-        pv_list:
-          - { pv_name: "database-storage", pv_size: "{{ asc_db_size }}" }
-          - { pv_name: "filesystem-storage", pv_size: "{{ asc_fs_size }}" }
-          - { pv_name: "image-storage", pv_size: "{{ asc_im_size }}" }
-
-    - name: Create local-storage StorageClass
-      kubernetes.core.k8s:
-        definition:
-          apiVersion: storage.k8s.io/v1
-          kind: StorageClass
-          metadata:
-            name: local-storage
-            annotations:
-              storageclass.kubernetes.io/is-default-class: "true"
-          provisioner: kubernetes.io/no-provisioner
-          volumeBindingMode: WaitForFirstConsumer
-        state: present
+    - name: Install LSO operator
+      ansible.builtin.include_role:
+        name: install_operator
+      vars:
+        operator_name: local-storage-operator
+        operator_namespace: openshift-local-storage
 
     - name: Get node list
       kubernetes.core.k8s_info:
         api_version: v1
         kind: Node
-        label_selectors:
-          - "node-role.kubernetes.io/worker"
       register: nodes
 
-    - name: Set first node name
-      ansible.builtin.set_fact:
-        first_node: "{{ nodes.resources[0]['metadata']['name'] }}"
+    - name: Label nodes
+      loop: "{{ nodes.resources }}"
+      kubernetes.core.k8s:
+        definition:
+          api_version: v1
+          kind: Node
+          metadata:
+            name: "{{ item.metadata.name }}"
+            labels:
+              cluster.ocs.openshift.io/openshift-storage: ""
+        state: present
 
-    - name: Check for stale PVs
+    - name: Clean volumes
+      ansible.builtin.include_tasks:
+        file: clean_volumes.yaml
+
+    - name: Get control plane list
       kubernetes.core.k8s_info:
         api_version: v1
-        kind: PersistentVolume
-        name: database-storage
-      register: stalepv
+        kind: Node
+        label_selectors:
+          - "node-role.kubernetes.io/master"
+      register: control_nodes
 
-    - name: Clean up volumes
-      when: (stalepv.resources | length | int == 1) and (stalepv.resources[0]['status']['phase'] == "Released")
+    - name: Install ODF
+      when: control_nodes.resources | length | int == 3
       ansible.builtin.include_tasks:
-        file: cleanup_pv.yaml
+        file: storage_odf.yaml
 
-    - name: Create folders
-      ansible.builtin.command: oc debug node/{{ first_node }} -- mkdir -pv /host/var/local/{{ item.pv_name }}
-      loop: "{{ pv_list }}"
-      register: command_result
-      changed_when: '"created directory" in command_result.stdout'
-
-    - name: Create PVs
-      kubernetes.core.k8s:
-        template: PersistentVolume.yaml.j2
-        state: present
-      loop: "{{ pv_list }}"
+    - name: Install ODF LVM
+      when: control_nodes.resources | length | int == 1
+      ansible.builtin.include_tasks:
+        file: storage_lvm.yaml
   rescue:
-    - name: Clean up volumes
-      ansible.builtin.include_tasks:
-        file: cleanup_pv.yaml
+    - name: Remove LocalVolumeDiscovery
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: local.storage.openshift.io/v1alpha1
+          kind: LocalVolumeDiscovery
+          metadata:
+            name: auto-discover-devices
+            namespace: openshift-local-storage
+        state: absent
+        wait: true
+        wait_timeout: 1200
+      ignore_errors: true # noqa ignore-errors
 
-    - name: Remove local-storage StorageClass
+    - name: Remove StorageCluster
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: ocs.openshift.io/v1
+          kind: StorageCluster
+          metadata:
+            name: ocs-storagecluster
+            namespace: openshift-storage
+        state: absent
+        wait: true
+        wait_timeout: 1200
+      ignore_errors: true # noqa ignore-errors
+
+    - name: Remove ODF LVMCluster
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: lvm.topolvm.io/v1alpha1
+          kind: LVMCluster
+          metadata:
+            name: odf-lvmcluster
+            namespace: openshift-storage
+        state: absent
+        wait: true
+        wait_timeout: 1200
+      ignore_errors: true # noqa ignore-errors
+
+    - name: Remove LocalVolumeSet
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: local.storage.openshift.io/v1alpha1
+          kind: LocalVolumeSet
+          metadata:
+            name: local-storage
+            namespace: openshift-local-storage
+        state: absent
+        wait: true
+        wait_timeout: 1200
+      ignore_errors: true # noqa ignore-errors
+
+    - name: Remove ODF namespace
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: v1
+          kind: Namespace
+          metadata:
+            name: openshift-storage
+        state: absent
+        wait: true
+        wait_timeout: 1200
+
+    - name: Remove LSO namespace
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: v1
+          kind: Namespace
+          metadata:
+            name: openshift-local-storage
+        state: absent
+        wait: true
+        wait_timeout: 1200
+
+    - name: Remove StorageClasses
+      loop:
+        - "odf-lvm-vg1"
+        - "ocs-storagecluster-ceph-rgw"
+        - "ocs-storagecluster-cephfs"
+        - "local-storage"
       kubernetes.core.k8s:
         definition:
           apiVersion: storage.k8s.io/v1
           kind: StorageClass
           metadata:
-            name: local-storage
+            name: "{{ item }}"
         state: absent
         wait: true
         wait_timeout: 1200
