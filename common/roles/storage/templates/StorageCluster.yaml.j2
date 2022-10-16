@@ -7,7 +7,7 @@ spec:
   manageNodes: false
   monDataDirHostPath: /var/lib/rook
   storageDeviceSets:
-    - count: 1
+    - count: {{ ((worker_nodes.resources | length | int) / 3) | int }}
       dataPVCTemplate:
         spec:
           accessModes:

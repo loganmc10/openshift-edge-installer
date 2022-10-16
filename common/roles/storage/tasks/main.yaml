@@ -32,10 +32,12 @@
       kubernetes.core.k8s_info:
         api_version: v1
         kind: Node
-      register: nodes
+        label_selectors:
+          - "node-role.kubernetes.io/worker"
+      register: worker_nodes
 
-    - name: Label nodes
-      loop: "{{ nodes.resources }}"
+    - name: Label worker nodes
+      loop: "{{ worker_nodes.resources }}"
       kubernetes.core.k8s:
         definition:
           api_version: v1
@@ -50,21 +52,13 @@
       ansible.builtin.include_tasks:
         file: clean_volumes.yaml
 
-    - name: Get control plane list
-      kubernetes.core.k8s_info:
-        api_version: v1
-        kind: Node
-        label_selectors:
-          - "node-role.kubernetes.io/master"
-      register: control_nodes
-
     - name: Install ODF
-      when: control_nodes.resources | length | int == 3
+      when: worker_nodes.resources | length | int > 2
       ansible.builtin.include_tasks:
         file: storage_odf.yaml
 
     - name: Install ODF LVM
-      when: control_nodes.resources | length | int == 1
+      when: worker_nodes.resources | length | int < 3
       ansible.builtin.include_tasks:
         file: storage_lvm.yaml
   rescue:
