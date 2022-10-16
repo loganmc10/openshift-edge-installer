@@ -49,7 +49,7 @@
     namespace: "{{ create_sub.result.metadata.namespace }}"
   register: subscription
   until: (subscription.resources[0].status.state) and (subscription.resources[0].status.state == "AtLatestKnown")
-  retries: 20
+  retries: 60
   delay: 10
 
 - name: Pause for 15 seconds to let CSV settle # noqa no-handler
