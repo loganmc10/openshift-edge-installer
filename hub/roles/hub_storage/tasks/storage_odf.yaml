@@ -51,6 +51,11 @@
   kubernetes.core.k8s:
     template: StorageCluster.yaml.j2
     state: present
+    wait: true
+    wait_timeout: 1200
+    wait_condition:
+      type: Available
+      status: "True"
 
 - name: Wait for StorageClass
   kubernetes.core.k8s_info:
