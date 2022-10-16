@@ -21,12 +21,6 @@
 - name: Install storage provider
   when: has_default_storage is not defined
   block:
-    - name: Get node list
-      kubernetes.core.k8s_info:
-        api_version: v1
-        kind: Node
-      register: nodes
-
     - name: Install LSO operator
       ansible.builtin.include_role:
         name: install_operator
@@ -34,54 +28,18 @@
         operator_name: local-storage-operator
         operator_namespace: openshift-local-storage
 
-    - name: Label nodes
-      loop: "{{ nodes.resources }}"
-      kubernetes.core.k8s:
-        definition:
-          api_version: v1
-          kind: Node
-          metadata:
-            name: "{{ item.metadata.name }}"
-            labels:
-              cluster.ocs.openshift.io/openshift-storage: ""
-        state: present
+    - name: Check for LocalVolumeSet
+      kubernetes.core.k8s_info:
+        apiVersion: local.storage.openshift.io/v1alpha1
+        kind: LocalVolumeSet
+        metadata:
+          namespace: openshift-local-storage
+      register: local_volume_set
 
-    - name: Discover local volumes
-      kubernetes.core.k8s:
-        definition:
-          apiVersion: local.storage.openshift.io/v1alpha1
-          kind: LocalVolumeDiscovery
-          metadata:
-            name: auto-discover-devices
-            namespace: openshift-local-storage
-          spec:
-            nodeSelector:
-              nodeSelectorTerms:
-                - matchExpressions:
-                    - key: cluster.ocs.openshift.io/openshift-storage
-                      operator: In
-                      values:
-                        - ""
-        state: present
-        wait: true
-        wait_condition:
-          type: Available
-          status: "True"
-        wait_timeout: 1200
-
-    - name: Clean Volume Groups
-      ansible.builtin.shell: |
-        oc debug node/{{ item.metadata.name }} -- chroot /host /bin/bash -c "for vg in \$(vgs -o name --noheadings) ; do vgremove -y \$vg ; done || true"
-      loop: "{{ nodes.resources }}"
-      register: command_result
-      changed_when: '"successfully removed" in command_result.stdout'
-
-    - name: Clean Physical Volumes
-      ansible.builtin.shell: |
-        oc debug node/{{ item.metadata.name }} -- chroot /host /bin/bash -c "for pv in \$(pvs -o name --noheadings) ; do pvremove -y \$pv ; done || true"
-      loop: "{{ nodes.resources }}"
-      register: command_result
-      changed_when: '"successfully wiped" in command_result.stdout'
+    - name: Clean volumes
+      when: local_volume_set.resources | length | int == 0
+      ansible.builtin.include_tasks:
+        file: clean_volumes.yaml
 
     - name: Get control plane list
       kubernetes.core.k8s_info:
@@ -101,6 +59,19 @@
       ansible.builtin.include_tasks:
         file: storage_lvm.yaml
   rescue:
+    - name: Remove LocalVolumeDiscovery
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: local.storage.openshift.io/v1alpha1
+          kind: LocalVolumeDiscovery
+          metadata:
+            name: auto-discover-devices
+            namespace: openshift-local-storage
+        state: absent
+        wait: true
+        wait_timeout: 1200
+      ignore_errors: true # noqa ignore-errors
+
     - name: Remove StorageCluster
       kubernetes.core.k8s:
         definition:
