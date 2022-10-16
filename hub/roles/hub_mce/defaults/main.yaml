@@ -1,4 +1,3 @@
-mce_operator_source: redhat-operators
 os_images:
   - openshiftVersion: "4.10"
     version: "4.10.25"

@@ -31,7 +31,7 @@
       spec:
         installPlanApproval: Automatic
         name: "{{ operator_name }}"
-        source: "{{ mce_operator_source }}"
+        source: "{{ operator_source }}"
         sourceNamespace: openshift-marketplace
     state: present
   register: create_sub
