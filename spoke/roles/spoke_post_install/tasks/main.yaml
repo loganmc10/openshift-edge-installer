@@ -22,6 +22,7 @@
     content: "{{ kubeconfig.resources[0].data.kubeconfig | b64decode }}"
     dest: "{{ aci.resources[0]['spec']['clusterMetadata']['adminKubeconfigSecretRef']['name'] }}"
     mode: "0600"
+  register: kubeconfig_file
 
 - name: Wait for install to complete
   kubernetes.core.k8s_info:
@@ -36,37 +37,45 @@
     wait_sleep: 60
     wait_timeout: 14400
 
-- name: DisableSnoNetworkDiag
-  when: (controlPlane.replicas == 1)
-  kubernetes.core.k8s:
-    definition:
-      apiVersion: operator.openshift.io/v1
-      kind: Network
-      metadata:
-        name: cluster
-      spec:
-        disableNetworkDiagnostics: true
-    state: present
+- name: Run tasks on spoke cluster
+  environment:
+    K8S_AUTH_KUBECONFIG: "{{ kubeconfig_file.dest }}"
+  block:
+    - name: DisableSnoNetworkDiag
+      when: (controlPlane.replicas == 1)
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: operator.openshift.io/v1
+          kind: Network
+          metadata:
+            name: cluster
+          spec:
+            disableNetworkDiagnostics: true
+        state: present
 
-- name: ConsoleOperatorDisable
-  when: (disableConsole is defined) and (disableConsole)
-  kubernetes.core.k8s:
-    definition:
-      apiVersion: operator.openshift.io/v1
-      kind: Console
-      metadata:
-        name: cluster
-      spec:
-        managementState: Removed
-    state: present
+    - name: ConsoleOperatorDisable
+      when: (disableConsole is defined) and (disableConsole)
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: operator.openshift.io/v1
+          kind: Console
+          metadata:
+            name: cluster
+          spec:
+            managementState: Removed
+        state: present
 
-- name: Apply post-install manifests
-  when: postInstallManifestsFolder is defined
-  loop: "{{ lookup('ansible.builtin.fileglob', lookup('ansible.builtin.vars', 'postInstallManifestsFolder') + '/*', wantlist=True) | sort }}"
-  loop_control:
-    pause: 30
-  kubernetes.core.k8s:
-    kubeconfig: "{{ kubeconfig.resources[0].data.kubeconfig | b64decode | from_yaml }}"
-    src: "{{ item }}"
-    wait: true
-    state: present
+    - name: Apply post-install manifests
+      when: postInstallManifestsFolder is defined
+      loop: "{{ lookup('ansible.builtin.fileglob', lookup('ansible.builtin.vars', 'postInstallManifestsFolder') + '/*', wantlist=True) | sort }}"
+      loop_control:
+        pause: 30
+      kubernetes.core.k8s:
+        src: "{{ item }}"
+        wait: true
+        state: present
+
+    - name: Install ODF
+      when: (odfStorage is defined) and (odfStorage)
+      ansible.builtin.include_role:
+        name: "{{ playbook_dir }}/../hub/roles/hub_storage"
