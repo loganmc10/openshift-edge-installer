@@ -135,7 +135,7 @@
         name: "{{ metadata.name }}"
         namespace: "{{ metadata.name }}"
       register: aci
-      until: aci.resources[0]["status"]["debugInfo"]["eventsURL"] is defined
+      until: aci.resources[0].status.debugInfo.eventsURL"] is defined
       retries: 100
       delay: 10
 
@@ -147,7 +147,7 @@
         name: "{{ metadata.name }}"
         namespace: "{{ metadata.name }}"
       register: infraenv
-      until: infraenv.resources[0]["status"]["isoDownloadURL"] is defined
+      until: infraenv.resources[0].status.isoDownloadURL is defined
       retries: 100
       delay: 10
 

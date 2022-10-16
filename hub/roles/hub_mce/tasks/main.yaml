@@ -43,7 +43,7 @@
         kind: MultiClusterEngine
         name: multiclusterengine
       register: mce
-      until: mce.resources[0]["status"]["phase"] == "Available"
+      until: mce.resources[0].status.phase == "Available"
       retries: 20
       delay: 10
 

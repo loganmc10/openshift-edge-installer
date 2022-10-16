@@ -5,7 +5,7 @@
     name: "{{ metadata.name }}"
     namespace: "{{ metadata.name }}"
   register: aci
-  until: aci.resources[0]["spec"]["clusterMetadata"]["adminKubeconfigSecretRef"]["name"] is defined
+  until: aci.resources[0].spec.clusterMetadata.adminKubeconfigSecretRef.name is defined
   retries: 30
   delay: 60
 

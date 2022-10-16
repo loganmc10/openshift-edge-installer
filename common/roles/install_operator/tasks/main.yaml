@@ -48,7 +48,7 @@
     name: "{{ create_sub.result.metadata.name }}"
     namespace: "{{ create_sub.result.metadata.namespace }}"
   register: subscription
-  until: subscription.resources[0]["status"]["state"] == "AtLatestKnown"
+  until: (subscription.resources[0].status.state) and (subscription.resources[0].status.state == "AtLatestKnown")
   retries: 20
   delay: 10
 
@@ -64,6 +64,6 @@
     name: "{{ subscription.resources[0]['status']['installedCSV'] }}"
     namespace: "{{ create_sub.result.metadata.namespace }}"
   register: csv
-  until: csv.resources[0]["status"]["phase"] == "Succeeded"
+  until: csv.resources[0].status.phase == "Succeeded"
   retries: 20
   delay: 10
