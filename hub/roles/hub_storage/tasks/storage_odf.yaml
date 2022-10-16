@@ -10,7 +10,6 @@
         deviceInclusionSpec:
           deviceTypes:
             - disk
-            - part
           minSize: 1Gi
         nodeSelector:
           nodeSelectorTerms:
