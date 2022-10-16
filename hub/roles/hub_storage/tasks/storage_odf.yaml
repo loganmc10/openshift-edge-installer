@@ -1,6 +1,37 @@
-- name: Setup LSO
-  ansible.builtin.include_tasks:
-    file: storage_lso.yaml
+- name: Create LocalVolumeSet
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: local.storage.openshift.io/v1alpha1
+      kind: LocalVolumeSet
+      metadata:
+        name: local-storage
+        namespace: openshift-local-storage
+      spec:
+        deviceInclusionSpec:
+          deviceTypes:
+            - disk
+            - part
+          minSize: 1Gi
+        nodeSelector:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: cluster.ocs.openshift.io/openshift-storage
+                  operator: In
+                  values:
+                    - ""
+        storageClassName: local-storage
+        tolerations:
+          - effect: NoSchedule
+            key: node.ocs.openshift.io/storage
+            operator: Equal
+            value: "true"
+        volumeMode: Block
+    state: present
+    wait: true
+    wait_timeout: 600
+    wait_condition:
+      type: Available
+      status: "True"
 
 - name: Install ODF operator
   ansible.builtin.include_role:
