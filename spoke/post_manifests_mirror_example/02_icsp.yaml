@@ -7,9 +7,6 @@ metadata:
 spec:
   repositoryDigestMirrors:
     - mirrors:
-        - <mirror_url>:8443/multicluster-engine
-      source: registry.redhat.io/multicluster-engine
-    - mirrors:
         - <mirror_url>:8443/openshift4
       source: registry.redhat.io/openshift4
     - mirrors:
@@ -18,9 +15,3 @@ spec:
     - mirrors:
         - <mirror_url>:8443/odf4
       source: registry.redhat.io/odf4
-    - mirrors:
-        - <mirror_url>:8443/redhat
-      source: registry.redhat.io/redhat
-    - mirrors:
-        - <mirror_url>:8443/rhel8
-      source: registry.redhat.io/rhel8
