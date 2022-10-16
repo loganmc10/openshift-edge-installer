@@ -29,7 +29,7 @@
     wait: true
     wait_timeout: 600
     wait_condition:
-      type: Available
+      type: DaemonSetsAvailable
       status: "True"
 
 - name: Install ODF operator
@@ -44,6 +44,7 @@
     api_version: local.storage.openshift.io/v1alpha1
     kind: LocalVolumeSet
     name: local-storage
+    namespace: openshift-local-storage
   register: local_storage
 
 - name: Create StorageCluster

@@ -31,6 +31,7 @@
   kubernetes.core.k8s_info:
     api_version: local.storage.openshift.io/v1alpha1
     kind: LocalVolumeDiscoveryResult
+    namespace: openshift-local-storage
   register: discovery_result
 
 - name: Wipe disks # noqa no-handler
