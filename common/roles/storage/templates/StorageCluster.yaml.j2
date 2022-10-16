@@ -7,7 +7,7 @@ spec:
   manageNodes: false
   monDataDirHostPath: /var/lib/rook
   storageDeviceSets:
-    - count: {{ (local_storage.resources[0].status.totalProvisionedDeviceCount / 3) | int }}
+    - count: 1
       dataPVCTemplate:
         spec:
           accessModes:

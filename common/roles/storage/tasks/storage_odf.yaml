@@ -39,14 +39,6 @@
     operator_name: ocs-operator
     operator_namespace: openshift-storage
 
-- name: Get device count
-  kubernetes.core.k8s_info:
-    api_version: local.storage.openshift.io/v1alpha1
-    kind: LocalVolumeSet
-    name: local-storage
-    namespace: openshift-local-storage
-  register: local_storage
-
 - name: Create StorageCluster
   kubernetes.core.k8s:
     template: StorageCluster.yaml.j2
