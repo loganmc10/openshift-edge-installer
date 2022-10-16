@@ -39,7 +39,7 @@
 
 - name: Run tasks on spoke cluster
   environment:
-    K8S_AUTH_KUBECONFIG: "{{ kubeconfig_file.dest }}"
+    KUBECONFIG: "{{ kubeconfig_file.dest }}"
   block:
     - name: DisableSnoNetworkDiag
       when: (controlPlane.replicas == 1)
