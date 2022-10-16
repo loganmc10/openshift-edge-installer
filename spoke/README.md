@@ -1,11 +1,5 @@
 # Purpose
 This playbook installs a spoke cluster.
-# Prerequisites
-* OpenShift 4.10+ hub cluster (can be SNO).
-* Ansible: ```pip install ansible-core```
-* Python modules: ```pip install kubernetes jmespath```
-* Kubernetes Ansible collection: ```ansible-galaxy collection install -U kubernetes.core community.general```
-* [oc binary](https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz)
 # Usage
 An example install config file is provided in ```install-config-sno-example.yaml```
 

@@ -1,11 +1,5 @@
 # Purpose
 This playbook configures the Multicluster Engine on a Hub Cluster.
-# Prerequisites
-* Pre-existing OpenShift 4.10+ cluster (can be SNO).
-* Ansible: ```pip install ansible-core```
-* Python modules: ```pip install kubernetes jmespath```
-* Kubernetes Ansible collection: ```ansible-galaxy collection install -U kubernetes.core community.general```
-* [oc binary](https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz)
 # Usage
 ## Without mirror registry
 ```
