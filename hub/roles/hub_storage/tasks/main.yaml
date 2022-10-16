@@ -49,28 +49,6 @@
           - "node-role.kubernetes.io/master"
       register: control_nodes
 
-    - name: Install ODF namespace
-      kubernetes.core.k8s:
-        definition:
-          apiVersion: v1
-          kind: Namespace
-          metadata:
-            name: openshift-storage
-        state: present
-
-    - name: Install ODF OperatorGroup
-      kubernetes.core.k8s:
-        definition:
-          apiVersion: operators.coreos.com/v1
-          kind: OperatorGroup
-          metadata:
-            name: openshift-storage-operatorgroup
-            namespace: openshift-storage
-          spec:
-            targetNamespaces:
-              - openshift-storage
-        state: present
-
     - name: Install ODF
       when: control_nodes.resources | length | int == 3
       ansible.builtin.include_tasks:

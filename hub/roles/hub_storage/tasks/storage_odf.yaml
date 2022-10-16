@@ -14,14 +14,12 @@
   ansible.builtin.include_tasks:
     file: storage_lso.yaml
 
-- name: Setup ODF operators
-  loop:
-    - "ocs-operator"
-    - "odf-operator"
-    #- "odf-csi-addons-operator"
-    #- "mcg-operator"
-  ansible.builtin.include_tasks:
-    file: storage_odf_operators.yaml
+- name: Install ODF operator
+  ansible.builtin.include_role:
+    name: install_operator
+  vars:
+    operator_name: ocs-operator
+    operator_namespace: openshift-storage
 
 - name: Get device count
   kubernetes.core.k8s_info:

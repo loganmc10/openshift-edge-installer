@@ -1,15 +1,37 @@
-- name: Install Subscription
+- name: Create namespace
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: "{{ operator_namespace }}"
+    state: present
+
+- name: Create OperatorGroup
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: operators.coreos.com/v1
+      kind: OperatorGroup
+      metadata:
+        name: "{{ operator_name }}"
+        namespace: "{{ operator_namespace }}"
+      spec:
+        targetNamespaces:
+          - "{{ operator_namespace }}"
+    state: present
+
+- name: Create Subscription
   kubernetes.core.k8s:
     definition:
       apiVersion: operators.coreos.com/v1alpha1
       kind: Subscription
       metadata:
-        name: "{{ item }}"
-        namespace: openshift-storage
+        name: "{{ operator_name }}"
+        namespace: "{{ operator_namespace }}"
       spec:
         installPlanApproval: Automatic
-        name: "{{ item }}"
-        source: "{{ odf_operator_source }}"
+        name: "{{ operator_name }}"
+        source: "{{ mce_operator_source }}"
         sourceNamespace: openshift-marketplace
     state: present
   register: create_sub
@@ -23,8 +45,8 @@
   kubernetes.core.k8s_info:
     api_version: operators.coreos.com/v1alpha1
     kind: Subscription
-    name: "{{ item }}"
-    namespace: openshift-storage
+    name: "{{ create_sub.result.metadata.name }}"
+    namespace: "{{ create_sub.result.metadata.namespace }}"
   register: subscription
   until: subscription.resources[0]["status"]["state"] == "AtLatestKnown"
   retries: 20
@@ -40,7 +62,7 @@
     api_version: operators.coreos.com/v1alpha1
     kind: ClusterServiceVersion
     name: "{{ subscription.resources[0]['status']['installedCSV'] }}"
-    namespace: openshift-storage
+    namespace: "{{ create_sub.result.metadata.namespace }}"
   register: csv
   until: csv.resources[0]["status"]["phase"] == "Succeeded"
   retries: 20
