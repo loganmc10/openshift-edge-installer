@@ -135,7 +135,7 @@
         name: "{{ metadata.name }}"
         namespace: "{{ metadata.name }}"
       register: aci
-      until: aci.resources[0].status.debugInfo.eventsURL"] is defined
+      until: aci.resources[0].status.debugInfo.eventsURL is defined
       retries: 100
       delay: 10
 
