@@ -23,7 +23,7 @@
   block:
     - name: Install LSO operator
       ansible.builtin.include_role:
-        name: install_operator
+        name: "{{ playbook_dir }}/../common/roles/install_operator"
       vars:
         operator_name: local-storage-operator
         operator_namespace: openshift-local-storage

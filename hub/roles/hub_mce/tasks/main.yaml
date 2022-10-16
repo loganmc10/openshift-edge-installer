@@ -16,7 +16,7 @@
   block:
     - name: Install operator
       ansible.builtin.include_role:
-        name: install_operator
+        name: "{{ playbook_dir }}/../common/roles/install_operator"
       vars:
         operator_name: multicluster-engine
         operator_namespace: multicluster-engine

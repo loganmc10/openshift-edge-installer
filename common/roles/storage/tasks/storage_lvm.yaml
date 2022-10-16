@@ -1,6 +1,6 @@
 - name: Install LVM operator
   ansible.builtin.include_role:
-    name: install_operator
+    name: "{{ playbook_dir }}/../common/roles/install_operator"
   vars:
     operator_name: odf-lvm-operator
     operator_namespace: openshift-storage

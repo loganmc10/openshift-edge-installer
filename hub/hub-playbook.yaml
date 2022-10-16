@@ -4,6 +4,6 @@
   vars_files:
     - vars.yaml
   roles:
-    - {role: 'hub_storage', tags: 'hub_storage'}
+    - {role: "{{ playbook_dir }}/../common/roles/storage", tags: 'hub_storage'}
     - {role: 'hub_mirror', tags: 'hub_mirror'}
     - {role: 'hub_mce', tags: 'hub_mce'}
