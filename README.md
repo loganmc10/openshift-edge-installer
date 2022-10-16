@@ -4,7 +4,10 @@ The purpose of this project is to ease the setup of a hub (installer) cluster, a
 After the installation of a spoke cluster is complete, the spoke does not depend on the hub cluster for anything. The hub is simply an installer. The namespace that was used to install the spoke cluster can be safely deleted from the hub cluster.
 
 ## Prerequisites
-* Pre-existing OpenShift 4.11+ cluster (can be SNO).
+* Hub:
+  * Pre-existing OpenShift 4.11+ cluster (SNO, compact, or standard).
+* Spoke:
+  * Baremetal cluster (SNO, compact, or standard).
 * Ansible: ```pip install ansible-core```
 * Python modules: ```pip install kubernetes jmespath```
 * Kubernetes Ansible collection: ```ansible-galaxy collection install -U kubernetes.core community.general```

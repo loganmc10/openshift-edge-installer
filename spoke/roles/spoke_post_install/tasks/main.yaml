@@ -76,6 +76,8 @@
         state: present
 
     - name: Install ODF
-      when: (odfStorage is defined) and (odfStorage)
+      when: (odfStorage is defined) and (odfStorage.enabled)
       ansible.builtin.include_role:
         name: "{{ playbook_dir }}/../hub/roles/hub_storage"
+      vars:
+        catalog_source: "{{ odfStorage.catalogSource | default('redhat-operators') }}"

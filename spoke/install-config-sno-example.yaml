@@ -10,7 +10,11 @@ diskEncryption: # Optional
   enableOn: "all"
   mode: "tpmv2"
 disableConsole: false # Optional
-odfStorage: true # Optional
+odfStorage: # Optional
+  # If you are using a mirror, you must configure a CatalogSource using postInstallManifestsFolder
+  # See the post_manifests_mirror_example folder for an example of how to do this
+  enabled: true
+  catalogSource: redhat-operators
 # End additional parameters
 
 baseDomain: <cluster_domain>

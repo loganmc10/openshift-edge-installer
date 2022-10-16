@@ -31,7 +31,7 @@
       spec:
         installPlanApproval: Automatic
         name: "{{ operator_name }}"
-        source: "{{ operator_source }}"
+        source: "{{ catalog_source | default('redhat-operators') }}"
         sourceNamespace: openshift-marketplace
     state: present
   register: create_sub
