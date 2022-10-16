@@ -5,7 +5,7 @@ This playbook configures the Multicluster Engine on a Hub Cluster.
 * Ansible: ```pip install ansible-core```
 * Python modules: ```pip install kubernetes jmespath```
 * Kubernetes Ansible collection: ```ansible-galaxy collection install -U kubernetes.core community.general```
-* oc binary (only required if the playbook needs to configure local storage).
+* [oc binary](https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz)
 # Usage
 ## Without mirror registry
 ```
