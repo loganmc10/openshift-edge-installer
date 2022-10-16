@@ -6,8 +6,10 @@ After the installation of a spoke cluster is complete, the spoke does not depend
 ## Prerequisites
 * Hub:
   * Pre-existing OpenShift 4.11+ cluster (SNO, compact, or standard).
+  * If there is not an existing default StorageClass, ODF will be installed. ODF requires each node to have 2 disks (one for the OS, and one for ODF).
 * Spoke:
   * Baremetal cluster (SNO, compact, or standard).
+  * If ODF is being installed, each node needs to have 2 disks (one for the OS, and one for ODF).
 * Ansible: ```pip install ansible-core```
 * Python modules: ```pip install kubernetes jmespath```
 * Kubernetes Ansible collection: ```ansible-galaxy collection install -U kubernetes.core community.general```
