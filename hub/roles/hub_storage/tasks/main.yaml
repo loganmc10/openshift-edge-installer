@@ -28,6 +28,24 @@
         operator_name: local-storage-operator
         operator_namespace: openshift-local-storage
 
+    - name: Get node list
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Node
+      register: nodes
+
+    - name: Label nodes
+      loop: "{{ nodes.resources }}"
+      kubernetes.core.k8s:
+        definition:
+          api_version: v1
+          kind: Node
+          metadata:
+            name: "{{ item.metadata.name }}"
+            labels:
+              cluster.ocs.openshift.io/openshift-storage: ""
+        state: present
+
     - name: Check for LocalVolumeSet
       kubernetes.core.k8s_info:
         apiVersion: local.storage.openshift.io/v1alpha1

@@ -1,21 +1,3 @@
-- name: Get node list
-  kubernetes.core.k8s_info:
-    api_version: v1
-    kind: Node
-  register: nodes
-
-- name: Label nodes
-  loop: "{{ nodes.resources }}"
-  kubernetes.core.k8s:
-    definition:
-      api_version: v1
-      kind: Node
-      metadata:
-        name: "{{ item.metadata.name }}"
-        labels:
-          cluster.ocs.openshift.io/openshift-storage: ""
-    state: present
-
 - name: Discover local volumes
   kubernetes.core.k8s:
     definition:
