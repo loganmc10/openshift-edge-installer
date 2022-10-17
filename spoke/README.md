@@ -1,7 +1,7 @@
 # Purpose
 This playbook installs a spoke cluster.
 # Usage
-An example install config file is provided in ```install-config-sno-example.yaml```
+Example install config files are provided in ```install-config-sno-example.yaml``` and ```install-config-standard-example.yaml```
 
 The install config uses the same format as an IPI install, except that it also requires you to set clusterImageSet. The example shows how to point the clusterImageSet to a mirror registry.
 
@@ -9,19 +9,16 @@ If you are not using a mirror registry, the clusterImageSet would look something
 ```
 clusterImageSet: quay.io/openshift-release-dev/ocp-release:4.11.6-x86_64
 ```
-You can optionally set additionalNTPSources as well:
-```
-additionalNTPSources:
-  - your.ntp.server
-```
 You can also optionally set a path to extra manifests to be applied early in the installation process:
 ```
 installManifestsFolder: install_manifests
 ```
-You can also optionally set a path to extra manifests to be applied after the cluster installation is complete:
+As well as a path to extra manifests to be applied after the cluster installation is complete:
 ```
 postInstallManifestsFolder: post_manifests
 ```
+Other options are documented in ```install-config-sno-example.yaml``` and ```install-config-standard-example.yaml```
+
 ---
 To run the playbook:
 ```
