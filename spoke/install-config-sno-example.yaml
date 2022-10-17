@@ -16,6 +16,13 @@ edgeCluster:
     # See the post_manifests_mirror_example folder for an example of how to do this
     enabled: true
     catalogSource: redhat-operators
+  performanceProfileSpec: # Optional
+    master: # MachineConfigPool name, should be 'master' for SNO
+      cpu:
+        isolated: <isolated_set>
+        reserved: <reserved_set>
+      numa:
+        topologyPolicy: "restricted"
 
 baseDomain: <cluster_domain>
 compute:

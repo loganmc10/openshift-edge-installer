@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "workload-partitioning-{{ item.key }}"
+  namespace: "{{ metadata.name }}"
+data:
+  01_workload_partitioning_{{ item.key }}.yaml: |
+    apiVersion: machineconfiguration.openshift.io/v1
+    kind: MachineConfig
+    metadata:
+      labels:
+        machineconfiguration.openshift.io/role: "{{ item.key }}"
+      name: 02-{{ item.key }}-workload-partitioning
+    spec:
+      config:
+        ignition:
+          version: 3.2.0
+        storage:
+          files:
+            - contents:
+                source: data:text/plain;charset=utf-8;base64,{{ workload_partitioning | b64encode }}
+              mode: 420
+              overwrite: true
+              path: /etc/crio/crio.conf.d/01-workload-partitioning
+              user:
+                name: root
+            - contents:
+                source: data:text/plain;charset=utf-8;base64,{{ openshift_workload_pinning | to_nice_json | b64encode }}
+              mode: 420
+              overwrite: true
+              path: /etc/kubernetes/openshift-workload-pinning
+              user:
+                name: root

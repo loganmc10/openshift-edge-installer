@@ -71,6 +71,11 @@
       ansible.builtin.set_fact:
         worker_count: "{{ worker_count + item.replicas }}"
 
+    - name: Setup PerformanceProfile
+      when: edgeCluster.performanceProfileSpec is defined
+      loop: "{{ edgeCluster.performanceProfileSpec | dict2items }}"
+      ansible.builtin.include_tasks: performance_profile.yaml
+
     - name: Create AgentClusterInstall
       kubernetes.core.k8s:
         template: AgentClusterInstall.yaml.j2

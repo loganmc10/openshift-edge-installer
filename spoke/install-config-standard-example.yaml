@@ -16,6 +16,13 @@ edgeCluster:
     # See the post_manifests_mirror_example folder for an example of how to do this
     enabled: true
     catalogSource: redhat-operators
+  performanceProfileSpec: # Optional
+    worker: # MachineConfigPool name, should be 'master' for compact cluster
+      cpu:
+        isolated: <isolated_set>
+        reserved: <reserved_set>
+      numa:
+        topologyPolicy: "restricted"
 
 baseDomain: <cluster_domain>
 compute:
