@@ -34,7 +34,7 @@ spec:
   ingressVIP: "{{ platform.baremetal.ingressVIP }}"
 {% endif %}
   networking:
-    {{ networking | to_nice_yaml | trim | indent(4) }}
+    {{ networking | to_nice_yaml(indent=2) | trim | indent(4) }}
 {% if controlPlane.replicas == 1 %}
     userManagedNetworking: true
 {% else %}
@@ -46,9 +46,9 @@ spec:
   sshPublicKey: "{{ sshKey }}"
 {% if proxy is defined %}
   proxy:
-    {{ proxy | to_nice_yaml | trim | indent(4) }}
+    {{ proxy | to_nice_yaml(indent=2) | trim | indent(4) }}
 {% endif %}
 {% if edgeCluster.diskEncryption is defined %}
   diskEncryption:
-    {{ edgeCluster.diskEncryption | to_nice_yaml | trim | indent(4) }}
+    {{ edgeCluster.diskEncryption | to_nice_yaml(indent=2) | trim | indent(4) }}
 {% endif %}

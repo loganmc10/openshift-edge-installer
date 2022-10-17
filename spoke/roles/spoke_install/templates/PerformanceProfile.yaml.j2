@@ -10,7 +10,7 @@ data:
     metadata:
       name: openshift-{{ item.key }}-performance-profile
     spec:
-      {{ item.value | to_nice_yaml | trim | indent(6) }}
+      {{ item.value | to_nice_yaml(indent=2) | trim | indent(6) }}
 {% if item.value.machineConfigPoolSelector is not defined %}
       machineConfigPoolSelector:
         pools.operator.machineconfiguration.openshift.io/{{ item.key }}: ""

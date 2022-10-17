@@ -20,5 +20,5 @@ spec:
   online: true
 {% if item.rootDeviceHints is defined %}
   rootDeviceHints:
-    {{ item.rootDeviceHints | to_nice_yaml | trim | indent(4) }}
+    {{ item.rootDeviceHints | to_nice_yaml(indent=2) | trim | indent(4) }}
 {% endif %}

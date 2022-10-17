@@ -18,9 +18,9 @@ spec:
       nmstate-cluster: "{{ metadata.name }}"
 {% if edgeCluster.additionalNTPSources is defined %}
   additionalNTPSources:
-    {{ edgeCluster.additionalNTPSources | to_nice_yaml | trim | indent(4) }}
+    {{ edgeCluster.additionalNTPSources | to_nice_yaml(indent=2) | trim | indent(4) }}
 {% endif %}
 {% if proxy is defined %}
   proxy:
-    {{ proxy | to_nice_yaml | trim | indent(4) }}
+    {{ proxy | to_nice_yaml(indent=2) | trim | indent(4) }}
 {% endif %}
