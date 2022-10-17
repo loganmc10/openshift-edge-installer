@@ -5,7 +5,7 @@ After the installation of a spoke cluster is complete, the spoke does not depend
 
 ## Prerequisites
 * Hub:
-  * Pre-existing OpenShift 4.11+ cluster (SNO, compact, or standard).
+  * Pre-existing OpenShift cluster (SNO, compact, or standard).
   * If there is not an existing default StorageClass, ODF will be installed. ODF requires each node to have 2 disks (one for the OS, and one for ODF).
 * Spoke:
   * Baremetal cluster (SNO, compact, or standard).
