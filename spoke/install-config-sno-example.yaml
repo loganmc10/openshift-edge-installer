@@ -17,6 +17,7 @@ edgeCluster:
     enabled: true
     catalogSource: redhat-operators
   performanceProfileSpec: # Optional
+    # You can omit machineConfigPoolSelector and nodeSelector, they will be automatically added
     master: # MachineConfigPool name, should be 'master' for SNO
       cpu:
         isolated: <isolated_set>

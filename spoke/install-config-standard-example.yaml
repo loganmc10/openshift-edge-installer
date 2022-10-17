@@ -17,6 +17,7 @@ edgeCluster:
     enabled: true
     catalogSource: redhat-operators
   performanceProfileSpec: # Optional
+    # You can omit machineConfigPoolSelector and nodeSelector, they will be automatically added
     worker: # MachineConfigPool name, should be 'master' for compact cluster
       cpu:
         isolated: <isolated_set>
