@@ -13,14 +13,14 @@
   kubernetes.core.k8s_info:
     api_version: v1
     kind: Secret
-    name: "{{ aci.resources[0]['spec']['clusterMetadata']['adminKubeconfigSecretRef']['name'] }}"
+    name: "{{ aci.resources[0].spec.clusterMetadata.adminKubeconfigSecretRef.name }}"
     namespace: "{{ metadata.name }}"
   register: kubeconfig
 
 - name: Copy kubeconfig to file
   ansible.builtin.copy:
     content: "{{ kubeconfig.resources[0].data.kubeconfig | b64decode }}"
-    dest: "{{ aci.resources[0]['spec']['clusterMetadata']['adminKubeconfigSecretRef']['name'] }}"
+    dest: "{{ aci.resources[0].spec.clusterMetadata.adminKubeconfigSecretRef.name }}"
     mode: "0600"
   register: kubeconfig_file
 

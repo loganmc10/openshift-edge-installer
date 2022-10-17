@@ -7,7 +7,7 @@
 # the assisted service requires storage
 - name: Check for default storage class
   ansible.builtin.set_fact:
-    has_default_storage: "{{ item['metadata']['name'] }}"
+    has_default_storage: "{{ item.metadata.name }}"
   loop: "{{ storage_classes.resources }}"
   when: >
     (("annotations" in item["metadata"]) and

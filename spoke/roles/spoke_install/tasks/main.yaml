@@ -153,11 +153,11 @@
 
     - name: Print Events URL
       ansible.builtin.debug:
-        msg: "{{ aci.resources[0]['status']['debugInfo']['eventsURL'] }}"
+        msg: "{{ aci.resources[0].status.debugInfo.eventsURL }}"
 
     - name: Print Discovery ISO URL
       ansible.builtin.debug:
-        msg: "{{ infraenv.resources[0]['status']['isoDownloadURL'] }}"
+        msg: "{{ infraenv.resources[0].status.isoDownloadURL }}"
   rescue:
     - name: Delete ClusterImageSet
       kubernetes.core.k8s:
