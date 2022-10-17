@@ -67,13 +67,15 @@
 
     - name: Apply post-install manifests
       when: edgeCluster.postInstallManifestsFolder is defined
-      loop: "{{ lookup('ansible.builtin.fileglob', lookup('ansible.builtin.vars', 'edgeCluster.postInstallManifestsFolder') + '/*', wantlist=True) | sort }}"
+      loop: "{{ lookup('ansible.builtin.fileglob', lookup('ansible.builtin.vars', 'post_install_manifests_folder') + '/*', wantlist=True) | sort }}"
       loop_control:
         pause: 30
       kubernetes.core.k8s:
         src: "{{ item }}"
         wait: true
         state: present
+      vars:
+        post_install_manifests_folder: "{{ edgeCluster.postInstallManifestsFolder }}"
 
     - name: Install ODF
       when: (edgeCluster.odfStorage is defined) and (edgeCluster.odfStorage.enabled)

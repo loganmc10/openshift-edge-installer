@@ -15,7 +15,7 @@ spec:
   manifestsConfigMapRefs:
     - name: "manifest-disable-samples"
 {% if edgeCluster.installManifestsFolder is defined %}
-{% for file in lookup('ansible.builtin.fileglob', lookup('ansible.builtin.vars', 'edgeCluster.installManifestsFolder') + '/*', wantlist=True) %}
+{% for file in lookup('ansible.builtin.fileglob', lookup('ansible.builtin.vars', 'install_manifests_folder') + '/*', wantlist=True) %}
     - name: "manifest-{{ loop.index0 }}"
 {% endfor %}
 {% endif %}
