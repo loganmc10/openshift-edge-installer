@@ -13,7 +13,7 @@ spec:
   imageSetRef:
     name: "{{ metadata.name }}"
   manifestsConfigMapRefs:
-    - name: "manifest-disable-samples"
+    - name: "agent-config-map"
 {% if edgeCluster.installManifestsFolder is defined %}
 {% for file in lookup('ansible.builtin.fileglob', lookup('ansible.builtin.vars', 'install_manifests_folder') + '/*', wantlist=True) %}
     - name: "manifest-{{ loop.index0 }}"

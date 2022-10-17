@@ -41,18 +41,6 @@
   environment:
     KUBECONFIG: "{{ kubeconfig_file.dest }}"
   block:
-    - name: DisableSnoNetworkDiag
-      when: (controlPlane.replicas == 1)
-      kubernetes.core.k8s:
-        definition:
-          apiVersion: operator.openshift.io/v1
-          kind: Network
-          metadata:
-            name: cluster
-          spec:
-            disableNetworkDiagnostics: true
-        state: present
-
     - name: ConsoleOperatorDisable
       when: (edgeCluster.disableConsole is defined) and (edgeCluster.disableConsole)
       kubernetes.core.k8s:
