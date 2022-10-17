@@ -44,7 +44,7 @@
         name: multiclusterengine
       register: mce
       until: mce.resources[0].status.phase == "Available"
-      retries: 20
+      retries: 60
       delay: 10
 
     # this config map is referenced by the AgentServiceConfig, these mirror settings are copied to the spoke clusters

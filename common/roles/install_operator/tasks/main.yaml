@@ -5,6 +5,8 @@
       kind: Namespace
       metadata:
         name: "{{ operator_namespace }}"
+        annotations:
+          workload.openshift.io/allowed: management
     state: present
 
 - name: Create OperatorGroup
@@ -65,5 +67,5 @@
     namespace: "{{ create_sub.result.metadata.namespace }}"
   register: csv
   until: csv.resources[0].status.phase == "Succeeded"
-  retries: 20
+  retries: 60
   delay: 10
