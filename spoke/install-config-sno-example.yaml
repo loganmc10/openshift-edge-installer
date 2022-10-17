@@ -1,21 +1,21 @@
 apiVersion: v1
 
 # Additional parameters for openshift-edge-installer
-clusterImageSet: <mirror_url>:8443/openshift/release-images:4.11.6-x86_64 # Required
-additionalNTPSources: # Optional
-  - pool.ntp.org
-installManifestsFolder: install_manifests # Optional
-postInstallManifestsFolder: post_manifests # Optional
-diskEncryption: # Optional
-  enableOn: "all"
-  mode: "tpmv2"
-disableConsole: false # Optional
-odfStorage: # Optional
-  # If you are using a mirror, you must configure a CatalogSource using postInstallManifestsFolder
-  # See the post_manifests_mirror_example folder for an example of how to do this
-  enabled: true
-  catalogSource: redhat-operators
-# End additional parameters
+edgeCluster:
+  clusterImageSet: <mirror_url>:8443/openshift/release-images:4.11.6-x86_64 # Required
+  additionalNTPSources: # Optional
+    - pool.ntp.org
+  installManifestsFolder: install_manifests # Optional
+  postInstallManifestsFolder: post_manifests # Optional
+  diskEncryption: # Optional
+    enableOn: "none" # Possible values: none,all,masters,workers
+    mode: "tpmv2"
+  disableConsole: false # Optional
+  odfStorage: # Optional
+    # If you are using a mirror, you must configure a CatalogSource using postInstallManifestsFolder
+    # See the post_manifests_mirror_example folder for an example of how to do this
+    enabled: true
+    catalogSource: redhat-operators
 
 baseDomain: <cluster_domain>
 compute:

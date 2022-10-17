@@ -14,8 +14,8 @@ spec:
     name: "{{ metadata.name }}"
   manifestsConfigMapRefs:
     - name: "manifest-disable-samples"
-{% if installManifestsFolder is defined %}
-{% for file in lookup('ansible.builtin.fileglob', lookup('ansible.builtin.vars', 'installManifestsFolder') + '/*', wantlist=True) %}
+{% if edgeCluster.installManifestsFolder is defined %}
+{% for file in lookup('ansible.builtin.fileglob', lookup('ansible.builtin.vars', 'edgeCluster.installManifestsFolder') + '/*', wantlist=True) %}
     - name: "manifest-{{ loop.index0 }}"
 {% endfor %}
 {% endif %}
@@ -40,7 +40,7 @@ spec:
   proxy:
     {{ proxy | to_nice_yaml | trim | indent(4) }}
 {% endif %}
-{% if diskEncryption is defined %}
+{% if edgeCluster.diskEncryption is defined %}
   diskEncryption:
-    {{ diskEncryption | to_nice_yaml | trim | indent(4) }}
+    {{ edgeCluster.diskEncryption | to_nice_yaml | trim | indent(4) }}
 {% endif %}

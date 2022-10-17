@@ -16,9 +16,9 @@ spec:
   nmStateConfigLabelSelector:
     matchLabels:
       nmstate-cluster: "{{ metadata.name }}"
-{% if additionalNTPSources is defined %}
+{% if edgeCluster.additionalNTPSources is defined %}
   additionalNTPSources:
-    {{ additionalNTPSources | to_nice_yaml | trim | indent(4) }}
+    {{ edgeCluster.additionalNTPSources | to_nice_yaml | trim | indent(4) }}
 {% endif %}
 {% if proxy is defined %}
   proxy:

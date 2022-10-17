@@ -9,7 +9,7 @@
           metadata:
             name: "{{ metadata.name }}"
           spec:
-            releaseImage: "{{ clusterImageSet }}"
+            releaseImage: "{{ edgeCluster.clusterImageSet }}"
         state: present
 
     - name: Create namespace
@@ -71,8 +71,8 @@
 
     # these manifests are applied early in the install process, often they are MachineConfigs, applying them early helps avoid extra reboots
     - name: Create manifest config maps
-      when: installManifestsFolder is defined
-      loop: "{{ lookup('ansible.builtin.fileglob', lookup('ansible.builtin.vars', 'installManifestsFolder') + '/*', wantlist=True) | sort }}"
+      when: edgeCluster.installManifestsFolder is defined
+      loop: "{{ lookup('ansible.builtin.fileglob', lookup('ansible.builtin.vars', 'edgeCluster.installManifestsFolder') + '/*', wantlist=True) | sort }}"
       loop_control:
         index_var: idx
       kubernetes.core.k8s:
