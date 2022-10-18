@@ -1,5 +1,5 @@
 # Purpose
-This playbook installs an edge cluster.
+This playbook installs an edge cluster. You should already have a provisioning cluster configured.
 # Usage
 Example install config files are provided in ```install-config-sno-example.yaml``` and ```install-config-standard-example.yaml```
 
