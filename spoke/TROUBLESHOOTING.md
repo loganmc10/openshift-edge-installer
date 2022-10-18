@@ -26,7 +26,7 @@ oc describe agent -n <cluster_name> <agent_name>
 
 ---
 
-You an also check the BareMetalHost CRs to see if any errors are reported there.
+You can also check the BareMetalHost CRs to see if any errors are reported there.
 ```
 oc describe bmh -n <cluster_name> <host_name>
 ```
