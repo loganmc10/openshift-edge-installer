@@ -4,6 +4,7 @@
   ansible.builtin.shell: |
     oc debug node/{{ node.spec.nodeName }} -- chroot /host sgdisk --zap-all {{ item.path }}
 
+# there might be a better way to do this, could be dangerous if OpenShift ever uses LVM for the base install in the future
 - name: Remove old device mappings # noqa no-changed-when
   ansible.builtin.shell: |
     oc debug node/{{ node.spec.nodeName }} -- chroot /host dmsetup remove_all -f

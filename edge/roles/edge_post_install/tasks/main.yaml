@@ -41,6 +41,7 @@
   environment:
     KUBECONFIG: "{{ kubeconfig_file.dest }}"
   block:
+    # this needs be be applied post-install, disabling the Console operator with an install manifest stops the installer from reporting 100% completion
     - name: ConsoleOperatorDisable
       when: (edgeCluster.disableConsole is defined) and (edgeCluster.disableConsole)
       kubernetes.core.k8s:

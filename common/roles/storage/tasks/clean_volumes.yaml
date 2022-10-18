@@ -35,7 +35,7 @@
   register: discovery_result
 
 - name: Wipe disks # noqa no-handler
-  when: volume_discovery.changed # Assume we've already wiped the disks if the discovery has already been done
+  when: volume_discovery.changed # assume we've already wiped the disks if the discovery has already been done
   loop: "{{ discovery_result.resources }}"
   loop_control:
     loop_var: node

@@ -61,7 +61,7 @@
       when: worker_nodes.resources | length | int < 3
       ansible.builtin.include_tasks:
         file: storage_lvm.yaml
-  rescue:
+  rescue: # CRs need to be removed before the namespaces holding the operators are removed, or else the CR finalizers will get stuck
     - name: Remove LocalVolumeDiscovery
       kubernetes.core.k8s:
         definition:

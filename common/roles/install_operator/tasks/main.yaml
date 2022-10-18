@@ -6,7 +6,7 @@
       metadata:
         name: "{{ operator_namespace }}"
         annotations:
-          workload.openshift.io/allowed: management
+          workload.openshift.io/allowed: management # needed if this is being applied on a SNO server with workload partitioning
     state: present
 
 - name: Create OperatorGroup
