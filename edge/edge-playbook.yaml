@@ -1,0 +1,6 @@
+- name: Install edge cluster
+  hosts: localhost
+  gather_facts: false
+  roles:
+    - {role: 'edge_install', tags: 'edge_install'}
+    - {role: 'edge_post_install', tags: 'edge_post_install'}

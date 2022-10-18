@@ -1,6 +1,0 @@
-- name: Install spoke cluster
-  hosts: localhost
-  gather_facts: false
-  roles:
-    - {role: 'spoke_install', tags: 'spoke_install'}
-    - {role: 'spoke_post_install', tags: 'spoke_post_install'}

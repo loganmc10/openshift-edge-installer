@@ -1,6 +1,6 @@
-- name: Install spoke cluster
+- name: Install edge cluster
   block:
-    # defines which OpenShift version is going to be installed on the spoke
+    # defines which OpenShift version is going to be installed on the edge cluster
     - name: Create ClusterImageSet
       kubernetes.core.k8s:
         definition:

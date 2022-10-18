@@ -21,4 +21,4 @@ jobs:
         run: |
           ansible-lint -s -x yaml[line-length] common
           ansible-lint -s -x yaml[line-length] hub
-          ansible-lint -s -x yaml[line-length] spoke
+          ansible-lint -s -x yaml[line-length] edge

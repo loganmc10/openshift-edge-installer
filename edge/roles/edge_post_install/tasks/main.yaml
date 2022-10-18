@@ -37,7 +37,7 @@
     wait_sleep: 60
     wait_timeout: 14400
 
-- name: Run tasks on spoke cluster
+- name: Run tasks on edge cluster
   environment:
     KUBECONFIG: "{{ kubeconfig_file.dest }}"
   block:

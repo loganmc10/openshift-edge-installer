@@ -47,8 +47,8 @@
       retries: 60
       delay: 10
 
-    # this config map is referenced by the AgentServiceConfig, these mirror settings are copied to the spoke clusters
-    - name: Create mirror registry config map for spoke
+    # this config map is referenced by the AgentServiceConfig, these mirror settings are copied to the edge clusters
+    - name: Create mirror registry config map for edge cluster
       when: mirror_url is defined
       kubernetes.core.k8s:
         template: mirror-cm.yaml.j2

@@ -1,5 +1,5 @@
 # this role is used to configure the hub cluster so that the SSL cert for the mirror registry is trusted by the hub
-# this is required because the hub performs some validation against the mirror registry during a spoke installation
+# this is required because the hub performs some validation against the mirror registry during a edge cluster installation
 - name: Get current image registry config
   when: mirror_ssl_cert is defined
   kubernetes.core.k8s_info:
