@@ -22,12 +22,12 @@ Other options are documented in ```install-config-sno-example.yaml``` and ```ins
 ---
 To run the playbook:
 ```
-export KUBECONFIG=~/path/to/hub/kubeconfig
+export KUBECONFIG=~/path/to/provisioning/kubeconfig
 ansible-playbook edge-playbook.yaml --extra-vars "@install-config.yaml"
 ```
 The Events URL will be printed to the console (so that you can check the progress of the install). A kubeconfig file will be written to the playbook folder with this name: \<cluster-name\>-admin-kubeconfig
 # Disconnected registry
-If the hub cluster was configured to use a mirror registry, then the SSL certificate for the mirror registry will automatically be added to additionalTrustedCA on the edge cluster. ImageContentSourcePolicys for the base installation will also be added to the edge cluster, pointing to the mirror registry.
+If the provisioning cluster was configured to use a mirror registry, then the SSL certificate for the mirror registry will automatically be added to additionalTrustedCA on the edge cluster. ImageContentSourcePolicys for the base installation will also be added to the edge cluster, pointing to the mirror registry.
 
 If you want to install Operators on the edge cluster from the disconnected registry, you'll need to add ImageContentSourcePolicys for those operators, as well as create a CatalogSource pointing to the mirror registry.
 

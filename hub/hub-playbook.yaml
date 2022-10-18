@@ -1,9 +1,0 @@
-- name: Set up Multicluster Engine
-  hosts: localhost
-  gather_facts: false
-  vars_files:
-    - vars.yaml
-  roles:
-    - {role: "{{ playbook_dir }}/../common/roles/storage", tags: 'hub_storage'}
-    - {role: 'hub_mirror', tags: 'hub_mirror'}
-    - {role: 'hub_mce', tags: 'hub_mce'}
