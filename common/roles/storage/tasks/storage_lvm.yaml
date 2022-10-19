@@ -23,6 +23,17 @@
                 overprovisionRatio: 10
     state: present
 
+- name: Wait for LVMCluster to be deployed
+  kubernetes.core.k8s_info:
+    api_version: lvm.topolvm.io/v1alpha1
+    kind: LVMCluster
+    name: odf-lvmcluster
+    namespace: openshift-storage
+  register: lvmcluster
+  until: (lvmcluster.resources[0].status.deviceClassStatuses is defined) and (lvmcluster.resources[0].status.deviceClassStatuses | length > 0)
+  retries: 60
+  delay: 10
+
 - name: Wait for StorageClass
   kubernetes.core.k8s_info:
     api_version: storage.k8s.io/v1
