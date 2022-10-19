@@ -1,28 +1,5 @@
-- name: Get kubeconfig ref
-  kubernetes.core.k8s_info:
-    api_version: extensions.hive.openshift.io/v1beta1
-    kind: AgentClusterInstall
-    name: "{{ metadata.name }}"
-    namespace: "{{ metadata.name }}"
-  register: aci
-  until: aci.resources[0].spec.clusterMetadata.adminKubeconfigSecretRef.name is defined
-  retries: 30
-  delay: 60
-
 - name: Get kubeconfig
-  kubernetes.core.k8s_info:
-    api_version: v1
-    kind: Secret
-    name: "{{ aci.resources[0].spec.clusterMetadata.adminKubeconfigSecretRef.name }}"
-    namespace: "{{ metadata.name }}"
-  register: kubeconfig
-
-- name: Copy kubeconfig to file
-  ansible.builtin.copy:
-    content: "{{ kubeconfig.resources[0].data.kubeconfig | b64decode }}"
-    dest: "{{ aci.resources[0].spec.clusterMetadata.adminKubeconfigSecretRef.name }}"
-    mode: "0600"
-  register: kubeconfig_file
+  ansible.builtin.include_tasks: kubeconfig.yaml
 
 - name: Wait for install to complete
   kubernetes.core.k8s_info:
@@ -36,6 +13,10 @@
       status: "True"
     wait_sleep: 60
     wait_timeout: 14400
+
+- name: Update kubeconfig
+  # the installer seems to update the kubeconfig after it is initially generated, so we do this after the install to make sure it's up to date
+  ansible.builtin.include_tasks: kubeconfig.yaml
 
 - name: Run tasks on edge cluster
   environment:
