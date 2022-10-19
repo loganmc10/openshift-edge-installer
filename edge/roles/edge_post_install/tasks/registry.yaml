@@ -25,36 +25,12 @@
             storage: 100Gi
     state: present
 
-- name: Configure Image Registry for ODF
-  when: odf_lvm.resources | length | int == 0
+- name: Configure Image Registry
   kubernetes.core.k8s:
-    definition:
-      apiVersion: imageregistry.operator.openshift.io/v1
-      kind: Config
-      metadata:
-        name: cluster
-      spec:
-        managementState: Managed
-        replicas: 2
-        storage:
-          pvc:
-            claim:
+    template: ImageRegistry.yaml.j2
     state: present
-
-- name: Configure Image Registry for ODF LVM
-  when: odf_lvm.resources | length | int == 1
-  kubernetes.core.k8s:
-    definition:
-      apiVersion: imageregistry.operator.openshift.io/v1
-      kind: Config
-      metadata:
-        name: cluster
-      spec:
-        managementState: Managed
-        rolloutStrategy: Recreate
-        replicas: 1
-        storage:
-          managementState: Unmanaged
-          pvc:
-            claim: registry-storage-pvc
-    state: present
+    wait: true
+    wait_timeout: 1200
+    wait_condition:
+      type: Available
+      status: "True"

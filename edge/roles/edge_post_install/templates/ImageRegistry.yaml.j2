@@ -1,0 +1,19 @@
+apiVersion: imageregistry.operator.openshift.io/v1
+kind: Config
+metadata:
+  name: cluster
+spec:
+  managementState: Managed
+{% if odf_lvm.resources | length | int == 1 %}
+  rolloutStrategy: Recreate
+  replicas: 1
+  storage:
+    managementState: Unmanaged
+    pvc:
+      claim: registry-storage-pvc
+{% else %}
+  replicas: 2
+  storage:
+    pvc:
+      claim:
+{% endif %}
