@@ -64,6 +64,7 @@
         template: ConfigMap.yaml.j2
         state: present
       vars:
+        # this var is copied in like this because ansible.builtin.vars doesn't support dicts
         install_manifests_folder: "{{ edgeCluster.installManifestsFolder }}"
 
     - name: Count workers

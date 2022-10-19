@@ -1,0 +1,66 @@
+- name: Check for ODF LVM
+  kubernetes.core.k8s_info:
+    api_version: operators.coreos.com/v1alpha1
+    kind: Subscription
+    name: odf-lvm-operator
+    namespace: openshift-storage
+  register: odf_lvm
+
+- name: Get StorageClass
+  kubernetes.core.k8s_info:
+    api_version: storage.k8s.io/v1
+    kind: StorageClass
+  register: storage_classes
+
+# have to manually create the PVC when using ODF-LVM
+# this is because the image registry attempts to create a PVC as ReadWriteMany, which ODF-LVM doesn't support
+- name: Create PVC
+  when: odf_lvm.resources | length | int == 1
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: registry-storage-pvc
+        namespace: openshift-image-registry
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 100Gi
+        storageClassName: "{{ storage_classes.resources[0].metadata.name }}"
+    state: present
+
+- name: Configure Image Registry for ODF
+  when: odf_lvm.resources | length | int == 0
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: imageregistry.operator.openshift.io/v1
+      kind: Config
+      metadata:
+        name: cluster
+      spec:
+        managementState: Managed
+        storage:
+          pvc:
+            claim:
+    state: present
+
+- name: Configure Image Registry for ODF LVM
+  when: odf_lvm.resources | length | int == 1
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: imageregistry.operator.openshift.io/v1
+      kind: Config
+      metadata:
+        name: cluster
+      spec:
+        managementState: Managed
+        rolloutStrategy: Recreate
+        replicas: 1
+        storage:
+          managementState: Unmanaged
+          pvc:
+            claim: registry-storage-pvc
+    state: present
