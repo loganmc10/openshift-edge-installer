@@ -1,16 +1,3 @@
-- name: Wait for install to complete
-  kubernetes.core.k8s_info:
-    api_version: extensions.hive.openshift.io/v1beta1
-    kind: AgentClusterInstall
-    name: "{{ metadata.name }}"
-    namespace: "{{ metadata.name }}"
-    wait: true
-    wait_condition:
-      type: Completed
-      status: "True"
-    wait_sleep: 60
-    wait_timeout: 14400
-
 - name: Get kubeconfig ref
   kubernetes.core.k8s_info:
     api_version: extensions.hive.openshift.io/v1beta1
@@ -36,6 +23,19 @@
     dest: "{{ aci.resources[0].spec.clusterMetadata.adminKubeconfigSecretRef.name }}"
     mode: "0600"
   register: kubeconfig_file
+
+- name: Wait for install to complete
+  kubernetes.core.k8s_info:
+    api_version: extensions.hive.openshift.io/v1beta1
+    kind: AgentClusterInstall
+    name: "{{ metadata.name }}"
+    namespace: "{{ metadata.name }}"
+    wait: true
+    wait_condition:
+      type: Completed
+      status: "True"
+    wait_sleep: 60
+    wait_timeout: 14400
 
 - name: Run tasks on edge cluster
   environment:
