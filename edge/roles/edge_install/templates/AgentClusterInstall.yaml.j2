@@ -42,7 +42,9 @@ spec:
 {% endif %}
   provisionRequirements:
     controlPlaneAgents: {{ controlPlane.replicas }}
+{% if worker_count | int > 0 %}
     workerAgents: {{ worker_count }}
+{% endif %}
   sshPublicKey: "{{ sshKey }}"
 {% if proxy is defined %}
   proxy:

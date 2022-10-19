@@ -70,7 +70,7 @@
     - name: Count workers
       loop: "{{ compute }}"
       ansible.builtin.set_fact:
-        worker_count: "{{ worker_count + item.replicas }}"
+        worker_count: "{{ (worker_count | int) + item.replicas }}"
 
     - name: Setup PerformanceProfile
       when: edgeCluster.performanceProfileSpec is defined
