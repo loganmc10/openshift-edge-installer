@@ -25,6 +25,13 @@
             storage: 100Gi
     state: present
 
+- name: Get current Image Registry settings
+  kubernetes.core.k8s_info:
+    api_version: imageregistry.operator.openshift.io/v1
+    kind: Config
+    name: cluster
+  register: image_registry
+
 - name: Configure Image Registry
   kubernetes.core.k8s:
     template: ImageRegistry.yaml.j2

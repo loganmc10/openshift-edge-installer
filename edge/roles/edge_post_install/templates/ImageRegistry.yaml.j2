@@ -15,5 +15,5 @@ spec:
   replicas: 2
   storage:
     pvc:
-      claim:
+      claim: {{ image_registry.resources[0].spec.storage.pvc.claim | default('') }}
 {% endif %}
