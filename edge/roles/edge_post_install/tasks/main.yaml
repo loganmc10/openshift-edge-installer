@@ -1,4 +1,5 @@
 - name: Get kubeconfig
+  # grab the kubeconfig early in order to assist in troubleshooting
   ansible.builtin.include_tasks: kubeconfig.yaml
 
 - name: Wait for install to complete
@@ -15,7 +16,7 @@
     wait_timeout: 14400
 
 - name: Update kubeconfig
-  # the installer seems to update the kubeconfig after it is initially generated, so we do this after the install to make sure it's up to date
+  # during the install, the kubeconfig is modified to included additional CAs, here we update the kubeconfig to include those
   ansible.builtin.include_tasks: kubeconfig.yaml
 
 - name: Run tasks on edge cluster
