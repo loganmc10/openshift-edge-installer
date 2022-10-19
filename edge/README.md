@@ -27,6 +27,11 @@ ansible-playbook edge-playbook.yaml --extra-vars "@install-config.yaml"
 ```
 The Events URL will be printed to the console (so that you can check the progress of the install). A kubeconfig file will be written to the playbook folder with this name: \<cluster-name\>-admin-kubeconfig
 # Disconnected registry
+
+The mirror registry should be populated using the [oc mirror](https://docs.openshift.com/container-platform/4.11/installing/disconnected_install/installing-mirroring-disconnected.html) plugin.
+
+---
+
 If the provisioning cluster was configured to use a mirror registry, then the SSL certificate for the mirror registry will automatically be added to additionalTrustedCA on the edge cluster. ImageContentSourcePolicys for the base installation will also be added to the edge cluster, pointing to the mirror registry.
 
 If you want to install Operators on the edge cluster from the disconnected registry, you'll need to add ImageContentSourcePolicys for those operators, as well as create a CatalogSource pointing to the mirror registry.

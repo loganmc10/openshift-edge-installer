@@ -7,6 +7,10 @@ export KUBECONFIG=~/path/to/kubeconfig
 ansible-playbook provisioning-playbook.yaml
 ```
 ## With mirror registry
+The mirror registry should be populated using the [oc mirror](https://docs.openshift.com/container-platform/4.11/installing/disconnected_install/installing-mirroring-disconnected.html) plugin.
+
+---
+
 An example mirror registry config file is provided in ```mirror-config-example.yaml```
 ```
 export KUBECONFIG=~/path/to/kubeconfig
