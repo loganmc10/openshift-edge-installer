@@ -7,7 +7,7 @@ edgeCluster:
     - pool.ntp.org
   installManifestsFolder: install_manifests # Optional
   postInstallManifestsFolder: post_manifests # Optional
-  autoApproveCSRs: true # Optional
+  autoApproveCSRs: true # Optional, see CSR_APPROVER.md
   diskEncryption: # Optional
     enableOn: "none" # Possible values: none,all,masters,workers
     mode: "tpmv2"
