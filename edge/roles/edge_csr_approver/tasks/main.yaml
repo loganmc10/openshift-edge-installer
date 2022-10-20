@@ -79,9 +79,12 @@
   retries: 60
   delay: 10
 
-- name: Get Cluster information
-  kubernetes.core.k8s_cluster_info:
-  register: api_status
+- name: Get DNS domain
+  kubernetes.core.k8s_info:
+    api_version: config.openshift.io/v1
+    kind: DNS
+    name: cluster
+  register: dns_domain
 
 - name: Apply MachineConfig
   kubernetes.core.k8s:
