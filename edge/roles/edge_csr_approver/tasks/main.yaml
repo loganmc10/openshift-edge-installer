@@ -1,0 +1,79 @@
+- name: Create ServiceAccount
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: ztpfw-csr-approver
+        namespace: openshift-infra
+    state: present
+
+- name: Create ClusterRole
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      metadata:
+        name: ztpfw-csr-approver
+      rules:
+        - apiGroups:
+            - certificates.k8s.io
+          resources:
+            - certificatesigningrequests
+          verbs:
+            - get
+            - list
+            - watch
+        - apiGroups:
+            - certificates.k8s.io
+          resources:
+            - certificatesigningrequests/approval
+          verbs:
+            - update
+        - apiGroups:
+            - certificates.k8s.io
+          resources:
+            - signers
+          verbs:
+            - approve
+    state: present
+
+- name: Create ClusterRoleBinding
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      metadata:
+        name: ztpfw-csr-approver
+      subjects:
+        - kind: ServiceAccount
+          name: ztpfw-csr-approver
+          namespace: openshift-infra
+      roleRef:
+        kind: ClusterRole
+        name: ztpfw-csr-approver
+        apiGroup: rbac.authorization.k8s.io
+    state: present
+
+- name: Create Secret
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: ztpfw-csr-approver-secret
+        namespace: openshift-infra
+        annotations:
+          kubernetes.io/service-account.name: ztpfw-csr-approver
+      type: kubernetes.io/service-account-token
+    state: present
+  register: csr_secret
+
+- name: Get Cluster information
+  kubernetes.core.k8s_cluster_info:
+  register: api_status
+
+- name: Apply MachineConfig
+  kubernetes.core.k8s:
+    template: MachineConfig.yaml.j2
+    state: present

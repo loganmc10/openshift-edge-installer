@@ -61,3 +61,8 @@
         - name: Install Image Registry
           when: (edgeCluster.odfStorage.imageRegistry is defined) and (edgeCluster.odfStorage.imageRegistry)
           ansible.builtin.include_tasks: registry.yaml
+
+    - name: Auto approve CSRs
+      when: (autoApproveCSRs is defined) and (autoApproveCSRs)
+      ansible.builtin.include_role:
+        name: "edge_csr_approver"
