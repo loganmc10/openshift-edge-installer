@@ -19,6 +19,7 @@ ansible-playbook provisioning-playbook.yaml --extra-vars "@mirror-config.yaml"
 # Ansible Playbook Workflow
 * Set ODF as the default StorageClass if ODF is installed and there isn't already one set.
 * If there is no default StorageClass, and no ODF, install ODF.
+* Configure the cluster to trust the mirror registry SSL cert if required.
 * Configure the Baremetal Operator to provision external clusters.
 * Install and configure the Multicluster Engine Operator.
 * Configure the Assisted Service.

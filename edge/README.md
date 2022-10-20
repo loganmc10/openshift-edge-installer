@@ -60,6 +60,7 @@ Even though you are manually booting the ISO, if you don't provide a redfish/ipm
 * Create secrets for the BMC login credentials.
 * Create an image pull secret that the new cluster will use.
 * Generate ConfigMaps for extra install-time manifests.
+* Configure PerformanceProfile and workload partitioning if required.
 * Create an AgentClusterInstall and ClusterDeployment with the install parameters.
 * Create NMStateConfigs that specify host networking configuration.
 * Create InfraEnv, which will generate the discovery ISO.
@@ -70,3 +71,4 @@ Even though you are manually booting the ISO, if you don't provide a redfish/ipm
 * kubeconfig written to disk.
 * Wait for cluster install to complete.
 * Apply post-install manifests.
+* Install ODF if required.
