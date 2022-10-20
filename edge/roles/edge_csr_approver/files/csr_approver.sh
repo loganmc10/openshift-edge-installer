@@ -13,8 +13,9 @@ until oc get csr; do
 done
 
 count=30
+go_template='{{range .items}}{{if not .status}}{{if or (eq .spec.signerName "kubernetes.io/kubelet-serving") (eq .spec.signerName "kubernetes.io/kube-apiserver-client-kubelet")}}{{.metadata.name}}{{"\n"}}{{end}}{{end}}{{end}}'
 while [[ ${count} -gt 0 ]]; do
-  oc get csr -o go-template='{{range .items}}{{if not .status}}{{.metadata.name}}{{"\n"}}{{end}}{{end}}' | xargs --no-run-if-empty oc adm certificate approve
+  oc get csr -o go-template="${go_template}" | xargs --no-run-if-empty oc adm certificate approve
   sleep 20
   count=$((count - 1))
   echo "${count} checks remaining"
