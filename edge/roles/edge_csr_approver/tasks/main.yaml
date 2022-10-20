@@ -1,0 +1,92 @@
+- name: Create ServiceAccount
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: ztpfw-csr-approver
+        namespace: openshift-infra
+    state: present
+
+- name: Create ClusterRole
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      metadata:
+        name: ztpfw-csr-approver
+      rules:
+        - apiGroups:
+            - certificates.k8s.io
+          resources:
+            - certificatesigningrequests
+          verbs:
+            - get
+            - list
+            - watch
+        - apiGroups:
+            - certificates.k8s.io
+          resources:
+            - certificatesigningrequests/approval
+          verbs:
+            - update
+        - apiGroups:
+            - certificates.k8s.io
+          resources:
+            - signers
+          verbs:
+            - approve
+    state: present
+
+- name: Create ClusterRoleBinding
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      metadata:
+        name: ztpfw-csr-approver
+      subjects:
+        - kind: ServiceAccount
+          name: ztpfw-csr-approver
+          namespace: openshift-infra
+      roleRef:
+        kind: ClusterRole
+        name: ztpfw-csr-approver
+        apiGroup: rbac.authorization.k8s.io
+    state: present
+
+- name: Create Secret
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: ztpfw-csr-approver-secret
+        namespace: openshift-infra
+        annotations:
+          kubernetes.io/service-account.name: ztpfw-csr-approver
+      type: kubernetes.io/service-account-token
+    state: present
+
+- name: Wait for token to be deployed
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Secret
+    name: ztpfw-csr-approver-secret
+    namespace: openshift-infra
+  register: csr_secret
+  until: csr_secret.resources[0].data.token is defined
+  retries: 60
+  delay: 10
+
+- name: Get DNS domain
+  kubernetes.core.k8s_info:
+    api_version: config.openshift.io/v1
+    kind: DNS
+    name: cluster
+  register: dns_domain
+
+- name: Apply MachineConfig
+  kubernetes.core.k8s:
+    template: MachineConfig.yaml.j2
+    state: present
