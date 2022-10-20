@@ -86,6 +86,8 @@
     name: cluster
   register: dns_domain
 
+# this MachineConfig has to be deployed here, rather than install phase
+# this is because it includes the kubeconfig for the ServiceAccount, which can't be generated until after the install is complete
 - name: Apply MachineConfig
   kubernetes.core.k8s:
     template: MachineConfig.yaml.j2
