@@ -67,7 +67,17 @@
           kubernetes.io/service-account.name: ztpfw-csr-approver
       type: kubernetes.io/service-account-token
     state: present
+
+- name: Wait for token to be deployed
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Secret
+    name: ztpfw-csr-approver-secret
+    namespace: openshift-infra
   register: csr_secret
+  until: csr_secret.resources[0].data.token is defined
+  retries: 60
+  delay: 10
 
 - name: Get Cluster information
   kubernetes.core.k8s_cluster_info:
