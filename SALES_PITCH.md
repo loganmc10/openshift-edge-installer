@@ -6,6 +6,7 @@
 * Ability to add install-time and post-install manifests.
 * Option to auto approve CSRs (for edge clusters that may be offline for extended periods).
 * Re-uses install-config.yaml (IPI install config) for configuration.
+* Easy to read Ansible playbook, what you see is what you get.
 
 ## Why not [ZTP](https://docs.openshift.com/container-platform/4.11/scalability_and_performance/ztp-deploying-disconnected.html) or [ZTPFW](https://rh-ecosystem-edge.github.io/ztp-pipeline-relocatable/1.0/ZTP-for-factories.html)?
 In short: I found them complicated.
