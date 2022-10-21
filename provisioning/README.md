@@ -1,6 +1,7 @@
 # Purpose
 This playbook configures the Multicluster Engine on a Provisioning Cluster.
 # Usage
+A video walkthrough of the playbook is available on [YouTube](https://www.youtube.com/watch?v=p56JFiupxiQ).
 ## Without mirror registry
 ```
 export KUBECONFIG=~/path/to/kubeconfig
