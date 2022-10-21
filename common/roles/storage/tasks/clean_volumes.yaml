@@ -40,5 +40,5 @@
   loop: "{{ discovery_result.resources }}"
   loop_control:
     loop_var: node
-    label: "{{ item.metadata.name }}"
+    label: "{{ node.metadata.name }}"
   ansible.builtin.include_tasks: wipe_disks.yaml
