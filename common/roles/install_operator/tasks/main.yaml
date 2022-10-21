@@ -7,6 +7,7 @@
         name: "{{ operator_namespace }}"
         annotations:
           workload.openshift.io/allowed: management # needed if this is being applied on a SNO server with workload partitioning
+    apply: true
     state: present
 
 - name: Create OperatorGroup
@@ -20,6 +21,7 @@
       spec:
         targetNamespaces:
           - "{{ operator_namespace }}"
+    apply: true
     state: present
 
 - name: Create Subscription
@@ -35,6 +37,7 @@
         name: "{{ operator_name }}"
         source: "{{ catalog_source | default('redhat-operators') }}"
         sourceNamespace: openshift-marketplace
+    apply: true
     state: present
   register: create_sub
 

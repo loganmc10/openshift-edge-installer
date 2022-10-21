@@ -25,6 +25,7 @@
             operator: Equal
             value: "true"
         volumeMode: Block
+    apply: true
     state: present
     wait: true
     wait_timeout: 600
@@ -42,6 +43,7 @@
 - name: Create StorageCluster
   kubernetes.core.k8s:
     template: StorageCluster.yaml.j2
+    apply: true
     state: present
     wait: true
     wait_timeout: 1200

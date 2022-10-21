@@ -20,9 +20,11 @@
     - name: Create workload partitioning config map
       kubernetes.core.k8s:
         template: WorkloadPartitioning.yaml.j2
+        apply: true
         state: present
 
 - name: Create performance profile config map
   kubernetes.core.k8s:
     template: PerformanceProfile.yaml.j2
+    apply: true
     state: present

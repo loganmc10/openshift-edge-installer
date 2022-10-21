@@ -6,6 +6,7 @@
       metadata:
         name: ztpfw-csr-approver
         namespace: openshift-infra
+    apply: true
     state: present
 
 - name: Create CSR Approver ClusterRole
@@ -36,6 +37,7 @@
             - signers
           verbs:
             - approve
+    apply: true
     state: present
 
 - name: Create CSR Approver ClusterRoleBinding
@@ -53,6 +55,7 @@
         kind: ClusterRole
         name: ztpfw-csr-approver
         apiGroup: rbac.authorization.k8s.io
+    apply: true
     state: present
 
 - name: Create CSR Approver Secret
@@ -66,6 +69,7 @@
         annotations:
           kubernetes.io/service-account.name: ztpfw-csr-approver
       type: kubernetes.io/service-account-token
+    apply: true
     state: present
 
 - name: Wait for CSR Approver token to be deployed
@@ -91,4 +95,5 @@
 - name: Apply CSR Approver MachineConfig
   kubernetes.core.k8s:
     template: MachineConfig.yaml.j2
+    apply: true
     state: present

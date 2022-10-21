@@ -44,6 +44,7 @@
       kubernetes.core.k8s:
         src: "{{ item }}"
         wait: true
+        apply: true
         state: present
       vars:
         # this var is copied in like this because ansible.builtin.vars doesn't support dicts

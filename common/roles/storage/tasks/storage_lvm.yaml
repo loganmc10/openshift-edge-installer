@@ -21,6 +21,7 @@
                 name: thin-pool-1
                 sizePercent: 90
                 overprovisionRatio: 10
+    apply: true
     state: present
 
 - name: Wait for LVMCluster to be deployed

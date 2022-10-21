@@ -23,6 +23,7 @@
         resources:
           requests:
             storage: 100Gi
+    apply: true
     state: present
 
 - name: Get current Image Registry settings

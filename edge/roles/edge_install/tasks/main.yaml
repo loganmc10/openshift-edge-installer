@@ -10,6 +10,7 @@
             name: "{{ metadata.name }}"
           spec:
             releaseImage: "{{ edgeCluster.clusterImageSet }}"
+        apply: true
         state: present
 
     - name: Create Namespace
@@ -19,6 +20,7 @@
           kind: Namespace
           metadata:
             name: "{{ metadata.name }}"
+        apply: true
         state: present
 
     - name: Create BMC secrets
@@ -34,6 +36,7 @@
             name: "{{ item.name }}-bmc-secret"
             namespace: "{{ metadata.name }}"
           type: Opaque
+        apply: true
         state: present
 
     - name: Create image pull secret
@@ -47,11 +50,13 @@
             name: assisted-deployment-pull-secret
             namespace: "{{ metadata.name }}"
           type: kubernetes.io/dockerconfigjson
+        apply: true
         state: present
 
     - name: Create manifest config maps
       kubernetes.core.k8s:
         template: AgentConfigMap.yaml.j2
+        apply: true
         state: present
 
     # these manifests are applied early in the install process, often they are MachineConfigs, applying them early helps avoid extra reboots
@@ -62,6 +67,7 @@
         index_var: idx
       kubernetes.core.k8s:
         template: ConfigMap.yaml.j2
+        apply: true
         state: present
       vars:
         # this var is copied in like this because ansible.builtin.vars doesn't support dicts
@@ -80,6 +86,7 @@
     - name: Create AgentClusterInstall
       kubernetes.core.k8s:
         template: AgentClusterInstall.yaml.j2
+        apply: true
         state: present
       vars:
         install_manifests_folder: "{{ edgeCluster.installManifestsFolder }}"
@@ -87,6 +94,7 @@
     - name: Create ClusterDeployment
       kubernetes.core.k8s:
         template: ClusterDeployment.yaml.j2
+        apply: true
         state: present
 
     - name: Create NMStateConfigs
@@ -94,17 +102,20 @@
       when: item.networkConfig is defined
       kubernetes.core.k8s:
         template: NMStateConfig.yaml.j2
+        apply: true
         state: present
 
     - name: Create InfraEnv
       kubernetes.core.k8s:
         template: InfraEnv.yaml.j2
+        apply: true
         state: present
 
     - name: Create BareMetalHosts
       loop: "{{ platform.baremetal.hosts }}"
       kubernetes.core.k8s:
         template: BareMetalHost.yaml.j2
+        apply: true
         state: present
       register: create_bmh
 

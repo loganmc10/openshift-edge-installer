@@ -29,6 +29,7 @@
           metadata:
             name: multiclusterengine
           spec: {}
+        apply: true
         state: present
       register: create_mce
 
@@ -47,6 +48,7 @@
       when: mirror_url is defined
       kubernetes.core.k8s:
         template: mirror-cm.yaml.j2
+        apply: true
         state: present
 
     # see https://github.com/openshift/assisted-service/pull/2747
@@ -61,11 +63,13 @@
             namespace: multicluster-engine
           data:
             PUBLIC_CONTAINER_REGISTRIES: "quay.io,registry.svc.ci.openshift.org,registry.redhat.io"
+        apply: true
         state: present
 
     - name: Configure CIM
       kubernetes.core.k8s:
         template: AgentServiceConfig.yaml.j2
+        apply: true
         state: present
         wait: true
         wait_condition:
