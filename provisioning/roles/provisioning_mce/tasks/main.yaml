@@ -12,9 +12,9 @@
         provisioningNetwork: "Disabled"
     state: present
 
-- name: Install MCE Operator
+- name: Install MCE and CIM
   block:
-    - name: Install operator
+    - name: Install MCE operator
       ansible.builtin.include_role:
         name: "{{ playbook_dir }}/../common/roles/install_operator"
       vars:
@@ -55,7 +55,7 @@
         state: present
 
     # see https://github.com/openshift/assisted-service/pull/2747
-    - name: Configure Assisted Service to use mirror registry
+    - name: Configure CIM to use mirror registry
       when: mirror_url is defined
       kubernetes.core.k8s:
         definition:
@@ -68,7 +68,7 @@
             PUBLIC_CONTAINER_REGISTRIES: "quay.io,registry.svc.ci.openshift.org,registry.redhat.io"
         state: present
 
-    - name: Configure Assisted Service
+    - name: Configure CIM
       kubernetes.core.k8s:
         template: AgentServiceConfig.yaml.j2
         state: present
@@ -78,7 +78,7 @@
           status: "True"
         wait_timeout: 1200
   rescue: # CRs need to be removed before the namespaces holding the operators are removed, or else the CR finalizers will get stuck
-    - name: Delete Assisted Service
+    - name: Delete CIM
       kubernetes.core.k8s:
         definition:
           apiVersion: agent-install.openshift.io/v1beta1
@@ -102,7 +102,7 @@
         wait_timeout: 1200
       ignore_errors: true # noqa ignore-errors
 
-    - name: Delete namespace
+    - name: Delete Namespace
       kubernetes.core.k8s:
         definition:
           apiVersion: v1

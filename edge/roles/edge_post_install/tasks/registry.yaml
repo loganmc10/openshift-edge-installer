@@ -8,7 +8,7 @@
 
 # have to manually create the PVC when using ODF-LVM
 # this is because the image registry attempts to create a PVC as ReadWriteMany, which ODF-LVM doesn't support
-- name: Create PVC
+- name: Create PVC for Image Registry
   when: odf_lvm.resources | length | int == 1
   kubernetes.core.k8s:
     definition:

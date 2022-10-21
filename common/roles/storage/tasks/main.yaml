@@ -4,7 +4,6 @@
     kind: StorageClass
   register: storage_classes
 
-# the assisted service requires storage
 - name: Check for default storage class
   ansible.builtin.set_fact:
     has_default_storage: "{{ item.metadata.name }}"

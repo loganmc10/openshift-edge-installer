@@ -22,4 +22,4 @@ ansible-playbook provisioning-playbook.yaml --extra-vars "@mirror-config.yaml"
 * Configure the cluster to trust the mirror registry SSL cert if required.
 * Configure the Baremetal Operator to provision external clusters.
 * Install and configure the Multicluster Engine Operator.
-* Configure the Assisted Service.
+* Configure CIM (Assisted Service).

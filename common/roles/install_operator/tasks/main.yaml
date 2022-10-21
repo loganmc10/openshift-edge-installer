@@ -1,4 +1,4 @@
-- name: Create namespace
+- name: Create Namespace
   kubernetes.core.k8s:
     definition:
       apiVersion: v1

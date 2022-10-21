@@ -12,7 +12,7 @@
             releaseImage: "{{ edgeCluster.clusterImageSet }}"
         state: present
 
-    - name: Create namespace
+    - name: Create Namespace
       kubernetes.core.k8s:
         definition:
           apiVersion: v1
@@ -165,7 +165,7 @@
         wait: true
         wait_timeout: 1200
 
-    - name: Delete namespace
+    - name: Delete Namespace
       kubernetes.core.k8s:
         definition:
           apiVersion: v1
