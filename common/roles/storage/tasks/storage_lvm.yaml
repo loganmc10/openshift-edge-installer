@@ -47,4 +47,6 @@
 
 - name: Set default storage
   loop: "{{ lvm_storage_class.resources }}"
+  loop_control:
+    label: "{{ item.metadata.name }}"
   ansible.builtin.include_tasks: set_storage.yaml

@@ -41,6 +41,7 @@
       loop: "{{ lookup('ansible.builtin.fileglob', lookup('ansible.builtin.vars', 'post_install_manifests_folder') + '/*', wantlist=True) | sort }}"
       loop_control:
         pause: 15
+        label: "{{ item }}"
       kubernetes.core.k8s:
         src: "{{ item }}"
         wait: true

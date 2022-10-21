@@ -25,6 +25,8 @@
 
     - name: Create BMC secrets
       loop: "{{ platform.baremetal.hosts }}"
+      loop_control:
+        label: "{{ item.name }}"
       kubernetes.core.k8s:
         definition:
           apiVersion: v1
@@ -65,6 +67,7 @@
       loop: "{{ lookup('ansible.builtin.fileglob', lookup('ansible.builtin.vars', 'install_manifests_folder') + '/*', wantlist=True) | sort }}"
       loop_control:
         index_var: idx
+        label: "{{ item }}"
       kubernetes.core.k8s:
         template: ConfigMap.yaml.j2
         apply: true
@@ -75,12 +78,16 @@
 
     - name: Count workers
       loop: "{{ compute }}"
+      loop_control:
+        label: "{{ item.name }}"
       ansible.builtin.set_fact:
         worker_count: "{{ (worker_count | int) + item.replicas }}"
 
     - name: Setup PerformanceProfile
       when: edgeCluster.performanceProfileSpec is defined
       loop: "{{ edgeCluster.performanceProfileSpec | dict2items }}"
+      loop_control:
+        label: "{{ item.key }}"
       ansible.builtin.include_tasks: performance_profile.yaml
 
     - name: Create AgentClusterInstall
@@ -99,6 +106,8 @@
 
     - name: Create NMStateConfigs
       loop: "{{ platform.baremetal.hosts }}"
+      loop_control:
+        label: "{{ item.name }}"
       when: item.networkConfig is defined
       kubernetes.core.k8s:
         template: NMStateConfig.yaml.j2
@@ -113,6 +122,8 @@
 
     - name: Create BareMetalHosts
       loop: "{{ platform.baremetal.hosts }}"
+      loop_control:
+        label: "{{ item.name }}"
       kubernetes.core.k8s:
         template: BareMetalHost.yaml.j2
         apply: true

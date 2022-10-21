@@ -8,6 +8,8 @@
   ansible.builtin.set_fact:
     has_default_storage: "{{ item.metadata.name }}"
   loop: "{{ storage_classes.resources }}"
+  loop_control:
+    label: "{{ item.metadata.name }}"
   when: >
     (("annotations" in item["metadata"]) and
     ("storageclass.kubernetes.io/is-default-class" in item["metadata"]["annotations"]) and
@@ -15,6 +17,8 @@
 
 - name: Check for suitable default storage
   loop: "{{ storage_classes.resources }}"
+  loop_control:
+    label: "{{ item.metadata.name }}"
   ansible.builtin.include_tasks: set_storage.yaml
 
 - name: Install storage provider
@@ -37,6 +41,8 @@
 
     - name: Label worker nodes
       loop: "{{ worker_nodes.resources }}"
+      loop_control:
+        label: "{{ item.metadata.name }}"
       kubernetes.core.k8s:
         definition:
           api_version: v1
@@ -141,6 +147,8 @@
         - "ocs-storagecluster-ceph-rgw"
         - "ocs-storagecluster-cephfs"
         - "local-storage"
+      loop_control:
+        label: "{{ item }}"
       kubernetes.core.k8s:
         definition:
           apiVersion: storage.k8s.io/v1
