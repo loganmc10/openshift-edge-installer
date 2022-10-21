@@ -38,11 +38,6 @@
     state: present
   register: create_sub
 
-- name: Pause for 15 seconds to let subscription settle # noqa no-handler
-  when: create_sub.changed
-  ansible.builtin.pause:
-    seconds: 15
-
 - name: Wait for operator to be deployed
   kubernetes.core.k8s_info:
     api_version: operators.coreos.com/v1alpha1
@@ -54,11 +49,6 @@
   retries: 60
   delay: 10
 
-- name: Pause for 15 seconds to let CSV settle # noqa no-handler
-  when: create_sub.changed
-  ansible.builtin.pause:
-    seconds: 15
-
 - name: Wait for CSV to be deployed
   kubernetes.core.k8s_info:
     api_version: operators.coreos.com/v1alpha1
@@ -66,6 +56,6 @@
     name: "{{ subscription.resources[0].status.installedCSV }}"
     namespace: "{{ create_sub.result.metadata.namespace }}"
   register: csv
-  until: csv.resources[0].status.phase == "Succeeded"
+  until: (csv.resources[0].status.phase is defined) and (csv.resources[0].status.phase == "Succeeded")
   retries: 60
   delay: 10

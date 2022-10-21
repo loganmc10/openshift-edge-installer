@@ -32,18 +32,13 @@
         state: present
       register: create_mce
 
-    - name: Pause for 15 seconds to let MCE settle
-      ansible.builtin.pause:
-        seconds: 15
-      when: create_mce.changed
-
     - name: Wait for MCE to be deployed
       kubernetes.core.k8s_info:
         api_version: multicluster.openshift.io/v1
         kind: MultiClusterEngine
         name: multiclusterengine
       register: mce
-      until: mce.resources[0].status.phase == "Available"
+      until: (mce.resources[0].status.phase is defined) and (mce.resources[0].status.phase == "Available")
       retries: 60
       delay: 10
 
