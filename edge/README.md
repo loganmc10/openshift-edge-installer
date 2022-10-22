@@ -59,6 +59,11 @@ If your server doesn't support virtual media, you'll need to specify either the 
 and then boot the server manually using the Discovery ISO (the ISO URL is printed when the playbook is executed).
 
 Even though you are manually booting the ISO, if you don't provide a redfish/ipmi address in the install-config.yaml file, then the Multicluster Engine won't automatically approve the node, and it won't apply the proper settings (hostname, role, etc) to the node.
+# Reinstalling a cluster
+If you re-run this playbook for an edge cluster that has already been provisioned, no changes will be made (it won't be reinstalled).
+
+In order to reinstall the cluster, you need to delete the namespace for the edge cluster from the provisioning cluster before running the playbook, for example: ```oc delete namespace <edge_cluster_name>```.
+
 # Ansible Playbook Workflow
 * Create a ClusterImageSet so that the installer knows which version of OpenShift to install.
 * Create a namespace for the install.
