@@ -7,7 +7,7 @@
 - name: Create relocatable IPv4 machineNetwork
   when: cluster_ipv4 is defined
   ansible.builtin.set_fact:
-    relocatableMachineNetwork: "{{ [{'cidr': '192.168.7.0/24'}] }}"
+    relocatable_machine_network: "{{ [{'cidr': '192.168.7.0/24'}] }}"
 
 - name: Check for IPv6
   loop: "{{ networking.serviceNetwork }}"
@@ -18,11 +18,11 @@
 - name: Create relocatable IPv6 machineNetwork
   when: cluster_ipv6 is defined
   ansible.builtin.set_fact:
-    relocatableMachineNetwork: "{{ relocatableMachineNetwork|default([]) + [{'cidr': 'fd04::/64'}] }}"
+    relocatable_machine_network: "{{ relocatable_machine_network | default([]) + [{'cidr': 'fd04::/64'}] }}"
 
 - name: Set machineNetwork for relocatable cluster
   ansible.builtin.set_fact:
-    relocatableNetworking: "{{ networking | combine(newNetwork, recursive=true) }}"
+    relocatable_networking: "{{ networking | combine(new_network, recursive=true) }}"
   vars:
-    newNetwork:
-      machineNetwork: "{{ relocatableMachineNetwork }}"
+    new_network:
+      machineNetwork: "{{ relocatable_machine_network }}"

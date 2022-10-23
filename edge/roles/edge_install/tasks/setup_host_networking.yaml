@@ -13,10 +13,10 @@
         index_var: interface_index
       when: item.name == edgeCluster.relocatable
       ansible.builtin.set_fact:
-        relocatableInterface: "{{ interface_index }}"
+        relocatable_interface: "{{ interface_index }}"
 
     - name: Patch NMStateConfig with relocatable IPv4
-      when: nmstate_host.networkConfig.interfaces[relocatableInterface].ipv4.enabled
+      when: nmstate_host.networkConfig.interfaces[relocatable_interface].ipv4.enabled
       kubernetes.core.k8s_json_patch:
         api_version: agent-install.openshift.io/v1beta1
         kind: NMStateConfig
@@ -24,12 +24,12 @@
         namespace: "{{ metadata.name }}"
         patch:
           - op: add
-            path: /spec/config/interfaces/{{ relocatableInterface | int }}/ipv4/address/-
+            path: /spec/config/interfaces/{{ relocatable_interface | int }}/ipv4/address/-
             value:
               { "ip": "192.168.7.{{ (idx + 2) | int }}", "prefix-length": 24 }
 
     - name: Patch NMStateConfig with relocatable IPv6
-      when: nmstate_host.networkConfig.interfaces[relocatableInterface].ipv6.enabled
+      when: nmstate_host.networkConfig.interfaces[relocatable_interface].ipv6.enabled
       kubernetes.core.k8s_json_patch:
         api_version: agent-install.openshift.io/v1beta1
         kind: NMStateConfig
@@ -37,5 +37,5 @@
         namespace: "{{ metadata.name }}"
         patch:
           - op: add
-            path: /spec/config/interfaces/{{ relocatableInterface | int }}/ipv6/address/-
+            path: /spec/config/interfaces/{{ relocatable_interface | int }}/ipv6/address/-
             value: { "ip": "fd04::{{ (idx + 2) | int }}", "prefix-length": 64 }
