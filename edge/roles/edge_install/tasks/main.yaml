@@ -92,7 +92,7 @@
 
     - name: Set machineNetwork for relocatable cluster
       when: (controlPlane.replicas == 1) and (edgeCluster.relocatable is defined)
-      set_fact:
+      ansible.builtin.set_fact:
         networking: "{{ networking | combine(newNetwork, recursive=true) }}"
       vars:
         newNetwork:
