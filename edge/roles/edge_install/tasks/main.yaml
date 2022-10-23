@@ -90,15 +90,6 @@
         label: "{{ item.key }}"
       ansible.builtin.include_tasks: performance_profile.yaml
 
-    - name: Setup host networking
-      when: item.networkConfig is defined
-      loop: "{{ platform.baremetal.hosts }}"
-      loop_control:
-        label: "{{ nmstate_host.name }}"
-        loop_var: nmstate_host
-        index_var: idx
-      ansible.builtin.include_tasks: setup_host_networking.yaml
-
     - name: Setup machine network
       when: (controlPlane.replicas == 1) and (edgeCluster.relocatable is defined)
       ansible.builtin.include_tasks: setup_machine_network.yaml
@@ -116,6 +107,15 @@
         template: ClusterDeployment.yaml.j2
         apply: true
         state: present
+
+    - name: Setup host networking
+      when: item.networkConfig is defined
+      loop: "{{ platform.baremetal.hosts }}"
+      loop_control:
+        label: "{{ nmstate_host.name }}"
+        loop_var: nmstate_host
+        index_var: idx
+      ansible.builtin.include_tasks: setup_host_networking.yaml
 
     - name: Create InfraEnv
       kubernetes.core.k8s:
