@@ -21,7 +21,7 @@ data:
       name: cluster
     spec:
       disableNetworkDiagnostics: true
-{% if edgeCluster.relocatable is defined and edgeCluster.relocatable %}
+{% if edgeCluster.relocatable is defined %}
   set_node_ip_hint.yaml: |
     apiVersion: machineconfiguration.openshift.io/v1
     kind: MachineConfig

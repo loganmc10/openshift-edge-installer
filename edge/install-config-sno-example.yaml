@@ -12,7 +12,7 @@ edgeCluster:
     enableOn: "none" # Possible values: none,all,masters,workers
     mode: "tpmv2"
   disableConsole: false # Optional
-  relocatable: false # Optional, see RELOCATABLE.md
+  relocatable: eno1 # Optional, see RELOCATABLE.md
   odfStorage: # Optional
     # If you are using a mirror, you must configure a CatalogSource using postInstallManifestsFolder
     # See the post_manifests_mirror_example folder for an example of how to do this

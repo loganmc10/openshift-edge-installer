@@ -91,7 +91,7 @@
       ansible.builtin.include_tasks: performance_profile.yaml
 
     - name: Set machineNetwork for relocatable cluster
-      when: (controlPlane.replicas == 1) and (edgeCluster.relocatable is defined) and (edgeCluster.relocatable)
+      when: (controlPlane.replicas == 1) and (edgeCluster.relocatable is defined)
       set_fact:
         networking: "{{ networking | combine(newNetwork, recursive=true) }}"
       vars:
