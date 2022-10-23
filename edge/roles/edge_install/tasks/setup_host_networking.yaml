@@ -16,7 +16,9 @@
         relocatable_interface: "{{ interface_index }}"
 
     - name: Patch NMStateConfig with relocatable IPv4
-      when: nmstate_host.networkConfig.interfaces[relocatable_interface].ipv4.enabled
+      when: >
+        (nmstate_host.networkConfig.interfaces[relocatable_interface].ipv4 is defined) and
+        (nmstate_host.networkConfig.interfaces[relocatable_interface].ipv4.enabled)
       kubernetes.core.k8s_json_patch:
         api_version: agent-install.openshift.io/v1beta1
         kind: NMStateConfig
@@ -29,7 +31,9 @@
               { "ip": "192.168.7.{{ (idx + 2) | int }}", "prefix-length": 24 }
 
     - name: Patch NMStateConfig with relocatable IPv6
-      when: nmstate_host.networkConfig.interfaces[relocatable_interface].ipv6.enabled
+      when: >
+        (nmstate_host.networkConfig.interfaces[relocatable_interface].ipv6 is defined) and
+        (nmstate_host.networkConfig.interfaces[relocatable_interface].ipv6.enabled)
       kubernetes.core.k8s_json_patch:
         api_version: agent-install.openshift.io/v1beta1
         kind: NMStateConfig
