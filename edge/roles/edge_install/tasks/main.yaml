@@ -97,7 +97,8 @@
       vars:
         newNetwork:
           machineNetwork:
-            - cidr: 192.168.7.0/24 # required so that etcd uses the correct IP address
+            - cidr: 192.168.7.0/24
+            - cidr: fd04::/64
 
     - name: Create AgentClusterInstall
       kubernetes.core.k8s:
