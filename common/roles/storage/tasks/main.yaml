@@ -30,6 +30,7 @@
       vars:
         operator_name: local-storage-operator
         operator_namespace: openshift-local-storage
+        all_namespaces: false
 
     - name: Get node list
       kubernetes.core.k8s_info:

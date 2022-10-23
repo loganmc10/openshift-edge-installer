@@ -20,6 +20,7 @@
       vars:
         operator_name: multicluster-engine
         operator_namespace: multicluster-engine
+        all_namespaces: false
 
     - name: Create MCE
       kubernetes.core.k8s:

@@ -21,7 +21,7 @@
         (nmstate_host.networkConfig.interfaces[relocatable_interface].ipv4 is defined) and
         (nmstate_host.networkConfig.interfaces[relocatable_interface].ipv4.enabled)
       block:
-        - name: Ensure address array exists
+        - name: Ensure ipv4 array exists
           when: nmstate_config.result.spec.config.interfaces[relocatable_interface].ipv4.address is not defined
           kubernetes.core.k8s_json_patch:
             api_version: agent-install.openshift.io/v1beta1
@@ -33,7 +33,7 @@
                 path: /spec/config/interfaces/{{ relocatable_interface | int }}/ipv4/address
                 value: []
 
-        - name: Add secondary address
+        - name: Add secondary ipv4 address
           kubernetes.core.k8s_json_patch:
             api_version: agent-install.openshift.io/v1beta1
             kind: NMStateConfig
@@ -53,7 +53,7 @@
         (nmstate_host.networkConfig.interfaces[relocatable_interface].ipv6 is defined) and
         (nmstate_host.networkConfig.interfaces[relocatable_interface].ipv6.enabled)
       block:
-        - name: Ensure address array exists
+        - name: Ensure ipv6 array exists
           when: nmstate_config.result.spec.config.interfaces[relocatable_interface].ipv6.address is not defined
           kubernetes.core.k8s_json_patch:
             api_version: agent-install.openshift.io/v1beta1
@@ -65,7 +65,7 @@
                 path: /spec/config/interfaces/{{ relocatable_interface | int }}/ipv6/address
                 value: []
 
-        - name: Add secondary address
+        - name: Add secondary ipv6 address
           kubernetes.core.k8s_json_patch:
             api_version: agent-install.openshift.io/v1beta1
             kind: NMStateConfig

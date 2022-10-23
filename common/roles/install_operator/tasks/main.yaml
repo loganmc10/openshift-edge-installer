@@ -12,15 +12,7 @@
 
 - name: Create OperatorGroup
   kubernetes.core.k8s:
-    definition:
-      apiVersion: operators.coreos.com/v1
-      kind: OperatorGroup
-      metadata:
-        name: "{{ operator_name }}"
-        namespace: "{{ operator_namespace }}"
-      spec:
-        targetNamespaces:
-          - "{{ operator_namespace }}"
+    template: OperatorGroup.yaml.j2
     apply: true
     state: present
 

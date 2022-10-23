@@ -4,6 +4,7 @@
   vars:
     operator_name: odf-lvm-operator
     operator_namespace: openshift-storage
+    all_namespaces: false
 
 - name: Install ODF LVMCluster
   kubernetes.core.k8s:

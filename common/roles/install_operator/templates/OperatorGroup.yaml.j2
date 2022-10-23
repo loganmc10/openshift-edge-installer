@@ -1,0 +1,10 @@
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: "{{ operator_name }}"
+  namespace: "{{ operator_namespace }}"
+{% if not all_namespaces %}
+spec:
+  targetNamespaces:
+    - "{{ operator_namespace }}"
+{% endif %}
