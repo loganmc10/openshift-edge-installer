@@ -109,7 +109,7 @@
         state: present
 
     - name: Setup host networking
-      when: item.networkConfig is defined
+      when: nmstate_host.networkConfig is defined
       loop: "{{ platform.baremetal.hosts }}"
       loop_control:
         label: "{{ nmstate_host.name }}"
