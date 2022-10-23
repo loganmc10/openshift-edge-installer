@@ -34,7 +34,11 @@ spec:
   ingressVIP: "{{ platform.baremetal.ingressVIP }}"
 {% endif %}
   networking:
+{% if relocatableNetworking is defined%}
+    {{ relocatableNetworking | to_nice_yaml(indent=2) | trim | indent(4) }}
+{% else %}
     {{ networking | to_nice_yaml(indent=2) | trim | indent(4) }}
+{% endif %}
 {% if controlPlane.replicas == 1 %}
     userManagedNetworking: true
 {% else %}
