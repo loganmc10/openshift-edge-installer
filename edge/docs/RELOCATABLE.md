@@ -2,9 +2,9 @@
 The ```relocatable``` option is only applicable on SNO clusters. When enabled, the cluster is configured in such a way that its primary interface IP address can be changed without impacting the operation of the cluster.
 
 ## How it works
-You set the value of ```relocatable``` to the name of the external facing interface. A secondary IP address (192.168.7.1/31) is assigned to this interface. The machineNetwork CIDR is also set to 192.168.7.0/31. Finally, a MachineConfig is created that modifies /etc/default/nodeip-configuration to tell the cluster to use 192.168.7.1 as the node IP.
+You set the value of ```relocatable``` to the name of the external facing interface. A secondary IP address (192.168.7.x/24) is assigned to this interface. The machineNetwork CIDR is also set to 192.168.7.0/24. Finally, a MachineConfig is created that modifies /etc/default/nodeip-configuration to tell the cluster to use 192.168.7.x as the node IP.
 
-All of these actions together cause the server to use 192.168.7.1 for everything related to OpenShift, while still allowing access to the cluster from outside via the primary interface IP address. This means that the external IP can be changed, and the cluster will continue to use 192.168.7.1 internally for its operation.
+All of these actions together cause the server to use 192.168.7.x for everything related to OpenShift, while still allowing access to the cluster from outside via the primary interface IP address. This means that the external IP can be changed, and the cluster will continue to use 192.168.7.x internally for its operation.
 
 ## Changing the IP address
 The external IP address can be changed via DHCP or statically.
@@ -23,7 +23,7 @@ autoconnect-priority=1
 
 [ipv4]
 address1=10.19.10.251/26
-address2=192.168.7.1/31
+address2=192.168.7.2/24
 dhcp-client-id=mac
 dns=10.19.143.247;
 dns-priority=40

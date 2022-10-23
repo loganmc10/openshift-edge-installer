@@ -97,7 +97,7 @@
       vars:
         newNetwork:
           machineNetwork:
-            - cidr: 192.168.7.0/31 # required so that etcd uses the correct IP address
+            - cidr: 192.168.7.0/24 # required so that etcd uses the correct IP address
 
     - name: Create AgentClusterInstall
       kubernetes.core.k8s:
@@ -113,15 +113,14 @@
         apply: true
         state: present
 
-    - name: Create NMStateConfigs
+    - name: Setup networking
       loop: "{{ platform.baremetal.hosts }}"
       loop_control:
-        label: "{{ item.name }}"
-      when: item.networkConfig is defined
-      kubernetes.core.k8s:
-        template: NMStateConfig.yaml.j2
-        apply: true
-        state: present
+        label: "{{ nmstate_host.name }}"
+        loop_var: nmstate_host
+        index_var: idx
+      when: nmstate_host.networkConfig is defined
+      ansible.builtin.include_tasks: setup_networking.yaml
 
     - name: Create InfraEnv
       kubernetes.core.k8s:
