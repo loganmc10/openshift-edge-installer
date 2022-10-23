@@ -14,8 +14,8 @@ jobs:
         run: |
           dnf -y update
           dnf -y install python3-pip git
-          pip3 install ansible-core kubernetes jmespath ansible-lint
-          ansible-galaxy collection install -U kubernetes.core community.general
+          pip3 install ansible-core kubernetes jmespath ansible-lint netaddr
+          ansible-galaxy collection install -U kubernetes.core community.general ansible.utils
       - uses: actions/checkout@v3
       - name: Check code
         run: |

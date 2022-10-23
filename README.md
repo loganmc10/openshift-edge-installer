@@ -12,8 +12,8 @@ After the installation of an edge cluster is complete, the edge cluster does not
   * Target must be a baremetal cluster (SNO, compact, or standard).
   * If ODF is being installed, each node needs to have 2 disks (one for the OS, and one for ODF).
 * Ansible: ```pip install ansible-core```
-* Python modules: ```pip install kubernetes jmespath```
-* Kubernetes Ansible collection: ```ansible-galaxy collection install -U kubernetes.core community.general```
+* Python modules: ```pip install kubernetes jmespath netaddr```
+* Kubernetes Ansible collection: ```ansible-galaxy collection install -U kubernetes.core community.general ansible.utils```
 * [oc binary](https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz)
 
 ## Provisioning Cluster

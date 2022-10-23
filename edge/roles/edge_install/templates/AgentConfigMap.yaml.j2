@@ -36,7 +36,7 @@ data:
         storage:
           files:
             - contents:
-                source: data:text/plain;charset=utf-8;base64,{{ "KUBELET_NODEIP_HINT=192.168.7.0 fd04::0" | b64encode }}
+                source: data:text/plain;charset=utf-8;base64,{{ "KUBELET_NODEIP_HINT='192.168.7.0 fd04::0'" | b64encode }}
               mode: 0644
               overwrite: true
               path: /etc/default/nodeip-configuration
