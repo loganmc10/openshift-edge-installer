@@ -90,6 +90,15 @@
         label: "{{ item.key }}"
       ansible.builtin.include_tasks: performance_profile.yaml
 
+    - name: Set machineNetwork for relocatable cluster
+      when: (controlPlane.replicas == 1) and (edgeCluster.relocatable is defined) and (edgeCluster.relocatable)
+      set_fact:
+        networking: "{{ networking | combine(newNetwork, recursive=true) }}"
+      vars:
+        newNetwork:
+          machineNetwork:
+            - cidr: 192.168.7.0/31 # required so that etcd uses the correct IP address
+
     - name: Create AgentClusterInstall
       kubernetes.core.k8s:
         template: AgentClusterInstall.yaml.j2
