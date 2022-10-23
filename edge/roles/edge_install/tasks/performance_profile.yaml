@@ -25,6 +25,6 @@
 
 - name: Create performance profile config map
   kubernetes.core.k8s:
-    template: PerformanceProfile.yaml.j2
+    template: PerformanceProfileMap.yaml.j2
     apply: true
     state: present

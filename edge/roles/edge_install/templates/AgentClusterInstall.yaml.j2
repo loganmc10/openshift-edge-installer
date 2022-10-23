@@ -19,12 +19,9 @@ spec:
     - name: "manifest-{{ loop.index0 }}"
 {% endfor %}
 {% endif %}
-{% if edgeCluster.performanceProfileSpec is defined %}
+{% if edgeCluster.performanceProfileSpec is defined and controlPlane.replicas == 1%}
 {% for item in edgeCluster.performanceProfileSpec | dict2items %}
-{% if controlPlane.replicas == 1 %}
     - name: "workload-partitioning-{{ item.key }}"
-{% endif %}
-    - name: "performance-profile-{{ item.key }}"
 {% endfor %}
 {% endif %}
 {% if platform.baremetal.apiVIP is defined %}

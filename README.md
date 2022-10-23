@@ -9,7 +9,7 @@ After the installation of an edge cluster is complete, the edge cluster does not
   * If there is not an existing default StorageClass, ODF will be installed. ODF requires each node to have 2 disks (one for the OS, and one for ODF).
 * Edge Cluster:
   * Provisioning cluster needs to be configured first.
-  * Target must be a baremetal cluster (SNO, compact, or standard).
+  * Target must be a baremetal cluster (SNO, compact, or standard). OCP 4.10+ is supported.
   * If ODF is being installed, each node needs to have 2 disks (one for the OS, and one for ODF).
 * Ansible: ```pip install ansible-core```
 * Python modules: ```pip install kubernetes jmespath netaddr```

@@ -64,7 +64,52 @@
           when: (edgeCluster.odfStorage.imageRegistry is defined) and (edgeCluster.odfStorage.imageRegistry)
           ansible.builtin.include_tasks: registry.yaml
 
+    - name: Get MCPs
+      kubernetes.core.k8s_info:
+        api_version: machineconfiguration.openshift.io/v1
+        kind: MachineConfigPool
+      register: machine_config_pools
+
+    # Pause all MCPs to make sure we don't cause multiple reboots
+    - name: Pause MCPs
+      loop: "{{ machine_config_pools.resources }}"
+      loop_control:
+        label: "{{ item.metadata.name }}"
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: machineconfiguration.openshift.io/v1
+          kind: MachineConfigPool
+          metadata:
+            name: "{{ item.metadata.name }}"
+          spec:
+            paused: true
+        state: present
+
+    # OCP versions before 4.11 require the Performance Addon Operator for PerformanceProfiles
+    - name: Setup PAO (OCP < 4.11)
+      ansible.builtin.include_tasks: setup_pao.yaml
+
     - name: Auto approve CSRs
       when: (edgeCluster.autoApproveCSRs is defined) and (edgeCluster.autoApproveCSRs)
       ansible.builtin.include_role:
         name: "edge_csr_approver"
+      register: setup_csr
+
+    - name: Pause for 30 seconds to let MCP settle
+      ansible.builtin.pause:
+        seconds: 30
+      when: (setup_pao is defined and setup_pao.changed) or (setup_csr is defined and setup_csr.changed)
+
+    - name: Unpause MCPs
+      loop: "{{ machine_config_pools.resources }}"
+      loop_control:
+        label: "{{ item.metadata.name }}"
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: machineconfiguration.openshift.io/v1
+          kind: MachineConfigPool
+          metadata:
+            name: "{{ item.metadata.name }}"
+          spec:
+            paused: false
+        state: present

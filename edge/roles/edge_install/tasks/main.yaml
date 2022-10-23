@@ -108,6 +108,37 @@
         apply: true
         state: present
 
+    # on OCP 4.11+ we can do this at install-time
+    # for OCP < 4.11, this is done in the post-install phase
+    - name: Insert PerformanceProfile into manifests
+      when: edgeCluster.performanceProfileSpec is defined
+      block:
+        - name: Get cluster version
+          kubernetes.core.k8s_info:
+            api_version: hive.openshift.io/v1
+            kind: ClusterDeployment
+            name: "{{ metadata.name }}"
+            namespace: "{{ metadata.name }}"
+          register: cluster_deployment
+          until: cluster_deployment.resources[0].status.installVersion is defined
+          retries: 100
+          delay: 10
+
+        - name: Add PerformanceProfile
+          when: (cluster_deployment.resources[0].status.installVersion is version('4.11.0', 'ge', version_type='semver'))
+          loop: "{{ edgeCluster.performanceProfileSpec | dict2items }}"
+          loop_control:
+            label: " {{ item.key }}"
+          kubernetes.core.k8s_json_patch:
+            api_version: extensions.hive.openshift.io/v1beta1
+            kind: AgentClusterInstall
+            name: "{{ metadata.name }}"
+            namespace: "{{ metadata.name }}"
+            patch:
+              - op: add
+                path: /spec/manifestsConfigMapRefs/-
+                value: { "name": "performance-profile-{{ item.key }}" }
+
     - name: Setup host networking
       when: nmstate_host.networkConfig is defined
       loop: "{{ platform.baremetal.hosts }}"
