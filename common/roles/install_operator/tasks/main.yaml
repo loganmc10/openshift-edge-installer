@@ -9,12 +9,16 @@
           workload.openshift.io/allowed: management # needed if this is being applied on a SNO server with workload partitioning
     apply: true
     state: present
+  register: k8s_result
+  until: k8s_result is not failed
 
 - name: Create OperatorGroup
   kubernetes.core.k8s:
     template: OperatorGroup.yaml.j2
     apply: true
     state: present
+  register: k8s_result
+  until: k8s_result is not failed
 
 - name: Create Subscription
   kubernetes.core.k8s:
@@ -32,6 +36,7 @@
     apply: true
     state: present
   register: create_sub
+  until: create_sub is not failed
 
 - name: Wait for operator to be deployed
   kubernetes.core.k8s_info:

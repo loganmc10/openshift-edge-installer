@@ -35,6 +35,8 @@
           spec:
             managementState: Removed
         state: present
+      register: k8s_result
+      until: k8s_result is not failed
 
     - name: Apply post-install manifests
       when: edgeCluster.postInstallManifestsFolder is defined
@@ -50,6 +52,8 @@
       vars:
         # this var is copied in like this because ansible.builtin.vars doesn't support dicts
         post_install_manifests_folder: "{{ edgeCluster.postInstallManifestsFolder }}"
+      register: k8s_result
+      until: k8s_result is not failed
 
     - name: Install Storage and Registry
       when: (edgeCluster.odfStorage is defined) and (edgeCluster.odfStorage.enabled)

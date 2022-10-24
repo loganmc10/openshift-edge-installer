@@ -3,6 +3,7 @@
     api_version: storage.k8s.io/v1
     kind: StorageClass
   register: storage_classes
+  until: storage_classes is not failed
 
 - name: Check for default storage class
   ansible.builtin.set_fact:
@@ -39,6 +40,7 @@
         label_selectors:
           - "node-role.kubernetes.io/worker"
       register: worker_nodes
+      until: worker_nodes is not failed
 
     - name: Label worker nodes
       loop: "{{ worker_nodes.resources }}"
@@ -53,6 +55,8 @@
             labels:
               cluster.ocs.openshift.io/openshift-storage: ""
         state: present
+      register: k8s_result
+      until: k8s_result is not failed
 
     - name: Clean volumes
       ansible.builtin.include_tasks:

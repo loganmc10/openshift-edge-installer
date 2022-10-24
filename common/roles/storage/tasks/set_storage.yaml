@@ -12,6 +12,7 @@
           storageclass.kubernetes.io/is-default-class: "true"
     state: present
   register: set_storage_class
+  until: set_storage_class is not failed
 
 - name: Set new default storage # noqa no-handler
   when: set_storage_class.changed

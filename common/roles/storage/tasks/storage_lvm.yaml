@@ -24,6 +24,8 @@
                 overprovisionRatio: 10
     apply: true
     state: present
+  register: k8s_result
+  until: k8s_result is not failed
 
 - name: Wait for LVMCluster to be deployed
   kubernetes.core.k8s_info:

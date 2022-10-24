@@ -5,6 +5,7 @@
     name: odf-lvm-operator
     namespace: openshift-storage
   register: odf_lvm
+  until: odf_lvm is not failed
 
 # have to manually create the PVC when using ODF-LVM
 # this is because the image registry attempts to create a PVC as ReadWriteMany, which ODF-LVM doesn't support
@@ -25,6 +26,8 @@
             storage: 100Gi
     apply: true
     state: present
+  register: k8s_result
+  until: k8s_result is not failed
 
 - name: Get current Image Registry settings
   kubernetes.core.k8s_info:
@@ -32,6 +35,7 @@
     kind: Config
     name: cluster
   register: image_registry
+  until: image_registry is not failed
 
 - name: Configure Image Registry
   kubernetes.core.k8s:
@@ -42,3 +46,5 @@
     wait_condition:
       type: Available
       status: "True"
+  register: k8s_result
+  until: k8s_result is not failed

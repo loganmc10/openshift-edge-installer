@@ -8,6 +8,8 @@
         namespace: openshift-infra
     apply: true
     state: present
+  register: k8s_result
+  until: k8s_result is not failed
 
 - name: Create CSR Approver ClusterRole
   kubernetes.core.k8s:
@@ -39,6 +41,8 @@
             - approve
     apply: true
     state: present
+  register: k8s_result
+  until: k8s_result is not failed
 
 - name: Create CSR Approver ClusterRoleBinding
   kubernetes.core.k8s:
@@ -57,6 +61,8 @@
         apiGroup: rbac.authorization.k8s.io
     apply: true
     state: present
+  register: k8s_result
+  until: k8s_result is not failed
 
 - name: Create CSR Approver Secret
   kubernetes.core.k8s:
@@ -71,6 +77,8 @@
       type: kubernetes.io/service-account-token
     apply: true
     state: present
+  register: k8s_result
+  until: k8s_result is not failed
 
 - name: Wait for CSR Approver token to be deployed
   kubernetes.core.k8s_info:
@@ -89,6 +97,7 @@
     kind: DNS
     name: cluster
   register: dns_domain
+  until: dns_domain is not failed
 
 # this MachineConfig has to be deployed here, rather than install phase
 # this is because it includes the kubeconfig for the ServiceAccount, which can't be generated until after the install is complete
@@ -97,3 +106,5 @@
     template: MachineConfig.yaml.j2
     apply: true
     state: present
+  register: k8s_result
+  until: k8s_result is not failed

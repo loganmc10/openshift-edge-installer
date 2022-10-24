@@ -32,6 +32,8 @@
     wait_condition:
       type: DaemonSetsAvailable
       status: "True"
+  register: k8s_result
+  until: k8s_result is not failed
 
 - name: Install ODF operator
   ansible.builtin.include_role:
@@ -51,6 +53,8 @@
     wait_condition:
       type: Available
       status: "True"
+  register: k8s_result
+  until: k8s_result is not failed
 
 - name: Wait for StorageClass
   kubernetes.core.k8s_info:

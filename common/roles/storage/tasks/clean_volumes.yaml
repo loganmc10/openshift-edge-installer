@@ -22,6 +22,7 @@
       status: "True"
     wait_timeout: 1200
   register: volume_discovery
+  until: volume_discovery is not failed
 
 - name: Pause for 30 seconds to let volume discovery settle # noqa no-handler
   ansible.builtin.pause:
@@ -34,6 +35,7 @@
     kind: LocalVolumeDiscoveryResult
     namespace: openshift-local-storage
   register: discovery_result
+  until: discovery_result is not failed
 
 - name: Wipe disks # noqa no-handler
   when: volume_discovery.changed # assume we've already wiped the disks if the discovery has already been done
