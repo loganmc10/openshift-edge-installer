@@ -22,13 +22,14 @@ data:
     spec:
       disableNetworkDiagnostics: true
 {% if edgeCluster.relocatable is defined %}
-  set_node_ip_hint.yaml: |
+{% for node_type in ["master", "worker"] %}
+  set_node_ip_hint_{{ node_type }}.yaml: |
     apiVersion: machineconfiguration.openshift.io/v1
     kind: MachineConfig
     metadata:
       labels:
-        machineconfiguration.openshift.io/role: master
-      name: 10-masters-node-ip-hint
+        machineconfiguration.openshift.io/role: {{ node_type }}
+      name: 10-{{ node_type }}s-node-ip-hint
     spec:
       config:
         ignition:
@@ -42,5 +43,6 @@ data:
               path: /etc/default/nodeip-configuration
               user:
                 name: root
+{% endfor %}
 {% endif %}
 {% endif %}
