@@ -44,7 +44,7 @@
                 path: /spec/config/interfaces/{{ relocatable_interface | int }}/ipv4/address/-
                 value:
                   {
-                    "ip": "192.168.7.{{ (idx + 2) | int }}",
+                    "ip": "192.168.7.{{ (idx + 4) | int }}",
                     "prefix-length": 24,
                   }
 
@@ -75,4 +75,4 @@
               - op: add
                 path: /spec/config/interfaces/{{ relocatable_interface | int }}/ipv6/address/-
                 value:
-                  { "ip": "fd04::{{ (idx + 2) | int }}", "prefix-length": 64 }
+                  { "ip": "fd04::{{ (idx + 4) | int }}", "prefix-length": 64 }
