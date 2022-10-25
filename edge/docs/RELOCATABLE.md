@@ -23,7 +23,6 @@ autoconnect-priority=1
 
 [ipv4]
 address1=10.19.10.251/26
-address2=192.168.7.4/24
 dhcp-client-id=mac
 dns=10.19.143.247;
 dns-priority=40
