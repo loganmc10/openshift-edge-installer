@@ -7,7 +7,7 @@ metadata:
     nmstate-cluster: "{{ metadata.name }}"
 spec:
   config:
-    {{ nmstate_host.networkConfig | to_nice_yaml(indent=2) | trim | indent(4) }}
+    {{ network_config | to_nice_yaml(indent=2) | trim | indent(4) }}
   interfaces:
 {% for interface in nmstate_host.networkConfig.interfaces %}
 {% if interface.type == "ethernet" %}
