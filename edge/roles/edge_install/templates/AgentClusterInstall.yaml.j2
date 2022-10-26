@@ -27,10 +27,14 @@ spec:
     - name: "performance-profile-{{ item.key }}"
 {% endfor %}
 {% endif %}
-{% if platform.baremetal.apiVIP is defined %}
+{% if edgeCluster.relocatable is defined and controlPlane.replicas == 3 %}
+  apiVIP: "192.168.7.2"
+{% elif platform.baremetal.apiVIP is defined %}
   apiVIP: "{{ platform.baremetal.apiVIP }}"
 {% endif %}
-{% if platform.baremetal.ingressVIP is defined %}
+{% if edgeCluster.relocatable is defined and controlPlane.replicas == 3 %}
+  ingressVIP: "192.168.7.3"
+{% elif platform.baremetal.ingressVIP is defined %}
   ingressVIP: "{{ platform.baremetal.ingressVIP }}"
 {% endif %}
   networking:

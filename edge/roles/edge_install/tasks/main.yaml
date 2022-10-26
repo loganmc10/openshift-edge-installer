@@ -108,14 +108,15 @@
         apply: true
         state: present
 
-    - name: Setup host networking
-      when: nmstate_host.networkConfig is defined
+    - name: Create NMStateConfig
+      when: item.networkConfig is defined
       loop: "{{ platform.baremetal.hosts }}"
       loop_control:
-        label: "{{ nmstate_host.name }}"
-        loop_var: nmstate_host
-        index_var: idx
-      ansible.builtin.include_tasks: setup_host_networking.yaml
+        label: "{{ item.name }}"
+      kubernetes.core.k8s:
+        template: NMStateConfig.yaml.j2
+        apply: true
+        state: present
 
     - name: Create InfraEnv
       kubernetes.core.k8s:

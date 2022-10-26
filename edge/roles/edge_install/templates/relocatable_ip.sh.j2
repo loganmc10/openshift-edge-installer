@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# we are required to add the relocatable IP here, rather than in the NMStateConfig
+# this is because NMState ignores static IP addresses when DHCP is enabled
+# see https://github.com/nmstate/nmstate/blob/a323ad9d1ae377ae39971f0f0a9f39d3ad341765/rust/src/lib/ip.rs#L190-L197
+
+current_addresses=$(nmcli -g ipv4.addresses connection show {{ edgeCluster.relocatable }})
+if [[ "$current_addresses" != *"192.168.7.4/24"* ]]; then
+  nmcli connection modify {{ edgeCluster.relocatable }} +ipv4.addresses "192.168.7.4/24"
+  nmcli connection up {{ edgeCluster.relocatable }}
+  echo "added relocatable IP to interface {{ edgeCluster.relocatable }}"
+else
+  echo "relocatable IP already attached to interface {{ edgeCluster.relocatable }}"
+fi

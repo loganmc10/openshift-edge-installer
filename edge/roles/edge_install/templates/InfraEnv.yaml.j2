@@ -24,3 +24,4 @@ spec:
   proxy:
     {{ proxy | to_nice_yaml(indent=2) | trim | indent(4) }}
 {% endif %}
+  ignitionConfigOverride: '{{ (lookup('ansible.builtin.template', 'RelocatableConfig.yaml.j2') | from_yaml | to_json) }}'
