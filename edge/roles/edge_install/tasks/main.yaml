@@ -90,6 +90,7 @@
         label: "{{ item.key }}"
       ansible.builtin.include_tasks: performance_profile.yaml
 
+    # on a multi-node cluster this is determined based on the API and Ingress VIPs
     - name: Setup relocatable machine network
       when: (controlPlane.replicas == 1) and (edgeCluster.relocatable is defined)
       ansible.builtin.include_tasks: setup_machine_network.yaml

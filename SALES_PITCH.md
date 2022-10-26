@@ -4,7 +4,7 @@
 * Can configure ODF on provisioning and edge clusters (SNO and multi-node clusters).
 * Can configure PerformanceProfiles and workload partitioning.
 * Ability to add install-time and post-install manifests.
-* Ability to configure a relocatable SNO cluster.
+* Ability to configure a relocatable edge cluster.
 * Option to auto approve CSRs (for edge clusters that may be offline for extended periods).
 * Re-uses install-config.yaml (IPI install config) for configuration.
 * Easy to read Ansible playbook, what you see is what you get.
