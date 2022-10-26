@@ -90,6 +90,18 @@
         label: "{{ item.key }}"
       ansible.builtin.include_tasks: performance_profile.yaml
 
+    - name: Check for IPv4
+      loop: "{{ networking.serviceNetwork }}"
+      when: item | ansible.utils.ipv4
+      ansible.builtin.set_fact:
+        cluster_ipv4: true
+
+    - name: Check for IPv6
+      loop: "{{ networking.serviceNetwork }}"
+      when: item | ansible.utils.ipv6
+      ansible.builtin.set_fact:
+        cluster_ipv6: true
+
     # on a multi-node cluster this is determined based on the API and Ingress VIPs
     - name: Setup relocatable machine network
       when: (controlPlane.replicas == 1) and (edgeCluster.relocatable is defined)
