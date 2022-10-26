@@ -46,6 +46,11 @@
       register: k8s_result
       until: k8s_result is not failed
 
+    - name: Check for IPv4
+      when: platform.baremetal.apiVIP | ansible.utils.ipv4
+      ansible.builtin.set_fact:
+        cluster_ipv4: true
+
     - name: Create IPAddressPool for API
       kubernetes.core.k8s:
         definition:
@@ -56,7 +61,7 @@
             namespace: metallb-system
           spec:
             addresses:
-              - "{{ platform.baremetal.apiVIP }}/32"
+              - "{{ platform.baremetal.apiVIP }}/{{ (cluster_ipv4 is defined) | ternary(32, 64) }}"
             autoAssign: false
         apply: true
         state: present
@@ -73,7 +78,7 @@
             namespace: metallb-system
           spec:
             addresses:
-              - "{{ platform.baremetal.ingressVIP }}/32"
+              - "{{ platform.baremetal.ingressVIP }}/{{ (cluster_ipv4 is defined) | ternary(32, 64) }}"
             autoAssign: false
         apply: true
         state: present
