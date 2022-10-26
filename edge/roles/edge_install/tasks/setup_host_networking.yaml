@@ -1,6 +1,9 @@
-- name: Copy networkConfig
-  ansible.builtin.set_fact:
-    network_config: "{{ nmstate_host.networkConfig }}"
+- name: Create NMStateConfig
+  kubernetes.core.k8s:
+    template: NMStateConfig.yaml.j2
+    apply: true
+    state: present
+  register: nmstate_config
 
 - name: Configure relocatable networking
   when: (controlPlane.replicas == 1) and (edgeCluster.relocatable is defined)
@@ -13,16 +16,63 @@
       ansible.builtin.set_fact:
         relocatable_interface: "{{ interface_index }}"
 
-    - name: Append vlan interface to interface list
-      ansible.builtin.set_fact:
-        interface_list: "{{ nmstate_host.networkConfig.interfaces + [lookup('ansible.builtin.template', './VlanInterface.yaml.j2') | from_yaml] }}"
+    - name: Patch NMStateConfig with relocatable IPv4
+      when: >
+        (nmstate_host.networkConfig.interfaces[relocatable_interface].ipv4 is defined) and
+        (nmstate_host.networkConfig.interfaces[relocatable_interface].ipv4.enabled)
+      block:
+        - name: Ensure ipv4 array exists
+          when: nmstate_config.result.spec.config.interfaces[relocatable_interface].ipv4.address is not defined
+          kubernetes.core.k8s_json_patch:
+            api_version: agent-install.openshift.io/v1beta1
+            kind: NMStateConfig
+            name: "{{ nmstate_host.name }}"
+            namespace: "{{ metadata.name }}"
+            patch:
+              - op: add
+                path: /spec/config/interfaces/{{ relocatable_interface | int }}/ipv4/address
+                value: []
 
-    - name: New networkConfig
-      ansible.builtin.set_fact:
-        network_config: "{{ nmstate_host.networkConfig | combine({'interfaces': interface_list}, recursive=true) }}"
+        - name: Add secondary ipv4 address
+          kubernetes.core.k8s_json_patch:
+            api_version: agent-install.openshift.io/v1beta1
+            kind: NMStateConfig
+            name: "{{ nmstate_host.name }}"
+            namespace: "{{ metadata.name }}"
+            patch:
+              - op: add
+                path: /spec/config/interfaces/{{ relocatable_interface | int }}/ipv4/address/-
+                value:
+                  {
+                    "ip": "192.168.7.{{ (idx + 4) | int }}",
+                    "prefix-length": 24,
+                  }
 
-- name: Create NMStateConfig
-  kubernetes.core.k8s:
-    template: NMStateConfig.yaml.j2
-    apply: true
-    state: present
+    - name: Patch NMStateConfig with relocatable IPv6
+      when: >
+        (nmstate_host.networkConfig.interfaces[relocatable_interface].ipv6 is defined) and
+        (nmstate_host.networkConfig.interfaces[relocatable_interface].ipv6.enabled)
+      block:
+        - name: Ensure ipv6 array exists
+          when: nmstate_config.result.spec.config.interfaces[relocatable_interface].ipv6.address is not defined
+          kubernetes.core.k8s_json_patch:
+            api_version: agent-install.openshift.io/v1beta1
+            kind: NMStateConfig
+            name: "{{ nmstate_host.name }}"
+            namespace: "{{ metadata.name }}"
+            patch:
+              - op: add
+                path: /spec/config/interfaces/{{ relocatable_interface | int }}/ipv6/address
+                value: []
+
+        - name: Add secondary ipv6 address
+          kubernetes.core.k8s_json_patch:
+            api_version: agent-install.openshift.io/v1beta1
+            kind: NMStateConfig
+            name: "{{ nmstate_host.name }}"
+            namespace: "{{ metadata.name }}"
+            patch:
+              - op: add
+                path: /spec/config/interfaces/{{ relocatable_interface | int }}/ipv6/address/-
+                value:
+                  { "ip": "fd04::{{ (idx + 4) | int }}", "prefix-length": 64 }
