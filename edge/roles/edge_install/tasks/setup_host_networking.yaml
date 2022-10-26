@@ -4,9 +4,12 @@
     apply: true
     state: present
 
-- name: Get relocatable interface index
-  loop: "{{ nmstate_host.networkConfig.interfaces }}"
-  loop_control:
-    label: "{{ item.name }}"
-  when: item.name == edgeCluster.relocatable
-  ansible.builtin.include_tasks: get_relocatable_ip.yaml
+- name: Calculate relocatable IP
+  when: edgeCluster.relocatable is defined
+  block:
+    - name: Get relocatable interface index
+      loop: "{{ nmstate_host.networkConfig.interfaces }}"
+      loop_control:
+        label: "{{ item.name }}"
+      when: item.name == edgeCluster.relocatable
+      ansible.builtin.include_tasks: get_relocatable_ip.yaml
