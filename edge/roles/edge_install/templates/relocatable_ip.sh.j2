@@ -15,7 +15,9 @@ declare -A addresses
 
 for interface in {{ edgeCluster.relocatable }} ovs-if-br-ex; do
   if ! nmcli connection show "${interface}"; then
+    echo "---"
     echo "interface ${interface} does not exist, skipping"
+    echo "---"
     continue
   fi
 {% if cluster_ipv4 is defined %}
@@ -23,9 +25,13 @@ for interface in {{ edgeCluster.relocatable }} ovs-if-br-ex; do
   if [[ "${current_ipv4_addresses}" != *"192.168.7.${addresses[${mac_address}]}/24"* ]]; then
     nmcli connection modify "${interface}" +ipv4.addresses "192.168.7.${addresses[${mac_address}]}/24"
     changed=true
+    echo "---"
     echo "added relocatable IPv4 to interface ${interface}"
+    echo "---"
   else
+    echo "---"
     echo "relocatable IPv4 already attached to interface ${interface}"
+    echo "---"
   fi
 {% endif %}
 
@@ -34,9 +40,13 @@ for interface in {{ edgeCluster.relocatable }} ovs-if-br-ex; do
   if [[ "${current_ipv6_addresses}" != *"fd04\:\:${addresses[${mac_address}]}/64"* ]]; then
     nmcli connection modify "${interface}" +ipv6.addresses "fd04::${addresses[${mac_address}]}/64"
     changed=true
+    echo "---"
     echo "added relocatable IPv6 to interface ${interface}"
+    echo "---"
   else
+    echo "---"
     echo "relocatable IPv6 already attached to interface ${interface}"
+    echo "---"
   fi
 {% endif %}
 done
