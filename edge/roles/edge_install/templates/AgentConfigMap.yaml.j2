@@ -21,6 +21,7 @@ data:
       name: cluster
     spec:
       disableNetworkDiagnostics: true
+{% endif %}
 {% if edgeCluster.relocatable is defined %}
 {% for node_type in ["master", "worker"] %}
   set_node_ip_hint_{{ node_type }}.yaml: |
@@ -43,6 +44,15 @@ data:
               path: /etc/default/nodeip-configuration
               user:
                 name: root
+  relocatable_ip_{{ node_type }}.yaml: |
+    apiVersion: machineconfiguration.openshift.io/v1
+    kind: MachineConfig
+    metadata:
+      labels:
+        machineconfiguration.openshift.io/role: {{ node_type }}
+      name: 99-{{ node_type }}-relocatable-ip
+    spec:
+      config:
+        {{ lookup('ansible.builtin.template', 'RelocatableConfig.yaml.j2') | indent(8) }}
 {% endfor %}
-{% endif %}
 {% endif %}

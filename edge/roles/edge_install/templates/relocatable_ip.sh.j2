@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+# we are required to add the relocatable IP here, rather than in the NMStateConfig
+# this is because NMState ignores static IP addresses when DHCP is enabled
+# see https://github.com/nmstate/nmstate/blob/a323ad9d1ae377ae39971f0f0a9f39d3ad341765/rust/src/lib/ip.rs#L190-L197
+# configure-ovs.sh makes this same assumption, and wipes out any static IPs when DHCP is in use
+# see https://github.com/openshift/machine-config-operator/blob/69933a3dccd6f78a5b9fe09d5b3830c9c8e39a03/templates/common/_base/files/configure-ovs-network.yaml#L255-L260
+
+changed=false
+mac_address=$(cat /sys/class/net/{{ edgeCluster.relocatable }}/address)
+
+declare -A addresses
+
+{{ relocatable_interface_macs }}
+
+for interface in {{ edgeCluster.relocatable }} ovs-if-br-ex; do
+  if ! nmcli connection show "${interface}"; then
+    echo "---"
+    echo "interface ${interface} does not exist, skipping"
+    echo "---"
+    continue
+  fi
+{% if cluster_ipv4 is defined %}
+  current_ipv4_addresses=$(nmcli -g ipv4.addresses connection show "${interface}")
+  if [[ "${current_ipv4_addresses}" != *"192.168.7.${addresses[${mac_address}]}/24"* ]]; then
+    nmcli connection modify "${interface}" +ipv4.addresses "192.168.7.${addresses[${mac_address}]}/24"
+    changed=true
+    echo "---"
+    echo "added relocatable IPv4 to interface ${interface}"
+    echo "---"
+  else
+    echo "---"
+    echo "relocatable IPv4 already attached to interface ${interface}"
+    echo "---"
+  fi
+{% endif %}
+
+{% if cluster_ipv6 is defined %}
+  current_ipv6_addresses=$(nmcli -g ipv6.addresses connection show "${interface}")
+  if [[ "${current_ipv6_addresses}" != *"fd04\:\:${addresses[${mac_address}]}/64"* ]]; then
+    nmcli connection modify "${interface}" +ipv6.addresses "fd04::${addresses[${mac_address}]}/64"
+    changed=true
+    echo "---"
+    echo "added relocatable IPv6 to interface ${interface}"
+    echo "---"
+  else
+    echo "---"
+    echo "relocatable IPv6 already attached to interface ${interface}"
+    echo "---"
+  fi
+{% endif %}
+done
+
+if [[ "${changed}" == true ]]; then
+  systemctl restart NetworkManager
+fi

@@ -55,12 +55,6 @@
         apply: true
         state: present
 
-    - name: Create manifest config maps
-      kubernetes.core.k8s:
-        template: AgentConfigMap.yaml.j2
-        apply: true
-        state: present
-
     # these manifests are applied early in the install process, often they are MachineConfigs, applying them early helps avoid extra reboots
     - name: Create user-defined manifest config maps
       when: edgeCluster.installManifestsFolder is defined
@@ -90,9 +84,36 @@
         label: "{{ item.key }}"
       ansible.builtin.include_tasks: performance_profile.yaml
 
+    - name: Check for IPv4
+      loop: "{{ networking.serviceNetwork }}"
+      when: item | ansible.utils.ipv4
+      ansible.builtin.set_fact:
+        cluster_ipv4: true
+
+    - name: Check for IPv6
+      loop: "{{ networking.serviceNetwork }}"
+      when: item | ansible.utils.ipv6
+      ansible.builtin.set_fact:
+        cluster_ipv6: true
+
+    # on a multi-node cluster this is determined based on the API and Ingress VIPs
     - name: Setup relocatable machine network
       when: (controlPlane.replicas == 1) and (edgeCluster.relocatable is defined)
       ansible.builtin.include_tasks: setup_machine_network.yaml
+
+    - name: Setup host networking
+      when: nmstate_host.networkConfig is defined
+      loop: "{{ platform.baremetal.hosts }}"
+      loop_control:
+        label: "{{ nmstate_host.name }}"
+        loop_var: nmstate_host
+      ansible.builtin.include_tasks: setup_host_networking.yaml
+
+    - name: Create manifest config maps
+      kubernetes.core.k8s:
+        template: AgentConfigMap.yaml.j2
+        apply: true
+        state: present
 
     - name: Create AgentClusterInstall
       kubernetes.core.k8s:
@@ -107,15 +128,6 @@
         template: ClusterDeployment.yaml.j2
         apply: true
         state: present
-
-    - name: Setup host networking
-      when: nmstate_host.networkConfig is defined
-      loop: "{{ platform.baremetal.hosts }}"
-      loop_control:
-        label: "{{ nmstate_host.name }}"
-        loop_var: nmstate_host
-        index_var: idx
-      ansible.builtin.include_tasks: setup_host_networking.yaml
 
     - name: Create InfraEnv
       kubernetes.core.k8s:
