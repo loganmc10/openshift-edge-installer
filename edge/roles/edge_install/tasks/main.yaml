@@ -107,7 +107,6 @@
       loop_control:
         label: "{{ nmstate_host.name }}"
         loop_var: nmstate_host
-        index_var: idx
       ansible.builtin.include_tasks: setup_host_networking.yaml
 
     - name: Create manifest config maps
