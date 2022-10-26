@@ -2,10 +2,10 @@
   ansible.builtin.set_fact:
     interface_number: "{{ (interface_number | int) + 1 }}"
 
-- name: Set bash code
+- name: Create entry for address list
   ansible.builtin.set_fact:
     bash_item: "addresses['{{ item.macAddress }}']={{ interface_number }}\n"
 
-- name: Get relocatable interface index
+- name: Append IP to address list
   ansible.builtin.set_fact:
     relocatable_interface_macs: '{{ (relocatable_interface_macs | default("")) + bash_item }}'
