@@ -1,5 +1,5 @@
 # Relocatable Edge Cluster
-When ```relocatable``` option is enabled, the cluster is configured in such a way that its primary interface IP addresses can be changed without impacting the operation of the cluster.
+When the ```relocatable``` option is enabled, the cluster is configured in such a way that its primary interface IP addresses can be changed without impacting the operation of the cluster.
 
 ## How it works
 You set the value of ```relocatable``` to the name of the external facing interface. A secondary IP address (192.168.7.x/24 or fd04::x/64) is assigned to this interface. The machineNetwork CIDR is also set to 192.168.7.0/24 or fd04::/64. Finally, a MachineConfig is created that modifies /etc/default/nodeip-configuration to tell the cluster to use 192.168.7.x/fd04::x as the node IP.
