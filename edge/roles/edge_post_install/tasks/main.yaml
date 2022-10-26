@@ -19,6 +19,10 @@
   # during the install, the kubeconfig is modified to included additional CAs, here we update the kubeconfig to include those
   ansible.builtin.include_tasks: kubeconfig.yaml
 
+- name: Setup MetalLB for relocatable cluster
+  when: (controlPlane.replicas == 3) and (edgeCluster.relocatable is defined)
+  ansible.builtin.include_tasks: metallb.yaml
+
 - name: Run tasks on edge cluster
   environment:
     KUBECONFIG: "{{ kubeconfig_file.dest }}"
