@@ -55,12 +55,6 @@
         apply: true
         state: present
 
-    - name: Create manifest config maps
-      kubernetes.core.k8s:
-        template: AgentConfigMap.yaml.j2
-        apply: true
-        state: present
-
     # these manifests are applied early in the install process, often they are MachineConfigs, applying them early helps avoid extra reboots
     - name: Create user-defined manifest config maps
       when: edgeCluster.installManifestsFolder is defined
@@ -107,6 +101,21 @@
       when: (controlPlane.replicas == 1) and (edgeCluster.relocatable is defined)
       ansible.builtin.include_tasks: setup_machine_network.yaml
 
+    - name: Setup host networking
+      when: nmstate_host.networkConfig is defined
+      loop: "{{ platform.baremetal.hosts }}"
+      loop_control:
+        label: "{{ nmstate_host.name }}"
+        loop_var: nmstate_host
+        index_var: idx
+      ansible.builtin.include_tasks: setup_host_networking.yaml
+
+    - name: Create manifest config maps
+      kubernetes.core.k8s:
+        template: AgentConfigMap.yaml.j2
+        apply: true
+        state: present
+
     - name: Create AgentClusterInstall
       kubernetes.core.k8s:
         template: AgentClusterInstall.yaml.j2
@@ -118,16 +127,6 @@
     - name: Create ClusterDeployment
       kubernetes.core.k8s:
         template: ClusterDeployment.yaml.j2
-        apply: true
-        state: present
-
-    - name: Create NMStateConfig
-      when: item.networkConfig is defined
-      loop: "{{ platform.baremetal.hosts }}"
-      loop_control:
-        label: "{{ item.name }}"
-      kubernetes.core.k8s:
-        template: NMStateConfig.yaml.j2
         apply: true
         state: present
 

@@ -4,11 +4,30 @@
 # this is because NMState ignores static IP addresses when DHCP is enabled
 # see https://github.com/nmstate/nmstate/blob/a323ad9d1ae377ae39971f0f0a9f39d3ad341765/rust/src/lib/ip.rs#L190-L197
 
-current_addresses=$(nmcli -g ipv4.addresses connection show {{ edgeCluster.relocatable }})
-if [[ "$current_addresses" != *"192.168.7.4/24"* ]]; then
-  nmcli connection modify {{ edgeCluster.relocatable }} +ipv4.addresses "192.168.7.4/24"
+mac_address=$(cat /sys/class/net/{{ edgeCluster.relocatable }}/address)
+
+declare -A addresses
+
+{{ relocatable_interface_macs }}
+
+{% if cluster_ipv4 is defined %}
+current_ipv4_addresses=$(nmcli -g ipv4.addresses connection show {{ edgeCluster.relocatable }})
+if [[ "$current_ipv4_addresses" != *"192.168.7.${addresses[${mac_address}]}/24"* ]]; then
+  nmcli connection modify {{ edgeCluster.relocatable }} +ipv4.addresses "192.168.7.${addresses[${mac_address}]}/24"
   nmcli connection up {{ edgeCluster.relocatable }}
-  echo "added relocatable IP to interface {{ edgeCluster.relocatable }}"
+  echo "added relocatable IPv4 to interface {{ edgeCluster.relocatable }}"
 else
-  echo "relocatable IP already attached to interface {{ edgeCluster.relocatable }}"
+  echo "relocatable IPv4 already attached to interface {{ edgeCluster.relocatable }}"
 fi
+{% endif %}
+
+{% if cluster_ipv6 is defined %}
+current_ipv6_addresses=$(nmcli -g ipv6.addresses connection show {{ edgeCluster.relocatable }})
+if [[ "$current_ipv6_addresses" != *"fd04\:\:${addresses[${mac_address}]}/64"* ]]; then
+  nmcli connection modify {{ edgeCluster.relocatable }} +ipv6.addresses "fd04::${addresses[${mac_address}]}/64"
+  nmcli connection up {{ edgeCluster.relocatable }}
+  echo "added relocatable IPv6 to interface {{ edgeCluster.relocatable }}"
+else
+  echo "relocatable IPv6 already attached to interface {{ edgeCluster.relocatable }}"
+fi
+{% endif %}

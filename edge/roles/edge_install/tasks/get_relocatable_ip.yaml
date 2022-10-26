@@ -1,0 +1,11 @@
+- name: Increment relocatable IP address
+  ansible.builtin.set_fact:
+    interface_number: "{{ (interface_number | default(3)) + 1 }}"
+
+- name: Set bash code
+  ansible.builtin.set_fact:
+    bash_item: "addresses['{{ item.macAddress }}']={{ interface_number }}\n"
+
+- name: Get relocatable interface index
+  ansible.builtin.set_fact:
+    relocatable_interface_macs: '{{ (relocatable_interface_macs | default("")) + bash_item }}'
