@@ -4,30 +4,42 @@
 # this is because NMState ignores static IP addresses when DHCP is enabled
 # see https://github.com/nmstate/nmstate/blob/a323ad9d1ae377ae39971f0f0a9f39d3ad341765/rust/src/lib/ip.rs#L190-L197
 
+changed=false
 mac_address=$(cat /sys/class/net/{{ edgeCluster.relocatable }}/address)
 
 declare -A addresses
 
 {{ relocatable_interface_macs }}
 
+for interface in {{ edgeCluster.relocatable }} ovs-if-br-ex do
+  test_connection=$(nmcli connection show ${interface})
+  if [[ $? -ne 0 ]]; then
+    echo "interface ${interface} does not exist, skipping"
+    continue
+  fi
 {% if cluster_ipv4 is defined %}
-current_ipv4_addresses=$(nmcli -g ipv4.addresses connection show {{ edgeCluster.relocatable }})
-if [[ "$current_ipv4_addresses" != *"192.168.7.${addresses[${mac_address}]}/24"* ]]; then
-  nmcli connection modify {{ edgeCluster.relocatable }} +ipv4.addresses "192.168.7.${addresses[${mac_address}]}/24"
-  nmcli connection up {{ edgeCluster.relocatable }}
-  echo "added relocatable IPv4 to interface {{ edgeCluster.relocatable }}"
-else
-  echo "relocatable IPv4 already attached to interface {{ edgeCluster.relocatable }}"
-fi
+  current_ipv4_addresses=$(nmcli -g ipv4.addresses connection show ${interface})
+  if [[ "${current_ipv4_addresses}" != *"192.168.7.${addresses[${mac_address}]}/24"* ]]; then
+    nmcli connection modify ${interface} +ipv4.addresses "192.168.7.${addresses[${mac_address}]}/24"
+    changed=true
+    echo "added relocatable IPv4 to interface ${interface}"
+  else
+    echo "relocatable IPv4 already attached to interface ${interface}"
+  fi
 {% endif %}
 
 {% if cluster_ipv6 is defined %}
-current_ipv6_addresses=$(nmcli -g ipv6.addresses connection show {{ edgeCluster.relocatable }})
-if [[ "$current_ipv6_addresses" != *"fd04\:\:${addresses[${mac_address}]}/64"* ]]; then
-  nmcli connection modify {{ edgeCluster.relocatable }} +ipv6.addresses "fd04::${addresses[${mac_address}]}/64"
-  nmcli connection up {{ edgeCluster.relocatable }}
-  echo "added relocatable IPv6 to interface {{ edgeCluster.relocatable }}"
-else
-  echo "relocatable IPv6 already attached to interface {{ edgeCluster.relocatable }}"
-fi
+  current_ipv6_addresses=$(nmcli -g ipv6.addresses connection show ${interface})
+  if [[ "${current_ipv6_addresses}" != *"fd04\:\:${addresses[${mac_address}]}/64"* ]]; then
+    nmcli connection modify ${interface} +ipv6.addresses "fd04::${addresses[${mac_address}]}/64"
+    changed=true
+    echo "added relocatable IPv6 to interface ${interface}"
+  else
+    echo "relocatable IPv6 already attached to interface ${interface}"
+  fi
 {% endif %}
+done
+
+if [[ "${changed}" == true ]]; then
+  systemctl restart NetworkManager
+fi

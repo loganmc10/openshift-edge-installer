@@ -14,8 +14,8 @@ systemd:
     - contents: |
         [Unit]
         Description=Add relocatable IP
-        After=network.target
-        Before=network-online.target openvswitch.service nodeip-configuration.service ovs-configuration.service
+        After=network.target ovs-configuration.service
+        Before=network-online.target
 
         [Service]
         User=root
