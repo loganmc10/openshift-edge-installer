@@ -52,5 +52,5 @@ for interface in {{ edgeCluster.relocatable }} ovs-if-br-ex; do
 done
 
 if [[ "${changed}" == true ]]; then
-  nmcli connection reload
+  systemctl restart NetworkManager
 fi
