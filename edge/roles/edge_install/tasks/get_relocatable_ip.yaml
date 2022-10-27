@@ -6,6 +6,8 @@
   ansible.builtin.set_fact:
     bash_item: "addresses['{{ item.macAddress }}']={{ interface_number }}\n"
 
+# in order to make sure that 2 nodes don't use the same IP, we make a list of MAC addresses and assign each MAC an IP
+# this is then included in the bash script that gets placed on each node using a MachineConfig
 - name: Append IP to address list
   ansible.builtin.set_fact:
     relocatable_interface_macs: '{{ (relocatable_interface_macs | default("")) + bash_item }}'

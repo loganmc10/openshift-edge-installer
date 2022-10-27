@@ -19,6 +19,8 @@
   # during the install, the kubeconfig is modified to included additional CAs, here we update the kubeconfig to include those
   ansible.builtin.include_tasks: kubeconfig.yaml
 
+# in a multi-node relocatable cluster, the API needs to be exposed using MetalLB
+# before MetalLB is installed, we access the cluster by connecting directly to the first control plane node
 - name: Set up access to relocatable cluster
   when: (controlPlane.replicas == 3) and (edgeCluster.relocatable is defined)
   block:
@@ -34,7 +36,7 @@
       register: bmh_list
       until: bmh_list is not failed
 
-    - name: Find IP for first node
+    - name: Find IP for first control plane node
       loop: "{{ bmh_list.resources[0].status.hardware.nics }}"
       loop_control:
         label: "{{ item.name }}"

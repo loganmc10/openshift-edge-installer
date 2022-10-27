@@ -6,6 +6,31 @@ You set the value of ```relocatable``` to the name of the external facing interf
 
 All of these actions together cause the server to use 192.168.7.x/fd04::x for everything related to OpenShift, while still allowing access to the cluster from outside via the primary interface IP address. This means that the external IP can be changed, and the cluster will continue to use 192.168.7.x/fd04::x internally for its operation.
 
+### Multi-node clusters
+On a multi-node cluster, an API and Ingress VIP are also created in the 192.168.7.x/fd04::x network. These are not accessible from outside the cluster. Therefore, MetalLB is used to expose the API and Ingress using the external IPs specified in the install config. These can be changed later on by updating the IPAddressPools on the cluster:
+```
+oc get IPAddressPool -n metallb-system -o yaml
+items:
+- apiVersion: metallb.io/v1beta1
+  kind: IPAddressPool
+  metadata:
+    name: api-address-pool
+    namespace: metallb-system
+  spec:
+    addresses:
+    - <API_VIP>/32
+    autoAssign: false
+- apiVersion: metallb.io/v1beta1
+  kind: IPAddressPool
+  metadata:
+    name: ingress-address-pool
+    namespace: metallb-system
+  spec:
+    addresses:
+    - <INGRESS_VIP>/32
+    autoAssign: false
+```
+
 ## Changing the IP address
 The external IP address can be changed via DHCP or statically.
 
