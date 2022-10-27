@@ -1,155 +1,133 @@
-- name: Get BareMetalHosts
-  kubernetes.core.k8s_info:
-    api_version: metal3.io/v1alpha1
-    kind: BareMetalHost
-    namespace: "{{ metadata.name }}"
-  register: bmh_list
-  until: bmh_list is not failed
+- name: Install MetalLB operator
+  ansible.builtin.include_role:
+    name: "{{ playbook_dir }}/../common/roles/install_operator"
+  vars:
+    operator_name: metallb-operator
+    operator_namespace: metallb-system
+    all_namespaces: true
 
-- name: Find IP for first node
-  loop: "{{ bmh_list.resources[0].status.hardware.nics }}"
-  loop_control:
-    label: "{{ item.name }}"
-  when: (item.ip is defined) and ((not item.ip.startswith('192.168.7.')) and (not item.ip.startswith('fd04:')))
+- name: Create MetalLB
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: metallb.io/v1beta1
+      kind: MetalLB
+      metadata:
+        name: metallb
+        namespace: metallb-system
+    apply: true
+    state: present
+    wait: true
+    wait_condition:
+      type: Available
+      status: "True"
+    wait_timeout: 1200
+  register: k8s_result
+  until: k8s_result is not failed
+
+- name: Check for IPv4
+  when: platform.baremetal.apiVIP | ansible.utils.ipv4
   ansible.builtin.set_fact:
-    node_ip: "{{ item.ip }}"
+    cluster_ipv4: true
 
-- name: Install MetalLB
-  environment:
-    K8S_AUTH_HOST: "https://{{ node_ip }}:6443"
-    K8S_AUTH_KUBECONFIG: "{{ kubeconfig_file.dest }}"
-    K8S_AUTH_VERIFY_SSL: "false"
-  block:
-    - name: Install MetalLB operator
-      ansible.builtin.include_role:
-        name: "{{ playbook_dir }}/../common/roles/install_operator"
-      vars:
-        operator_name: metallb-operator
-        operator_namespace: metallb-system
-        all_namespaces: true
+- name: Create IPAddressPool for API
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: metallb.io/v1beta1
+      kind: IPAddressPool
+      metadata:
+        name: api-address-pool
+        namespace: metallb-system
+      spec:
+        addresses:
+          - "{{ platform.baremetal.apiVIP }}/{{ (cluster_ipv4 is defined) | ternary('32', '128') }}"
+        autoAssign: false
+    apply: true
+    state: present
+  register: k8s_result
+  until: k8s_result is not failed
 
-    - name: Create MetalLB
-      kubernetes.core.k8s:
-        definition:
-          apiVersion: metallb.io/v1beta1
-          kind: MetalLB
-          metadata:
-            name: metallb
-            namespace: metallb-system
-        apply: true
-        state: present
-        wait: true
-        wait_condition:
-          type: Available
-          status: "True"
-        wait_timeout: 1200
-      register: k8s_result
-      until: k8s_result is not failed
+- name: Create IPAddressPool for Ingress
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: metallb.io/v1beta1
+      kind: IPAddressPool
+      metadata:
+        name: ingress-address-pool
+        namespace: metallb-system
+      spec:
+        addresses:
+          - "{{ platform.baremetal.ingressVIP }}/{{ (cluster_ipv4 is defined) | ternary('32', '128') }}"
+        autoAssign: false
+    apply: true
+    state: present
+  register: k8s_result
+  until: k8s_result is not failed
 
-    - name: Check for IPv4
-      when: platform.baremetal.apiVIP | ansible.utils.ipv4
-      ansible.builtin.set_fact:
-        cluster_ipv4: true
+- name: Create L2Advertisement
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: metallb.io/v1beta1
+      kind: L2Advertisement
+      metadata:
+        name: api-ingress-adv
+        namespace: metallb-system
+      spec:
+        ipAddressPools:
+          - api-address-pool
+          - ingress-address-pool
+    apply: true
+    state: present
+  register: k8s_result
+  until: k8s_result is not failed
 
-    - name: Create IPAddressPool for API
-      kubernetes.core.k8s:
-        definition:
-          apiVersion: metallb.io/v1beta1
-          kind: IPAddressPool
-          metadata:
-            name: api-address-pool
-            namespace: metallb-system
-          spec:
-            addresses:
-              - "{{ platform.baremetal.apiVIP }}/{{ (cluster_ipv4 is defined) | ternary('32', '128') }}"
-            autoAssign: false
-        apply: true
-        state: present
-      register: k8s_result
-      until: k8s_result is not failed
+- name: Create Service for API
+  kubernetes.core.k8s:
+    definition:
+      kind: Service
+      apiVersion: v1
+      metadata:
+        annotations:
+          metallb.universe.tf/address-pool: api-address-pool
+        name: metallb-api
+        namespace: openshift-kube-apiserver
+      spec:
+        ports:
+          - name: http
+            protocol: TCP
+            port: 6443
+            targetPort: 6443
+        selector:
+          app: openshift-kube-apiserver
+        type: LoadBalancer
+    apply: true
+    state: present
+  register: k8s_result
+  until: k8s_result is not failed
 
-    - name: Create IPAddressPool for Ingress
-      kubernetes.core.k8s:
-        definition:
-          apiVersion: metallb.io/v1beta1
-          kind: IPAddressPool
-          metadata:
-            name: ingress-address-pool
-            namespace: metallb-system
-          spec:
-            addresses:
-              - "{{ platform.baremetal.ingressVIP }}/{{ (cluster_ipv4 is defined) | ternary('32', '128') }}"
-            autoAssign: false
-        apply: true
-        state: present
-      register: k8s_result
-      until: k8s_result is not failed
-
-    - name: Create L2Advertisement
-      kubernetes.core.k8s:
-        definition:
-          apiVersion: metallb.io/v1beta1
-          kind: L2Advertisement
-          metadata:
-            name: api-ingress-adv
-            namespace: metallb-system
-          spec:
-            ipAddressPools:
-              - api-address-pool
-              - ingress-address-pool
-        apply: true
-        state: present
-      register: k8s_result
-      until: k8s_result is not failed
-
-    - name: Create Service for API
-      kubernetes.core.k8s:
-        definition:
-          kind: Service
-          apiVersion: v1
-          metadata:
-            annotations:
-              metallb.universe.tf/address-pool: api-address-pool
-            name: metallb-api
-            namespace: openshift-kube-apiserver
-          spec:
-            ports:
-              - name: http
-                protocol: TCP
-                port: 6443
-                targetPort: 6443
-            selector:
-              app: openshift-kube-apiserver
-            type: LoadBalancer
-        apply: true
-        state: present
-      register: k8s_result
-      until: k8s_result is not failed
-
-    - name: Create Service for Ingress
-      kubernetes.core.k8s:
-        definition:
-          kind: Service
-          apiVersion: v1
-          metadata:
-            annotations:
-              metallb.universe.tf/address-pool: ingress-address-pool
-            name: metallb-ingress
-            namespace: openshift-ingress
-          spec:
-            ports:
-              - name: http
-                protocol: TCP
-                port: 80
-                targetPort: 80
-              - name: https
-                protocol: TCP
-                port: 443
-                targetPort: 443
-            selector:
-              ingresscontroller.operator.openshift.io/deployment-ingresscontroller: default
-            type: LoadBalancer
-        apply: true
-        state: present
-      register: k8s_result
-      until: k8s_result is not failed
+- name: Create Service for Ingress
+  kubernetes.core.k8s:
+    definition:
+      kind: Service
+      apiVersion: v1
+      metadata:
+        annotations:
+          metallb.universe.tf/address-pool: ingress-address-pool
+        name: metallb-ingress
+        namespace: openshift-ingress
+      spec:
+        ports:
+          - name: http
+            protocol: TCP
+            port: 80
+            targetPort: 80
+          - name: https
+            protocol: TCP
+            port: 443
+            targetPort: 443
+        selector:
+          ingresscontroller.operator.openshift.io/deployment-ingresscontroller: default
+        type: LoadBalancer
+    apply: true
+    state: present
+  register: k8s_result
+  until: k8s_result is not failed
