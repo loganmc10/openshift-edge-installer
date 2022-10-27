@@ -3,7 +3,7 @@ ignition:
 storage:
   files:
     - contents:
-        source: data:text/plain;charset=utf-8;base64,{{ lookup('ansible.builtin.template', 'relocatable_ip.sh.j2') | b64encode }}
+        source: data:text/plain;charset=utf-8;base64,{{ lookup('ansible.builtin.template', 'relocatable_ip.sh.j2', template_vars={'first_run': first_run}) | b64encode }}
       mode: 0700
       overwrite: true
       path: /var/local/relocatable/relocatable_ip.sh
