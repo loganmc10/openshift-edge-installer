@@ -10,7 +10,7 @@
   loop: "{{ bmh_list.resources[0].status.hardware.nics }}"
   loop_control:
     label: "{{ item.name }}"
-  when: (item.ip is defined) and ((not item.ip.startswith('192.168.7.')) and (not item.ip.startswith('fd04::'))))
+  when: (item.ip is defined) and ((not item.ip.startswith('192.168.7.')) and (not item.ip.startswith('fd04:'))))
   ansible.builtin.set_fact:
     node_ip: "{{ item.ip }}"
 
@@ -61,7 +61,7 @@
             namespace: metallb-system
           spec:
             addresses:
-              - "{{ platform.baremetal.apiVIP }}/{{ (cluster_ipv4 is defined) | ternary(32, 64) }}"
+              - "{{ platform.baremetal.apiVIP }}/{{ (cluster_ipv4 is defined) | ternary('32', '128') }}"
             autoAssign: false
         apply: true
         state: present
@@ -78,7 +78,7 @@
             namespace: metallb-system
           spec:
             addresses:
-              - "{{ platform.baremetal.ingressVIP }}/{{ (cluster_ipv4 is defined) | ternary(32, 64) }}"
+              - "{{ platform.baremetal.ingressVIP }}/{{ (cluster_ipv4 is defined) | ternary('32', '128') }}"
             autoAssign: false
         apply: true
         state: present
