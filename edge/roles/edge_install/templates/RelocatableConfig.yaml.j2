@@ -12,9 +12,9 @@ storage:
 {% if first_run %}
     - append:
 {% if cluster_ipv4 is defined %}
-        source: data:text/plain;charset=utf-8;base64,{{ ("192.168.7.2 api-int." + metadata.name + "." + baseDomain + " api." + metadata.name + "." + baseDomain) | b64encode }}
+        - source: data:text/plain;charset=utf-8;base64,{{ ("192.168.7.2 api-int." + metadata.name + "." + baseDomain + " api." + metadata.name + "." + baseDomain) | b64encode }}
 {% else %}
-        source: data:text/plain;charset=utf-8;base64,{{ ("fd04::2 api-int." + metadata.name + "." + baseDomain + " api." + metadata.name + "." + baseDomain) | b64encode }}
+        - source: data:text/plain;charset=utf-8;base64,{{ ("fd04::2 api-int." + metadata.name + "." + baseDomain + " api." + metadata.name + "." + baseDomain) | b64encode }}
 {% endif %}
       path: /etc/hosts
 {% endif %}
