@@ -1,11 +1,6 @@
 # Purpose
 This playbook installs an edge cluster. You should already have a provisioning cluster configured.
 # Usage
-
-A video walkthrough of the playbook is available on [YouTube](https://www.youtube.com/watch?v=OFyG0iTrSBo).
-
----
-
 Example install config files are provided in ```install-config-sno-example.yaml``` and ```install-config-standard-example.yaml```
 
 The install config uses the same format as an IPI install, except that it also requires you to set clusterImageSet. The example shows how to point the clusterImageSet to a mirror registry.

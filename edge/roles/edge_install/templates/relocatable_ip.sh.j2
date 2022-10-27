@@ -14,7 +14,7 @@ declare -A addresses
 {{ relocatable_interface_macs }}
 
 for interface in {{ edgeCluster.relocatable }} ovs-if-br-ex; do
-  if ! nmcli connection show "${interface}"; then
+  if ! nmcli -g connection.id connection show "${interface}"; then
     echo "---"
     echo "interface ${interface} does not exist, skipping"
     echo "---"
@@ -23,7 +23,7 @@ for interface in {{ edgeCluster.relocatable }} ovs-if-br-ex; do
 {% if cluster_ipv4 is defined %}
   current_ipv4_addresses=$(nmcli -g ipv4.addresses connection show "${interface}")
   if [[ "${current_ipv4_addresses}" != *"192.168.7.${addresses[${mac_address}]}/24"* ]]; then
-    nmcli connection modify "${interface}" +ipv4.addresses "192.168.7.${addresses[${mac_address}]}/24"
+    nmcli connection modify "${interface}" +ipv4.addresses "192.168.7.${addresses[${mac_address}]}/24"{% if controlPlane.replicas == 3 %} +ipv4.dns "192.168.7.2"{% endif %}
     changed=true
     echo "---"
     echo "added relocatable IPv4 to interface ${interface}"
@@ -38,7 +38,7 @@ for interface in {{ edgeCluster.relocatable }} ovs-if-br-ex; do
 {% if cluster_ipv6 is defined %}
   current_ipv6_addresses=$(nmcli -g ipv6.addresses connection show "${interface}")
   if [[ "${current_ipv6_addresses}" != *"fd04\:\:${addresses[${mac_address}]}/64"* ]]; then
-    nmcli connection modify "${interface}" +ipv6.addresses "fd04::${addresses[${mac_address}]}/64"
+    nmcli connection modify "${interface}" +ipv6.addresses "fd04::${addresses[${mac_address}]}/64"{% if controlPlane.replicas == 3 %} +ipv6.dns "fd04::2"{% endif %}
     changed=true
     echo "---"
     echo "added relocatable IPv6 to interface ${interface}"
@@ -53,4 +53,7 @@ done
 
 if [[ "${changed}" == true ]]; then
   systemctl restart NetworkManager
+  echo "---"
+  echo "restarted NetworkManager"
+  echo "---"
 fi

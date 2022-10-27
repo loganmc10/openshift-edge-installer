@@ -1,3 +1,11 @@
+os_images: # Optional, you can specify a location for MCE to get OS ISOs from
+  # these can be mirrored from https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos
+  # they do not need to match exactly the version of OpenShift you are installing on the edge clusters, they are just used to bootstrap the nodes
+  - openshiftVersion: "4.11"
+    version: "4.11.9"
+    url: "https://<local_http_mirror>/rhcos-4.11.9-x86_64-live.x86_64.iso"
+    cpuArchitecture: "x86_64"
+
 mirror_url: <mirror_url>
 mirror_port: 8443
 mirror_ssl_cert: |

@@ -15,7 +15,7 @@ systemd:
         [Unit]
         Description=Add relocatable IP
         After=network.target ovs-configuration.service
-        Before=network-online.target
+        Before=network-online.target kubelet.service crio.service
 
         [Service]
         User=root
