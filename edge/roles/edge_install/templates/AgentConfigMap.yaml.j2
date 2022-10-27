@@ -53,6 +53,6 @@ data:
       name: 99-{{ node_type }}-relocatable-ip
     spec:
       config:
-        {{ lookup('ansible.builtin.template', 'RelocatableConfig.yaml.j2') | indent(8) }}
+        {{ lookup('ansible.builtin.template', 'RelocatableConfig.yaml.j2', template_vars={'first_run': false}) | indent(8) }}
 {% endfor %}
 {% endif %}

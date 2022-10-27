@@ -25,5 +25,5 @@ spec:
     {{ proxy | to_nice_yaml(indent=2) | trim | indent(4) }}
 {% endif %}
 {% if edgeCluster.relocatable is defined %}
-  ignitionConfigOverride: '{{ (lookup('ansible.builtin.template', 'RelocatableConfig.yaml.j2') | from_yaml | to_json) }}'
+  ignitionConfigOverride: '{{ (lookup('ansible.builtin.template', 'RelocatableConfig.yaml.j2', template_vars={'first_run': true}) | from_yaml | to_json) }}'
 {% endif %}
