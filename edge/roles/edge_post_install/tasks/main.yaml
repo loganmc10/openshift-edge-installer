@@ -113,6 +113,23 @@
           when: (edgeCluster.odfStorage.imageRegistry is defined) and (edgeCluster.odfStorage.imageRegistry)
           ansible.builtin.include_tasks: registry.yaml
 
+    - name: Apply PerformanceProfile
+      when: edgeCluster.performanceProfileSpec is defined
+      loop: "{{ edgeCluster.performanceProfileSpec | dict2items }}"
+      loop_control:
+        label: "{{ item.key }}"
+      kubernetes.core.k8s:
+        template: PerformanceProfile.yaml.j2
+        apply: true
+        state: present
+        wait: true
+        wait_condition:
+          type: Available
+          status: "True"
+        wait_timeout: 1200
+      register: k8s_result
+      until: k8s_result is not failed
+
     - name: Auto approve CSRs
       when: (edgeCluster.autoApproveCSRs is defined) and (edgeCluster.autoApproveCSRs)
       ansible.builtin.include_role:

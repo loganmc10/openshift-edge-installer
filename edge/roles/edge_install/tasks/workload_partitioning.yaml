@@ -1,0 +1,21 @@
+- name: Create config files for workload partitioning
+  ansible.builtin.set_fact:
+    workload_partitioning: |
+      [crio.runtime.workloads.management]
+      activation_annotation = "target.workload.openshift.io/management"
+      annotation_prefix = "resources.workload.openshift.io"
+      [crio.runtime.workloads.management.resources]
+      cpushares = 0
+      CPUs = "{{ edgeCluster.performanceProfileSpec.master.cpu.reserved }}"
+    openshift_workload_pinning: |
+      {
+        "management": {
+          "cpuset": "{{ edgeCluster.performanceProfileSpec.master.cpu.reserved }}"
+        }
+      }
+
+- name: Create workload partitioning config map
+  kubernetes.core.k8s:
+    template: WorkloadPartitioning.yaml.j2
+    apply: true
+    state: present
