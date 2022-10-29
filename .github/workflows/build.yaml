@@ -8,18 +8,22 @@ on:
 jobs:
   test-code:
     runs-on: ubuntu-latest
-    container: registry.access.redhat.com/ubi9/ubi:latest
+    container: registry.fedoraproject.org/fedora:latest
     steps:
       - name: Install packages
         run: |
-          dnf -y update
-          dnf -y install python3-pip git
+          dnf -q -y update
+          dnf -q -y install python3-pip git ShellCheck
           pip3 install --upgrade pip
-          pip3 install ansible-core kubernetes jmespath ansible-lint netaddr
+          pip3 install --upgrade ansible-core kubernetes jmespath ansible-lint netaddr
           ansible-galaxy collection install -U kubernetes.core community.general ansible.utils
+          git config --global --add safe.directory /__w/openshift-edge-installer/openshift-edge-installer
       - uses: actions/checkout@v3
       - name: Check code
         run: |
           ansible-lint -s -x yaml[line-length] common
           ansible-lint -s -x yaml[line-length] provisioning
           ansible-lint -s -x yaml[line-length] edge
+          ansible localhost -m ansible.builtin.template -a "src=edge/roles/edge_install/templates/relocatable_ip.sh.j2 dest=relocatable_ip.sh" -e "{'edgeCluster':{'relocatable':'eno1'},'relocatable_interface_macs':'addresses[\"11:22:33:44:55:66\"]=4','cluster_ipv4':true,'cluster_ipv6':true,'controlPlane':{'replicas':3}}"
+          ansible localhost -m ansible.builtin.template -a "src=edge/roles/edge_install/templates/relocatable_ip.sh.j2 dest=relocatable_ip_sno.sh" -e "{'edgeCluster':{'relocatable':'eno1'},'relocatable_interface_macs':'addresses[\"11:22:33:44:55:66\"]=4','cluster_ipv4':true,'cluster_ipv6':true,'controlPlane':{'replicas':1}}"
+          shellcheck -o all relocatable_ip.sh relocatable_ip_sno.sh
