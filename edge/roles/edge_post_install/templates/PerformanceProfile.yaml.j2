@@ -1,0 +1,14 @@
+apiVersion: performance.openshift.io/v2
+kind: PerformanceProfile
+metadata:
+  name: openshift-{{ item.key }}-performance-profile
+spec:
+  {{ item.value | to_nice_yaml(indent=2) | trim | indent(2) }}
+{% if item.value.machineConfigPoolSelector is not defined %}
+  machineConfigPoolSelector:
+    pools.operator.machineconfiguration.openshift.io/{{ item.key }}: ""
+{% endif %}
+{% if item.value.nodeSelector is not defined %}
+  nodeSelector:
+    node-role.kubernetes.io/{{ item.key }}: ""
+{% endif %}

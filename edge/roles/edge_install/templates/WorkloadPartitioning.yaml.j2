@@ -1,16 +1,16 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "workload-partitioning-{{ item.key }}"
+  name: "workload-partitioning-master"
   namespace: "{{ metadata.name }}"
 data:
-  01_workload_partitioning_{{ item.key }}.yaml: |
+  01_workload_partitioning_master.yaml: |
     apiVersion: machineconfiguration.openshift.io/v1
     kind: MachineConfig
     metadata:
       labels:
-        machineconfiguration.openshift.io/role: "{{ item.key }}"
-      name: 02-{{ item.key }}-workload-partitioning
+        machineconfiguration.openshift.io/role: "master"
+      name: 02-master-workload-partitioning
     spec:
       config:
         ignition:
