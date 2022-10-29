@@ -114,7 +114,7 @@
           ansible.builtin.include_tasks: registry.yaml
 
     - name: Prepare to apply MachineConfigs
-      when: (edgeCluster.performanceProfileSpec is defined) or (edgeCluster.autoApproveCSRs is defined)
+      when: (edgeCluster.performanceProfileSpec is defined) or (edgeCluster.autoApproveCSRs is defined and edgeCluster.autoApproveCSRs)
       block:
         - name: Get MachineConfigPools
           kubernetes.core.k8s_info:
@@ -163,7 +163,7 @@
         name: "edge_csr_approver"
 
     - name: Finish applying MachineConfigs
-      when: (edgeCluster.performanceProfileSpec is defined) or (edgeCluster.autoApproveCSRs is defined)
+      when: (edgeCluster.performanceProfileSpec is defined) or (edgeCluster.autoApproveCSRs is defined and edgeCluster.autoApproveCSRs)
       block:
         - name: Pause for 30 seconds to let MachineConfigPools settle
           ansible.builtin.pause:
