@@ -113,6 +113,33 @@
           when: (edgeCluster.odfStorage.imageRegistry is defined) and (edgeCluster.odfStorage.imageRegistry)
           ansible.builtin.include_tasks: registry.yaml
 
+    - name: Prepare to apply MachineConfigs
+      when: (edgeCluster.performanceProfileSpec is defined) or (edgeCluster.autoApproveCSRs is defined)
+      block:
+        - name: Get MachineConfigPools
+          kubernetes.core.k8s_info:
+            api_version: machineconfiguration.openshift.io/v1
+            kind: MachineConfigPool
+          register: machine_config_pools
+          until: machine_config_pools is not failed
+
+        - name: Pause MCPs
+          loop: "{{ machine_config_pools.resources }}"
+          loop_control:
+            label: "{{ item.metadata.name }}"
+          kubernetes.core.k8s:
+            definition:
+              apiVersion: machineconfiguration.openshift.io/v1
+              kind: MachineConfigPool
+              metadata:
+                name: "{{ item.metadata.name }}"
+              spec:
+                paused: true
+            state: present
+          register: k8s_result
+          until: k8s_result is not failed
+
+    # since 4.11, this can be applied as an install manifest, but that doesn't seem to work reliably
     - name: Apply PerformanceProfile
       when: edgeCluster.performanceProfileSpec is defined
       loop: "{{ edgeCluster.performanceProfileSpec | dict2items }}"
@@ -134,3 +161,26 @@
       when: (edgeCluster.autoApproveCSRs is defined) and (edgeCluster.autoApproveCSRs)
       ansible.builtin.include_role:
         name: "edge_csr_approver"
+
+    - name: Finish applying MachineConfigs
+      when: (edgeCluster.performanceProfileSpec is defined) or (edgeCluster.autoApproveCSRs is defined)
+      block:
+        - name: Pause for 30 seconds to let MachineConfigPools settle
+          ansible.builtin.pause:
+            seconds: 30
+
+        - name: Unpause MCPs
+          loop: "{{ machine_config_pools.resources }}"
+          loop_control:
+            label: "{{ item.metadata.name }}"
+          kubernetes.core.k8s:
+            definition:
+              apiVersion: machineconfiguration.openshift.io/v1
+              kind: MachineConfigPool
+              metadata:
+                name: "{{ item.metadata.name }}"
+              spec:
+                paused: false
+            state: present
+          register: k8s_result
+          until: k8s_result is not failed
