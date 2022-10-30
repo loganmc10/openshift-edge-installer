@@ -64,6 +64,29 @@
 - name: Run tasks on edge cluster
   environment: "{{ kubeconfig_env_vars }}"
   block:
+    # applied during post-install because it doesn't seem to work as an install-time manifest
+    - name: Configure routingViaHost
+      when: (edgeCluster.routingViaHost is defined) and (edgeCluster.routingViaHost)
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: operator.openshift.io/v1
+          kind: Network
+          metadata:
+            name: cluster
+          spec:
+            defaultNetwork:
+              ovnKubernetesConfig:
+                gatewayConfig:
+                  routingViaHost: true
+        state: present
+        wait: true
+        wait_condition:
+          type: Progressing
+          status: "False"
+        wait_timeout: 1200
+      register: k8s_result
+      until: k8s_result is not failed
+
     # this needs be be applied post-install, disabling the Console operator with an install manifest stops the installer from reporting 100% completion
     - name: ConsoleOperatorDisable
       when: (edgeCluster.disableConsole is defined) and (edgeCluster.disableConsole)
