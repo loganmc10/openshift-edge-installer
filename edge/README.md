@@ -65,7 +65,7 @@ In order to reinstall the cluster, you need to delete the namespace for the edge
 * Create secrets for the BMC login credentials.
 * Create an image pull secret that the new cluster will use.
 * Generate ConfigMaps for extra install-time manifests.
-* Configure PerformanceProfile and workload partitioning if required.
+* Configure workload partitioning if required.
 * Create an AgentClusterInstall and ClusterDeployment with the install parameters.
 * Create NMStateConfigs that specify host networking configuration.
 * Create InfraEnv, which will generate the discovery ISO.
@@ -76,4 +76,6 @@ In order to reinstall the cluster, you need to delete the namespace for the edge
 * kubeconfig written to disk.
 * Wait for cluster install to complete.
 * Apply post-install manifests.
+* Configure MetalLB for multi-node relocatable clusters.
 * Install ODF if required.
+* Apply PerformanceProfiles if required.
