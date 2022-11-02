@@ -25,7 +25,7 @@
 - name: Install storage provider
   when: has_default_storage is not defined
   block:
-    - name: Install LSO operator
+    - name: Install LSO operator # noqa role-name[path]
       ansible.builtin.include_role:
         name: "{{ playbook_dir }}/../common/roles/install_operator"
       vars:

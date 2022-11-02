@@ -1,4 +1,4 @@
-- name: Install MetalLB operator
+- name: Install MetalLB operator # noqa role-name[path]
   ansible.builtin.include_role:
     name: "{{ playbook_dir }}/../common/roles/install_operator"
   vars:

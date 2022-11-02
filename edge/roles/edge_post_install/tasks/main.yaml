@@ -126,7 +126,7 @@
     - name: Install Storage and Registry
       when: (edgeCluster.odfStorage is defined) and (edgeCluster.odfStorage.enabled)
       block:
-        - name: Install ODF
+        - name: Install ODF # noqa role-name[path]
           ansible.builtin.include_role:
             name: "{{ playbook_dir }}/../common/roles/storage"
           vars:
