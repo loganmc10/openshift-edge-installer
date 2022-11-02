@@ -6,6 +6,10 @@ This playbook configures the Multicluster Engine on a Provisioning Cluster.
 export KUBECONFIG=~/path/to/kubeconfig
 ansible-playbook provisioning-playbook.yaml
 ```
+Alternatively, using a container:
+```
+podman run --pull always -it --rm -v </path/to/kubeconfig>:/kubeconfig:Z quay.io/loganmc10/openshift-edge-installer:latest provisioning
+```
 ## With mirror registry
 The mirror registry should be populated using the [oc mirror](https://docs.openshift.com/container-platform/4.11/installing/disconnected_install/installing-mirroring-disconnected.html) plugin.
 
@@ -15,6 +19,12 @@ An example mirror registry config file is provided in ```mirror-config-example.y
 ```
 export KUBECONFIG=~/path/to/kubeconfig
 ansible-playbook provisioning-playbook.yaml --extra-vars "@mirror-config.yaml"
+```
+Alternatively, using a container:
+```
+podman run --pull always -it --rm -v </path/to/kubeconfig>:/kubeconfig:Z \
+  -v </path/to/mirror-config.yaml>:/mirror-config.yaml:Z \
+  quay.io/loganmc10/openshift-edge-installer:latest provisioning
 ```
 # Ansible Playbook Workflow
 * Set ODF as the default StorageClass if ODF is installed and there isn't already one set.

@@ -25,6 +25,12 @@ To run the playbook:
 export KUBECONFIG=~/path/to/provisioning/kubeconfig
 ansible-playbook edge-playbook.yaml --extra-vars "@install-config.yaml"
 ```
+Alternatively, using a container:
+```
+podman run --pull always -it --rm -v </path/to/provisioning/kubeconfig>:/kubeconfig:Z \
+  -v </path/to/install-config.yaml>:/install-config.yaml:Z \
+  quay.io/loganmc10/openshift-edge-installer:latest edge
+```
 The Events URL will be printed to the console (so that you can check the progress of the install). A kubeconfig file will be written to the playbook folder with this name: \<cluster-name\>-admin-kubeconfig
 # Disconnected registry
 
