@@ -12,10 +12,12 @@ After the installation of an edge cluster is complete, the edge cluster does not
   * Provisioning cluster needs to be configured first.
   * Target must be a baremetal cluster (SNO, compact, or standard).
   * If ODF is being installed, each node needs to have 2 disks (one for the OS, and one for ODF).
-* Ansible: ```pip install ansible-core```
-* Python modules: ```pip install kubernetes jmespath netaddr```
-* Kubernetes Ansible collection: ```ansible-galaxy collection install -U kubernetes.core community.general ansible.utils```
-* [oc binary](https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz)
+* Local machine:
+  * Install the following on your machine:
+    * Python modules: ```pip install --upgrade ansible-core kubernetes jmespath netaddr```
+    * Ansible collections: ```ansible-galaxy collection install -U kubernetes.core community.general ansible.utils```
+    * [oc binary](https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz)
+  * Alternatively, use the provided container. Usage instructions are included in the README for each playbook.
 
 ## Provisioning Cluster
 The Ansible playbook does not handle installing the provisioning cluster itself, there are already many options for this (IPI, UPI, Assisted Installer, Agent-based installer). On the provisioning cluster, the playbook installs the [Multicluster Engine Operator](https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.6/html-single/multicluster_engine/index) and [configures it](https://github.com/openshift/assisted-service/tree/master/docs/hive-integration) to handle agent-based installs.
