@@ -6,8 +6,6 @@ RUN microdnf -y install tar gzip && \
 FROM registry.access.redhat.com/ubi9/ubi-minimal:latest
 
 WORKDIR /app
-COPY --from=0 /usr/local/bin/oc /usr/local/bin/oc
-COPY . .
 
 RUN microdnf -y install python3-pip && microdnf -y clean all && \
     pip install --upgrade pip && \
@@ -17,5 +15,8 @@ RUN microdnf -y install python3-pip && microdnf -y clean all && \
     chmod +x /usr/bin/edge && \
     echo -e '#!/bin/bash\nif [[ -f "/mirror-config.yaml" ]]; then\n  mirror="--extra-vars @/mirror-config.yaml"\nelse\n  mirror=""\nfi\nansible-playbook /app/provisioning/provisioning-playbook.yaml ${mirror}' > /usr/bin/provisioning && \
     chmod +x /usr/bin/provisioning
+
+COPY --from=0 /usr/local/bin/oc /usr/local/bin/oc
+COPY . .
 
 ENV KUBECONFIG=/kubeconfig
