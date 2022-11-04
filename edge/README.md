@@ -29,9 +29,10 @@ Alternatively, using a container:
 ```
 podman run --pull always -it --rm -v </path/to/provisioning/kubeconfig>:/kubeconfig:Z \
   -v </path/to/install-config.yaml>:/install-config.yaml:Z \
+  -v ${PWD}:/app/edge/kubeconfigs:Z \
   quay.io/loganmc10/openshift-edge-installer:latest edge
 ```
-The Events URL will be printed to the console (so that you can check the progress of the install). A kubeconfig file will be written to the playbook folder with this name: \<cluster-name\>-admin-kubeconfig
+The Events URL will be printed to the console (so that you can check the progress of the install). A kubeconfig file will be written to the playbook folder with this name: ```kubeconfigs/<cluster-name>-admin-kubeconfig```
 # Disconnected registry
 
 The mirror registry should be populated using the [oc mirror](https://docs.openshift.com/container-platform/4.11/installing/disconnected_install/installing-mirroring-disconnected.html) plugin.
