@@ -6,7 +6,6 @@
 # configure-ovs.sh makes this same assumption, and wipes out any static IPs when DHCP is in use
 # see https://github.com/openshift/machine-config-operator/blob/69933a3dccd6f78a5b9fe09d5b3830c9c8e39a03/templates/common/_base/files/configure-ovs-network.yaml#L255-L260
 
-changed=false
 mac_address=$(cat /sys/class/net/{{ edgeCluster.relocatable }}/address)
 
 declare -A addresses
@@ -20,17 +19,18 @@ for interface in {{ edgeCluster.relocatable }} ovs-if-br-ex; do
     echo "---"
     continue
   fi
+  dev_name=$(nmcli -g connection.interface-name connection show "${interface}")
 {% if cluster_ipv4 is defined %}
   current_ipv4_addresses=$(nmcli -g ipv4.addresses connection show "${interface}")
   if [[ "${current_ipv4_addresses}" != *"192.168.7.${addresses[${mac_address}]}/24"* ]]; then
     nmcli connection modify "${interface}" +ipv4.addresses "192.168.7.${addresses[${mac_address}]}/24"{% if controlPlane.replicas == 3 %} +ipv4.dns "192.168.7.2"{% endif +%}
-    changed=true
+    nmcli dev reapply "${dev_name}"
     echo "---"
-    echo "added relocatable IPv4 to interface ${interface}"
+    echo "added relocatable IPv4 to connection ${interface}, device ${dev_name}"
     echo "---"
   else
     echo "---"
-    echo "relocatable IPv4 already attached to interface ${interface}"
+    echo "relocatable IPv4 already attached to connection ${interface}, device ${dev_name}"
     echo "---"
   fi
 {% endif %}
@@ -39,21 +39,14 @@ for interface in {{ edgeCluster.relocatable }} ovs-if-br-ex; do
   current_ipv6_addresses=$(nmcli -g ipv6.addresses connection show "${interface}")
   if [[ "${current_ipv6_addresses}" != *"fd04\:\:${addresses[${mac_address}]}/64"* ]]; then
     nmcli connection modify "${interface}" +ipv6.addresses "fd04::${addresses[${mac_address}]}/64"{% if controlPlane.replicas == 3 %} +ipv6.dns "fd04::2"{% endif +%}
-    changed=true
+    nmcli dev reapply "${dev_name}"
     echo "---"
-    echo "added relocatable IPv6 to interface ${interface}"
+    echo "added relocatable IPv6 to connection ${interface}, device ${dev_name}"
     echo "---"
   else
     echo "---"
-    echo "relocatable IPv6 already attached to interface ${interface}"
+    echo "relocatable IPv6 already attached to connection ${interface}, device ${dev_name}"
     echo "---"
   fi
 {% endif %}
 done
-
-if [[ "${changed}" == true ]]; then
-  systemctl restart NetworkManager
-  echo "---"
-  echo "restarted NetworkManager"
-  echo "---"
-fi
