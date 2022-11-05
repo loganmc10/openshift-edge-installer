@@ -3,7 +3,7 @@ If a cluster has been offline for a period of time, some of the certificates on 
 
 Manual intervention is typically required in order to approve the new certificates after this has happened.
 
-See https://docs.openshift.com/container-platform/4.11/backup_and_restore/control_plane_backup_and_restore/disaster_recovery/scenario-3-expired-certs.html
+See https://docs.openshift.com/container-platform/latest/backup_and_restore/control_plane_backup_and_restore/disaster_recovery/scenario-3-expired-certs.html
 
 ---
 

@@ -7,7 +7,7 @@ The install config uses the same format as an IPI install, except that it also r
 
 If you are not using a mirror registry, the clusterImageSet would look something like this:
 ```
-clusterImageSet: quay.io/openshift-release-dev/ocp-release:4.11.6-x86_64
+clusterImageSet: quay.io/openshift-release-dev/ocp-release:4.11.12-x86_64
 ```
 You can also optionally set a path to extra manifests to be applied early in the installation process:
 ```
@@ -35,7 +35,7 @@ podman run --pull always -it --rm -v </path/to/provisioning/kubeconfig>:/kubecon
 The Events URL will be printed to the console (so that you can check the progress of the install). A kubeconfig file will be written to the playbook folder with this name: ```kubeconfigs/<cluster-name>-admin-kubeconfig```
 # Disconnected registry
 
-The mirror registry should be populated using the [oc mirror](https://docs.openshift.com/container-platform/4.11/installing/disconnected_install/installing-mirroring-disconnected.html) plugin.
+The mirror registry should be populated using the [oc mirror](https://docs.openshift.com/container-platform/latest/installing/disconnected_install/installing-mirroring-disconnected.html) plugin.
 
 ---
 
@@ -45,7 +45,7 @@ If you want to install Operators on the edge cluster from the disconnected regis
 
 See the ```post_manifests_mirror_example``` folder for an example of how you can use the ```postInstallManifestsFolder``` option in the install-config to configure these during the installation process.
 # Automatic installation via virtual media
-Firmware requirements for booting via virtual media are documented [here](https://docs.openshift.com/container-platform/4.11/installing/installing_bare_metal_ipi/ipi-install-prerequisites.html#ipi-install-firmware-requirements-for-installing-with-virtual-media_ipi-install-prerequisites)
+Firmware requirements for booting via virtual media are documented [here](https://docs.openshift.com/container-platform/latest/installing/installing_bare_metal_ipi/ipi-install-prerequisites.html#ipi-install-firmware-requirements-for-installing-with-virtual-media_ipi-install-prerequisites)
 
 For Dell, the BMC address format is ```idrac-virtualmedia://<out-of-band-ip>/redfish/v1/Systems/System.Embedded.1```
 

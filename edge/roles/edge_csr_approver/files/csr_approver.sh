@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# see https://docs.openshift.com/container-platform/4.11/backup_and_restore/control_plane_backup_and_restore/disaster_recovery/scenario-3-expired-certs.html
+# see https://docs.openshift.com/container-platform/latest/backup_and_restore/control_plane_backup_and_restore/disaster_recovery/scenario-3-expired-certs.html
 
 set -o pipefail
 

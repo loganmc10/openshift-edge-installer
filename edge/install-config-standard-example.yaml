@@ -2,7 +2,7 @@ apiVersion: v1
 
 # Additional parameters for openshift-edge-installer
 edgeCluster:
-  clusterImageSet: <mirror_url>:8443/openshift/release-images:4.11.6-x86_64 # Required
+  clusterImageSet: <mirror_url>:8443/openshift/release-images:4.11.12-x86_64 # Required
   additionalNTPSources: # Optional
     - pool.ntp.org
   installManifestsFolder: install_manifests # Optional
@@ -13,7 +13,7 @@ edgeCluster:
     mode: "tpmv2"
   disableConsole: false # Optional
   relocatable: <external_interface> # Optional, see docs/RELOCATABLE.md
-  routingViaHost: false # Optional, see https://docs.openshift.com/container-platform/4.11/rest_api/operator_apis/network-operator-openshift-io-v1.html#spec-defaultnetwork-ovnkubernetesconfig-gatewayconfig
+  routingViaHost: false # Optional, see https://docs.openshift.com/container-platform/latest/rest_api/operator_apis/network-operator-openshift-io-v1.html#spec-defaultnetwork-ovnkubernetesconfig-gatewayconfig
   odfStorage: # Optional
     # If you are using a mirror, you must configure a CatalogSource using postInstallManifestsFolder
     # See the post_manifests_mirror_example folder for an example of how to do this
@@ -58,7 +58,7 @@ platform:
           password: <password>
         bootMACAddress: <nic1_mac_address>
         rootDeviceHints:
-          hctl: "1:0:0:0" # See https://docs.openshift.com/container-platform/4.11/rest_api/provisioning_apis/baremetalhost-metal3-io-v1alpha1.html#spec-rootdevicehints
+          hctl: "1:0:0:0" # See https://docs.openshift.com/container-platform/latest/rest_api/provisioning_apis/baremetalhost-metal3-io-v1alpha1.html#spec-rootdevicehints
         networkConfig:
           interfaces:
             - name: eno1
