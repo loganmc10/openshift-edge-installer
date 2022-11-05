@@ -30,7 +30,7 @@ data:
     metadata:
       labels:
         machineconfiguration.openshift.io/role: {{ node_type }}
-      name: 10-{{ node_type }}s-node-ip-hint
+      name: 99-nodeip-hint-{{ node_type }}
     spec:
       config:
         ignition:
