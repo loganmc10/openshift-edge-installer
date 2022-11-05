@@ -7,7 +7,7 @@ FROM registry.access.redhat.com/ubi9/ubi-minimal:latest
 
 WORKDIR /app
 
-RUN microdnf -y install python3-pip && microdnf -y clean all && \
+RUN microdnf -y update && microdnf -y install python3-pip && microdnf -y clean all && \
     pip install --upgrade pip && \
     pip install --upgrade ansible-core kubernetes jmespath netaddr && \
     ansible-galaxy collection install -U kubernetes.core community.general ansible.utils && \
