@@ -11,7 +11,6 @@ edgeCluster:
   diskEncryption: # Optional
     enableOn: "none" # Possible values: none,all,masters,workers
     mode: "tpmv2"
-  disableConsole: false # Optional
   relocatable: <external_interface> # Optional, see docs/RELOCATABLE.md
   routingViaHost: false # Optional, see https://docs.openshift.com/container-platform/latest/rest_api/operator_apis/network-operator-openshift-io-v1.html#spec-defaultnetwork-ovnkubernetesconfig-gatewayconfig
   odfStorage: # Optional

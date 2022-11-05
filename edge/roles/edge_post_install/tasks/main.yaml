@@ -87,21 +87,6 @@
       register: k8s_result
       until: k8s_result is not failed
 
-    # this needs be be applied post-install, disabling the Console operator with an install manifest stops the installer from reporting 100% completion
-    - name: ConsoleOperatorDisable
-      when: (edgeCluster.disableConsole is defined) and (edgeCluster.disableConsole)
-      kubernetes.core.k8s:
-        definition:
-          apiVersion: operator.openshift.io/v1
-          kind: Console
-          metadata:
-            name: cluster
-          spec:
-            managementState: Removed
-        state: present
-      register: k8s_result
-      until: k8s_result is not failed
-
     - name: Apply post-install manifests
       when: edgeCluster.postInstallManifestsFolder is defined
       loop: "{{ lookup('ansible.builtin.fileglob', lookup('ansible.builtin.vars', 'post_install_manifests_folder') + '/*', wantlist=True) | sort }}"
