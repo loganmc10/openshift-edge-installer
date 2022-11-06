@@ -22,3 +22,11 @@ spec:
   rootDeviceHints:
     {{ item.rootDeviceHints | to_nice_yaml(indent=2) | trim | indent(4) }}
 {% endif %}
+{% if item.raid is defined %}
+  raid:
+    {{ item.raid | to_nice_yaml(indent=2) | trim | indent(4) }}
+{% endif %}
+{% if item.firmware is defined %}
+  firmware:
+    {{ item.firmware | to_nice_yaml(indent=2) | trim | indent(4) }}
+{% endif %}
