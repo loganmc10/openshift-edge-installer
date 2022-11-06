@@ -112,20 +112,8 @@
         apply: true
         state: present
 
-    - name: Add FIPS to config
-      when: fips is defined
-      ansible.builtin.set_fact:
-        install_overrides: "{{ install_overrides | combine({'fips': fips}, recursive=true) }}"
-
-    - name: Add capabilities to config
-      when: capabilities is defined
-      ansible.builtin.set_fact:
-        install_overrides: "{{ install_overrides | combine({'capabilities': capabilities}, recursive=true) }}"
-
-    - name: Add imageContentSources to config
-      when: imageContentSources is defined
-      ansible.builtin.set_fact:
-        install_overrides: "{{ install_overrides | combine({'imageContentSources': imageContentSources}, recursive=true) }}"
+    - name: Setup install config overrides
+      ansible.builtin.include_tasks: install_config_overrides.yaml
 
     - name: Create AgentClusterInstall
       kubernetes.core.k8s:
