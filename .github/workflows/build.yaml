@@ -24,8 +24,8 @@ jobs:
           ansible-lint -s -x yaml[line-length] common
           ansible-lint -s -x yaml[line-length] provisioning
           ansible-lint -s -x yaml[line-length] edge
-          ansible localhost -m ansible.builtin.template -a "src=edge/roles/edge_install/templates/relocatable_ip.sh.j2 dest=relocatable_ip.sh" -e "{'edgeCluster':{'relocatable': {'interface': 'eno1'}},'relocatable_interface_macs':'addresses[\"11:22:33:44:55:66\"]=4','cluster_ipv4':true,'cluster_ipv6':true,'controlPlane':{'replicas':3}}"
-          ansible localhost -m ansible.builtin.template -a "src=edge/roles/edge_install/templates/relocatable_ip.sh.j2 dest=relocatable_ip_sno.sh" -e "{'edgeCluster':{'relocatable': {'interface': 'eno1'}},'relocatable_interface_macs':'addresses[\"11:22:33:44:55:66\"]=4','cluster_ipv4':true,'cluster_ipv6':true,'controlPlane':{'replicas':1}}"
+          ansible localhost -m ansible.builtin.template -a "src=edge/roles/edge_install/templates/relocatable_ip.sh.j2 dest=relocatable_ip.sh" -e "{'edgeCluster':{'relocatable': {'interface': 'eno1', 'ipv4_subnet': '192.168.7.0/24', 'ipv6_subnet': 'fd04::/64'}},'relocatable_interface_macs':'addresses[\"11:22:33:44:55:66\"]=4','cluster_ipv4':true,'cluster_ipv6':true,'controlPlane':{'replicas':3}}"
+          ansible localhost -m ansible.builtin.template -a "src=edge/roles/edge_install/templates/relocatable_ip.sh.j2 dest=relocatable_ip_sno.sh" -e "{'edgeCluster':{'relocatable': {'interface': 'eno1', 'ipv4_subnet': '192.168.7.0/24', 'ipv6_subnet': 'fd04::/64'}},'relocatable_interface_macs':'addresses[\"11:22:33:44:55:66\"]=4','cluster_ipv4':true,'cluster_ipv6':true,'controlPlane':{'replicas':1}}"
           shellcheck -o all relocatable_ip.sh relocatable_ip_sno.sh edge/roles/edge_csr_approver/files/csr_approver.sh
 
   test-container:
