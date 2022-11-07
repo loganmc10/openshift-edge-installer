@@ -11,5 +11,5 @@
       loop: "{{ nmstate_host.networkConfig.interfaces }}"
       loop_control:
         label: "{{ item.name }}"
-      when: item.name == edgeCluster.relocatable
+      when: item.name == edgeCluster.relocatable.interface
       ansible.builtin.include_tasks: get_relocatable_ip.yaml

@@ -1,13 +1,28 @@
+# in order to make sure that 2 nodes don't use the same IP, we make a list of MAC addresses and assign each MAC an IP
+# this is then included in the bash script that gets placed on each node using a MachineConfig
+
 - name: Increment relocatable IP address
   ansible.builtin.set_fact:
     interface_number: "{{ (interface_number | int) + 1 }}"
 
-- name: Create entry for address list
-  ansible.builtin.set_fact:
-    bash_item: "addresses['{{ item.macAddress }}']={{ interface_number }}\n"
+- name: Create entry for IPv4 address list
+  when: cluster_ipv4 is defined
+  block:
+    - name: Create IPv4 address line
+      ansible.builtin.set_fact:
+        bash_item: "addresses_ipv4['{{ item.macAddress }}']='{{ relocatable_ipv4_subnet | ansible.utils.nthhost(interface_number | int) }}/{{ relocatable_ipv4_subnet | ansible.utils.ipaddr('prefix') }}'\n"
 
-# in order to make sure that 2 nodes don't use the same IP, we make a list of MAC addresses and assign each MAC an IP
-# this is then included in the bash script that gets placed on each node using a MachineConfig
-- name: Append IP to address list
-  ansible.builtin.set_fact:
-    relocatable_interface_macs: '{{ (relocatable_interface_macs | default("")) + bash_item }}'
+    - name: Append IPv4 to address list
+      ansible.builtin.set_fact:
+        relocatable_interface_macs: '{{ (relocatable_interface_macs | default("")) + bash_item }}'
+
+- name: Create entry for IPv6 address list
+  when: cluster_ipv6 is defined
+  block:
+    - name: Create IPv6 address line
+      ansible.builtin.set_fact:
+        bash_item: "addresses_ipv6['{{ item.macAddress }}']='{{ relocatable_ipv6_subnet | ansible.utils.nthhost(interface_number | int) }}/{{ relocatable_ipv6_subnet | ansible.utils.ipaddr('prefix') }}'\n"
+
+    - name: Append IPv6 to address list
+      ansible.builtin.set_fact:
+        relocatable_interface_macs: '{{ (relocatable_interface_macs | default("")) + bash_item }}'

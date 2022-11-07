@@ -6,13 +6,14 @@
 # configure-ovs.sh makes this same assumption, and wipes out any static IPs when DHCP is in use
 # see https://github.com/openshift/machine-config-operator/blob/69933a3dccd6f78a5b9fe09d5b3830c9c8e39a03/templates/common/_base/files/configure-ovs-network.yaml#L255-L260
 
-mac_address=$(cat /sys/class/net/{{ edgeCluster.relocatable }}/address)
+mac_address=$(cat /sys/class/net/{{ edgeCluster.relocatable.interface }}/address)
 
-declare -A addresses
+declare -A addresses_ipv4
+declare -A addresses_ipv6
 
 {{ relocatable_interface_macs }}
 
-for interface in {{ edgeCluster.relocatable }} ovs-if-br-ex; do
+for interface in {{ edgeCluster.relocatable.interface }} ovs-if-br-ex; do
   if ! nmcli -g connection.id connection show "${interface}"; then
     echo "---"
     echo "interface ${interface} does not exist, skipping"
@@ -22,8 +23,8 @@ for interface in {{ edgeCluster.relocatable }} ovs-if-br-ex; do
   dev_name=$(nmcli -g connection.interface-name connection show "${interface}")
 {% if cluster_ipv4 is defined %}
   current_ipv4_addresses=$(nmcli -g ipv4.addresses connection show "${interface}")
-  if [[ "${current_ipv4_addresses}" != *"192.168.7.${addresses[${mac_address}]}/24"* ]]; then
-    nmcli connection modify "${interface}" +ipv4.addresses "192.168.7.${addresses[${mac_address}]}/24"{% if controlPlane.replicas == 3 %} +ipv4.dns "192.168.7.2"{% endif +%}
+  if [[ "${current_ipv4_addresses}" != *"${addresses_ipv4[${mac_address}]}"* ]]; then
+    nmcli connection modify "${interface}" +ipv4.addresses "${addresses_ipv4[${mac_address}]}"{% if controlPlane.replicas == 3 %} +ipv4.dns "{{ relocatable_ipv4_subnet | ansible.utils.nthhost(2) }}"{% endif +%}
     nmcli dev reapply "${dev_name}"
     echo "---"
     echo "added relocatable IPv4 to connection ${interface}, device ${dev_name}"
@@ -36,9 +37,9 @@ for interface in {{ edgeCluster.relocatable }} ovs-if-br-ex; do
 {% endif %}
 
 {% if cluster_ipv6 is defined %}
-  current_ipv6_addresses=$(nmcli -g ipv6.addresses connection show "${interface}")
-  if [[ "${current_ipv6_addresses}" != *"fd04\:\:${addresses[${mac_address}]}/64"* ]]; then
-    nmcli connection modify "${interface}" +ipv6.addresses "fd04::${addresses[${mac_address}]}/64"{% if controlPlane.replicas == 3 %} +ipv6.dns "fd04::2"{% endif +%}
+  current_ipv6_addresses=$(nmcli -e no -g ipv6.addresses connection show "${interface}")
+  if [[ "${current_ipv6_addresses}" != *"${addresses_ipv6[${mac_address}]}"* ]]; then
+    nmcli connection modify "${interface}" +ipv6.addresses "${addresses_ipv6[${mac_address}]}"{% if controlPlane.replicas == 3 %} +ipv6.dns "{{ relocatable_ipv6_subnet | ansible.utils.nthhost(2) }}"{% endif +%}
     nmcli dev reapply "${dev_name}"
     echo "---"
     echo "added relocatable IPv6 to connection ${interface}, device ${dev_name}"
