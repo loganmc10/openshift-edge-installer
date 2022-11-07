@@ -1,4 +1,4 @@
-{% set ip_hint=((edgeCluster.relocatable.ipv4_subnet | default(relocatable_ipv4_subnet)) | ansible.utils.nthhost(0)) + " " + ((edgeCluster.relocatable.ipv6_subnet | default(relocatable_ipv6_subnet)) | ansible.utils.nthhost(0)) %}
+{% set ip_hint=(relocatable_ipv4_subnet | ansible.utils.nthhost(0)) + " " + (relocatable_ipv6_subnet | ansible.utils.nthhost(0)) %}
 apiVersion: v1
 kind: ConfigMap
 metadata:

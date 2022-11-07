@@ -93,6 +93,16 @@
       ansible.builtin.set_fact:
         cluster_ipv6: true
 
+    - name: Set relocatable IPv4 subnet
+      when: (cluster_ipv4 is defined) and (edgeCluster.relocatable is defined) and (edgeCluster.relocatable.ipv4_subnet is defined)
+      ansible.builtin.set_fact:
+        relocatable_ipv4_subnet: "{{ edgeCluster.relocatable.ipv4_subnet }}"
+
+    - name: Set relocatable IPv6 subnet
+      when: (cluster_ipv6 is defined) and (edgeCluster.relocatable is defined) and (edgeCluster.relocatable.ipv6_subnet is defined)
+      ansible.builtin.set_fact:
+        relocatable_ipv6_subnet: "{{ edgeCluster.relocatable.ipv6_subnet }}"
+
     # on a multi-node cluster this is determined based on the API and Ingress VIPs
     - name: Setup relocatable machine network
       when: (controlPlane.replicas == 1) and (edgeCluster.relocatable is defined)

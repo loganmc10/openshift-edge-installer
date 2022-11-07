@@ -54,9 +54,9 @@
       loop_control:
         label: "{{ item.ip | default(item.name) }}"
       when: >
-        ((item.ip is defined) and
+        (item.ip is defined) and
         (item.ip | ansible.utils.ipv4) and
-        (not ((edgeCluster.relocatable.ipv4_subnet | default(relocatable_ipv4_subnet)) | ansible.utils.network_in_usable(item.ip))))
+        (not (relocatable_ipv4_subnet | ansible.utils.network_in_usable(item.ip)))
       ansible.builtin.set_fact:
         node_ip: "{{ item.ip }}"
 
@@ -65,9 +65,9 @@
       loop_control:
         label: "{{ item.ip | default(item.name) }}"
       when: >
-        ((item.ip is defined) and
+        (item.ip is defined) and
         (item.ip | ansible.utils.ipv6) and
-        (not ((edgeCluster.relocatable.ipv6_subnet | default(relocatable_ipv6_subnet)) | ansible.utils.network_in_usable(item.ip))))
+        (not (relocatable_ipv6_subnet | ansible.utils.network_in_usable(item.ip)))
       ansible.builtin.set_fact:
         node_ip: "{{ item.ip }}"
 
