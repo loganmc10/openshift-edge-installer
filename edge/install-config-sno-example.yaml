@@ -11,7 +11,10 @@ edgeCluster:
   diskEncryption: # Optional
     enableOn: "none" # Possible values: none,all,masters,workers
     mode: "tpmv2"
-  relocatable: <external_interface> # Optional, see docs/RELOCATABLE.md
+  relocatable: # Optional, see docs/RELOCATABLE.md
+    interface: <external_interface>
+    ipv4_subnet: "192.168.7.0/24" # Optional, defaults to 192.168.7.0/24
+    ipv6_subnet: "fd04::/64" # Optional, defaults to fd04::/64, only used for dual stack or IPv6 deployments
   routingViaHost: false # Optional, see https://docs.openshift.com/container-platform/latest/rest_api/operator_apis/network-operator-openshift-io-v1.html#spec-defaultnetwork-ovnkubernetesconfig-gatewayconfig
   odfStorage: # Optional
     # If you are using a mirror, you must configure a CatalogSource using postInstallManifestsFolder

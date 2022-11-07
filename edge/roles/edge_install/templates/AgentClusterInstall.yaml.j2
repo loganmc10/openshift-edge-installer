@@ -25,11 +25,11 @@ spec:
 {% if controlPlane.replicas == 3 %}
 {% if edgeCluster.relocatable is defined %}
 {% if cluster_ipv4 is defined %}
-  apiVIP: "192.168.7.2"
-  ingressVIP: "192.168.7.3"
+  apiVIP: "{{ (edgeCluster.relocatable.ipv4_subnet | default(relocatable_ipv4_subnet)) | ansible.utils.nthhost(2) }}"
+  ingressVIP: "{{ (edgeCluster.relocatable.ipv4_subnet | default(relocatable_ipv4_subnet)) | ansible.utils.nthhost(3) }}"
 {% else %}
-  apiVIP: "fd04::2"
-  ingressVIP: "fd04::3"
+  apiVIP: "{{ (edgeCluster.relocatable.ipv6_subnet | default(relocatable_ipv6_subnet)) | ansible.utils.nthhost(2) }}"
+  ingressVIP: "{{ (edgeCluster.relocatable.ipv6_subnet | default(relocatable_ipv6_subnet)) | ansible.utils.nthhost(3) }}"
 {% endif %}
 {% else %}
   apiVIP: "{{ platform.baremetal.apiVIP }}"

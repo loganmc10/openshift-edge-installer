@@ -49,11 +49,25 @@
       ansible.builtin.set_fact:
         control_plane_node: "{{ item }}"
 
-    - name: Find IP for first control plane node
+    - name: Find IPv4 for first control plane node
       loop: "{{ control_plane_node.status.hardware.nics }}"
       loop_control:
         label: "{{ item.ip | default(item.name) }}"
-      when: (item.ip is defined) and ((not item.ip.startswith('192.168.7.')) and (not item.ip.startswith('fd04:')))
+      when: >
+        ((item.ip is defined) and
+        (item.ip | ansible.utils.ipv4) and
+        (not ((edgeCluster.relocatable.ipv4_subnet | default(relocatable_ipv4_subnet)) | ansible.utils.network_in_usable(item.ip))))
+      ansible.builtin.set_fact:
+        node_ip: "{{ item.ip }}"
+
+    - name: Find IPv6 for first control plane node
+      loop: "{{ control_plane_node.status.hardware.nics }}"
+      loop_control:
+        label: "{{ item.ip | default(item.name) }}"
+      when: >
+        ((item.ip is defined) and
+        (item.ip | ansible.utils.ipv6) and
+        (not ((edgeCluster.relocatable.ipv6_subnet | default(relocatable_ipv6_subnet)) | ansible.utils.network_in_usable(item.ip))))
       ansible.builtin.set_fact:
         node_ip: "{{ item.ip }}"
 
