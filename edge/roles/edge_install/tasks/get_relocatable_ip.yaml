@@ -8,7 +8,7 @@
 - name: Create entry for IPv4 address list
   when: cluster_ipv4 is defined
   block:
-    - name: Create address line
+    - name: Create IPv4 address line
       ansible.builtin.set_fact:
         bash_item: "addresses_ipv4['{{ item.macAddress }}']='{{ relocatable_ipv4_subnet | ansible.utils.nthhost(interface_number | int) }}/{{ relocatable_ipv4_subnet | ansible.utils.ipaddr('prefix') }}'\n"
 
@@ -19,7 +19,7 @@
 - name: Create entry for IPv6 address list
   when: cluster_ipv6 is defined
   block:
-    - name: Create entry for IPv6 address list
+    - name: Create IPv6 address line
       ansible.builtin.set_fact:
         bash_item: "addresses_ipv6['{{ item.macAddress }}']='{{ relocatable_ipv6_subnet | ansible.utils.nthhost(interface_number | int) }}/{{ relocatable_ipv6_subnet | ansible.utils.ipaddr('prefix') }}'\n"
 
