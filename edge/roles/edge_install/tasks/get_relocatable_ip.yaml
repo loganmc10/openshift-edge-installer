@@ -2,9 +2,15 @@
   ansible.builtin.set_fact:
     interface_number: "{{ (interface_number | int) + 1 }}"
 
-- name: Create entry for address list
+- name: Create entry for IPv4 address list
+  when: cluster_ipv4 is defined
   ansible.builtin.set_fact:
-    bash_item: "addresses['{{ item.macAddress }}']={{ interface_number }}\n"
+    bash_item: "addresses_ipv4['{{ item.macAddress }}']={{ (edgeCluster.relocatable.ipv4_subnet | default(relocatable_ipv4_subnet)) | ansible.utils.nthhost(interface_number | int) }}/{{ (edgeCluster.relocatable.ipv4_subnet | default(relocatable_ipv4_subnet)) | ansible.utils.ipaddr('prefix') }}\n"
+
+- name: Create entry for IPv6 address list
+  when: cluster_ipv6 is defined
+  ansible.builtin.set_fact:
+    bash_item: "addresses_ipv6['{{ item.macAddress }}']={{ (edgeCluster.relocatable.ipv6_subnet | default(relocatable_ipv6_subnet)) | ansible.utils.nthhost(interface_number | int) }}/{{ (edgeCluster.relocatable.ipv6_subnet | default(relocatable_ipv6_subnet)) | ansible.utils.ipaddr('prefix') }}\n"
 
 # in order to make sure that 2 nodes don't use the same IP, we make a list of MAC addresses and assign each MAC an IP
 # this is then included in the bash script that gets placed on each node using a MachineConfig
