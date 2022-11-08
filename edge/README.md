@@ -9,13 +9,17 @@ If you are not using a mirror registry, the clusterImageSet would look something
 ```
 clusterImageSet: quay.io/openshift-release-dev/ocp-release:4.11.12-x86_64
 ```
-You can also optionally set a path to extra manifests to be applied early in the installation process:
+You can also optionally set a path to a folder containing extra manifests (YAML) to be applied early in the installation process:
 ```
 installManifestsFolder: install_manifests
 ```
-As well as a path to extra manifests to be applied after the cluster installation is complete:
+As well as a path to a folder containing extra manifests (YAML) to be applied after the cluster installation is complete:
 ```
 postInstallManifestsFolder: post_manifests
+```
+Finally, you can specify a path to a folder containing scripts to be executed after the cluster installation is complete. The KUBECONFIG environment variable will already be set to communicate with the new cluster during the execution of these scripts:
+```
+postInstallScriptsFolder: post_scripts
 ```
 Other options are documented in ```install-config-sno-example.yaml``` and ```install-config-standard-example.yaml```
 
