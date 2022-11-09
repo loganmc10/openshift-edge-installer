@@ -4,7 +4,6 @@ metadata:
   name: "{{ item.name }}"
   namespace: "{{ metadata.name }}"
   annotations:
-    inspect.metal3.io: disabled
     bmac.agent-install.openshift.io/role: "{{ item.role }}"
     bmac.agent-install.openshift.io/hostname: "{{ item.name }}"
   labels:
