@@ -1,0 +1,43 @@
+- name: Enable routingViaHost
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: operator.openshift.io/v1
+      kind: Network
+      metadata:
+        name: cluster
+      spec:
+        defaultNetwork:
+          ovnKubernetesConfig:
+            gatewayConfig:
+              routingViaHost: true
+    state: present
+  register: routing_via_host
+  until: routing_via_host is not failed
+
+- name: Wait for routingViaHost to begin progressing # noqa no-handler
+  when: routing_via_host.changed
+  kubernetes.core.k8s_info:
+    api_version: operator.openshift.io/v1
+    kind: Network
+    name: cluster
+    wait: true
+    wait_condition:
+      type: Progressing
+      status: "True"
+    wait_timeout: 1200
+  register: k8s_result
+  until: k8s_result is not failed
+
+- name: Wait for routingViaHost to finish progressing # noqa no-handler
+  when: routing_via_host.changed
+  kubernetes.core.k8s_info:
+    api_version: operator.openshift.io/v1
+    kind: Network
+    name: cluster
+    wait: true
+    wait_condition:
+      type: Progressing
+      status: "False"
+    wait_timeout: 1200
+  register: k8s_result
+  until: k8s_result is not failed

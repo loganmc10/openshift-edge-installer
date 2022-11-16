@@ -83,25 +83,7 @@
     # routingViaHost is required for relocatable clusters
     - name: Configure routingViaHost
       when: (edgeCluster.routingViaHost is defined and edgeCluster.routingViaHost) or (edgeCluster.relocatable is defined)
-      kubernetes.core.k8s:
-        definition:
-          apiVersion: operator.openshift.io/v1
-          kind: Network
-          metadata:
-            name: cluster
-          spec:
-            defaultNetwork:
-              ovnKubernetesConfig:
-                gatewayConfig:
-                  routingViaHost: true
-        state: present
-        wait: true
-        wait_condition:
-          type: Progressing
-          status: "False"
-        wait_timeout: 1200
-      register: k8s_result
-      until: k8s_result is not failed
+      ansible.builtin.include_tasks: routing_via_host.yaml
 
     - name: Apply post-install manifests
       when: edgeCluster.postInstallManifestsFolder is defined
