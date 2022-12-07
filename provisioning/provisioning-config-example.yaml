@@ -6,9 +6,16 @@ os_images: # Optional, you can specify a location for MCE to get OS ISOs from
     url: "https://<local_http_mirror>/rhcos-4.11.9-x86_64-live.x86_64.iso"
     cpuArchitecture: "x86_64"
 
-mirror_url: <mirror_url>
-mirror_port: 8443
-mirror_ssl_cert: |
+provisioning_network_config: # Optional, see https://docs.openshift.com/container-platform/latest/rest_api/provisioning_apis/provisioning-metal3-io-v1alpha1.html#spec
+  # below is an example of a possible provisioning network configuration
+  provisioningIP: 192.168.43.251
+  provisioningInterface: ens1f0.1043
+  provisioningNetwork: Unmanaged
+  provisioningNetworkCIDR: 192.168.43.128/25
+
+mirror_url: <mirror_url> # Optional
+mirror_port: 8443 # Required if mirror_url is defined
+mirror_ssl_cert: | # Required if mirror_url is defined
   -----BEGIN CERTIFICATE-----
   MIIDijCCAnKgAwIBAgIUA0gWHLy5W2y4xpNq39kUeKrmyogwDQYJKoZIhvcNAQEL
   BQAwgYUxCzAJBgNVBAYTAlVTMQswCQYDVQQIDAJWQTERMA8GA1UEBwwITmV3IFlv

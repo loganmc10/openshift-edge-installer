@@ -1,0 +1,11 @@
+apiVersion: metal3.io/v1alpha1
+kind: Provisioning
+metadata:
+  name: provisioning-configuration
+spec:
+  watchAllNamespaces: true
+{% if provisioning_network_config is defined %}
+  {{ provisioning_network_config | to_nice_yaml(indent=2) | trim | indent(2) }}
+{% else %}
+  provisioningNetwork: "Disabled"
+{% endif %}

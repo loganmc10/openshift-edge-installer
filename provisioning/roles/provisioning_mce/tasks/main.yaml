@@ -2,14 +2,7 @@
 # it also enables the operator on SNO clusters, where it is off by default
 - name: Configure Baremetal Operator
   kubernetes.core.k8s:
-    definition:
-      apiVersion: metal3.io/v1alpha1
-      kind: Provisioning
-      metadata:
-        name: provisioning-configuration
-      spec:
-        watchAllNamespaces: true
-        provisioningNetwork: "Disabled"
+    template: provisioning.yaml.j2
     state: present
 
 - name: Install MCE and CIM
