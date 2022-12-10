@@ -4,6 +4,8 @@
   kubernetes.core.k8s:
     template: provisioning.yaml.j2
     state: present
+  register: k8s_result
+  until: k8s_result is not failed
 
 - name: Install MCE and CIM
   block:
