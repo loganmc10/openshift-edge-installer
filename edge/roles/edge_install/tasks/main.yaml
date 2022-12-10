@@ -12,6 +12,8 @@
             releaseImage: "{{ edgeCluster.clusterImageSet }}"
         apply: true
         state: present
+      register: k8s_result
+      until: k8s_result is not failed
 
     - name: Create Namespace
       kubernetes.core.k8s:
@@ -22,6 +24,8 @@
             name: "{{ metadata.name }}"
         apply: true
         state: present
+      register: k8s_result
+      until: k8s_result is not failed
 
     - name: Create BMC secrets
       loop: "{{ platform.baremetal.hosts }}"
@@ -40,6 +44,8 @@
           type: Opaque
         apply: true
         state: present
+      register: k8s_result
+      until: k8s_result is not failed
 
     - name: Create image pull secret
       kubernetes.core.k8s:
@@ -54,6 +60,8 @@
           type: kubernetes.io/dockerconfigjson
         apply: true
         state: present
+      register: k8s_result
+      until: k8s_result is not failed
 
     # these manifests are applied early in the install process, often they are MachineConfigs, applying them early helps avoid extra reboots
     - name: Create user-defined manifest config maps
@@ -69,6 +77,8 @@
       vars:
         # this var is copied in like this because ansible.builtin.vars doesn't support dicts
         install_manifests_folder: "{{ edgeCluster.installManifestsFolder }}"
+      register: k8s_result
+      until: k8s_result is not failed
 
     - name: Count workers
       loop: "{{ compute }}"
@@ -121,6 +131,8 @@
         template: AgentConfigMap.yaml.j2
         apply: true
         state: present
+      register: k8s_result
+      until: k8s_result is not failed
 
     - name: Setup install config overrides
       ansible.builtin.include_tasks: install_config_overrides.yaml
@@ -132,18 +144,24 @@
         state: present
       vars:
         install_manifests_folder: "{{ edgeCluster.installManifestsFolder }}"
+      register: k8s_result
+      until: k8s_result is not failed
 
     - name: Create ClusterDeployment
       kubernetes.core.k8s:
         template: ClusterDeployment.yaml.j2
         apply: true
         state: present
+      register: k8s_result
+      until: k8s_result is not failed
 
     - name: Create InfraEnv
       kubernetes.core.k8s:
         template: InfraEnv.yaml.j2
         apply: true
         state: present
+      register: k8s_result
+      until: k8s_result is not failed
 
     - name: Create BareMetalHosts
       loop: "{{ platform.baremetal.hosts }}"
@@ -154,6 +172,7 @@
         apply: true
         state: present
       register: create_bmh
+      until: create_bmh is not failed
 
     - name: Wait for BareMetalHosts to provision
       kubernetes.core.k8s_info:

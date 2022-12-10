@@ -19,3 +19,5 @@
     template: WorkloadPartitioning.yaml.j2
     apply: true
     state: present
+  register: k8s_result
+  until: k8s_result is not failed

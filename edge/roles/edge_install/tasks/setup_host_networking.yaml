@@ -3,6 +3,8 @@
     template: NMStateConfig.yaml.j2
     apply: true
     state: present
+  register: k8s_result
+  until: k8s_result is not failed
 
 - name: Calculate relocatable IP
   when: edgeCluster.relocatable is defined

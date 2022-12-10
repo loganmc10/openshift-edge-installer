@@ -7,6 +7,7 @@
     kind: Image
     name: cluster
   register: image_config
+  until: image_config is not failed
 
 - name: Create additionalTrustedCA
   when: (mirror_ssl_cert is defined) and (image_config.resources[0].spec.additionalTrustedCA is not defined)
@@ -16,6 +17,8 @@
         template: provisioning-mirror-cert.yaml.j2
         apply: true
         state: present
+      register: k8s_result
+      until: k8s_result is not failed
 
     - name: Set additionalTrustedCA on provisioning cluster
       kubernetes.core.k8s:
@@ -28,6 +31,8 @@
             additionalTrustedCA:
               name: mirror-registry-cert
         state: present
+      register: k8s_result
+      until: k8s_result is not failed
 
 - name: Add SSL cert to additionalTrustedCA
   when: (mirror_ssl_cert is defined) and (image_config.resources[0].spec.additionalTrustedCA is defined)
@@ -39,6 +44,7 @@
         name: "{{ image_config.resources[0].spec.additionalTrustedCA.name }}"
         namespace: openshift-config
       register: image_config_map
+      until: image_config_map is not failed
 
     - name: Update config map
       kubernetes.core.k8s:
@@ -50,3 +56,5 @@
             namespace: openshift-config
           data: "{{ image_config_map.resources[0].data | combine({mirror_url + '..' + (mirror_port | string): mirror_ssl_cert}) }}"
         state: present
+      register: k8s_result
+      until: k8s_result is not failed

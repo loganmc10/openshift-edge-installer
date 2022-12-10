@@ -26,6 +26,7 @@
         apply: true
         state: present
       register: create_mce
+      until: create_mce is not failed
 
     - name: Wait for MCE to be deployed
       kubernetes.core.k8s_info:
@@ -44,6 +45,8 @@
         template: mirror-cm.yaml.j2
         apply: true
         state: present
+      register: k8s_result
+      until: k8s_result is not failed
 
     # see https://github.com/openshift/assisted-service/pull/2747
     - name: Configure CIM to use mirror registry
@@ -59,6 +62,8 @@
             PUBLIC_CONTAINER_REGISTRIES: "quay.io,registry.svc.ci.openshift.org,registry.redhat.io"
         apply: true
         state: present
+      register: k8s_result
+      until: k8s_result is not failed
 
     - name: Configure CIM
       kubernetes.core.k8s:
@@ -70,6 +75,8 @@
           type: DeploymentsHealthy
           status: "True"
         wait_timeout: 1200
+      register: k8s_result
+      until: k8s_result is not failed
   rescue: # CRs need to be removed before the namespaces holding the operators are removed, or else the CR finalizers will get stuck
     - name: Delete CIM
       kubernetes.core.k8s:
