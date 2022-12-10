@@ -24,12 +24,6 @@
   register: k8s_result
   until: k8s_result is not failed
 
-- name: Check for IPv4
-  loop: "{{ networking.serviceNetwork }}"
-  when: item | ansible.utils.ipv4
-  ansible.builtin.set_fact:
-    cluster_ipv4: true
-
 - name: Create IPAddressPool for API
   kubernetes.core.k8s:
     template: IPAddressPool.yaml.j2
