@@ -33,7 +33,7 @@
   until: k8s_result is not failed
   vars:
     pool_type: api
-    addresses: platform.baremetal.apiVIPs | default([platform.baremetal.apiVIP])
+    addresses: "{{ platform.baremetal.apiVIPs | default([platform.baremetal.apiVIP]) }}"
 
 - name: Create IPAddressPool for Ingress
   kubernetes.core.k8s:
@@ -44,7 +44,7 @@
   until: k8s_result is not failed
   vars:
     pool_type: ingress
-    addresses: platform.baremetal.ingressVIPs | default([platform.baremetal.ingressVIP])
+    addresses: "{{ platform.baremetal.ingressVIPs | default([platform.baremetal.ingressVIP]) }}"
 
 - name: Create L2Advertisement
   kubernetes.core.k8s:
