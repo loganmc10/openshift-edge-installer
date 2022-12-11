@@ -24,44 +24,27 @@
   register: k8s_result
   until: k8s_result is not failed
 
-- name: Check for IPv4
-  when: platform.baremetal.apiVIP | ansible.utils.ipv4
-  ansible.builtin.set_fact:
-    cluster_ipv4: true
-
 - name: Create IPAddressPool for API
   kubernetes.core.k8s:
-    definition:
-      apiVersion: metallb.io/v1beta1
-      kind: IPAddressPool
-      metadata:
-        name: api-address-pool
-        namespace: metallb-system
-      spec:
-        addresses:
-          - "{{ platform.baremetal.apiVIP }}/{{ (cluster_ipv4 is defined) | ternary('32', '128') }}"
-        autoAssign: false
+    template: IPAddressPool.yaml.j2
     apply: true
     state: present
   register: k8s_result
   until: k8s_result is not failed
+  vars:
+    pool_type: api
+    addresses: platform.baremetal.apiVIPs | default([platform.baremetal.apiVIP])
 
 - name: Create IPAddressPool for Ingress
   kubernetes.core.k8s:
-    definition:
-      apiVersion: metallb.io/v1beta1
-      kind: IPAddressPool
-      metadata:
-        name: ingress-address-pool
-        namespace: metallb-system
-      spec:
-        addresses:
-          - "{{ platform.baremetal.ingressVIP }}/{{ (cluster_ipv4 is defined) | ternary('32', '128') }}"
-        autoAssign: false
+    template: IPAddressPool.yaml.j2
     apply: true
     state: present
   register: k8s_result
   until: k8s_result is not failed
+  vars:
+    pool_type: ingress
+    addresses: platform.baremetal.ingressVIPs | default([platform.baremetal.ingressVIP])
 
 - name: Create L2Advertisement
   kubernetes.core.k8s:
