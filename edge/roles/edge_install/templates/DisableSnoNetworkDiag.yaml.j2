@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "disable-sno-network-diag"
+  namespace: "{{ metadata.name }}"
+data:
+  disable_sno_network_diag.yaml: |
+    apiVersion: operator.openshift.io/v1
+    kind: Network
+    metadata:
+      name: cluster
+    spec:
+      disableNetworkDiagnostics: true
