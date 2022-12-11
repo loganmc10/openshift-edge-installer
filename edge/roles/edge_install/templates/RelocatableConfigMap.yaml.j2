@@ -2,28 +2,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "agent-config-map"
+  name: "relocatable-config"
   namespace: "{{ metadata.name }}"
 data:
-  disable_samples.yaml: |
-    apiVersion: samples.operator.openshift.io/v1
-    kind: Config
-    metadata:
-      name: cluster
-    spec:
-      architectures:
-        - x86_64
-      managementState: Removed
-{% if controlPlane.replicas == 1 %}
-  disable_sno_network_diag.yaml: |
-    apiVersion: operator.openshift.io/v1
-    kind: Network
-    metadata:
-      name: cluster
-    spec:
-      disableNetworkDiagnostics: true
-{% endif %}
-{% if edgeCluster.relocatable is defined %}
 {% for node_type in ["master", "worker"] %}
   set_node_ip_hint_{{ node_type }}.yaml: |
     apiVersion: machineconfiguration.openshift.io/v1
@@ -56,4 +37,3 @@ data:
       config:
         {{ lookup('ansible.builtin.template', 'RelocatableConfig.yaml.j2') | indent(8) }}
 {% endfor %}
-{% endif %}

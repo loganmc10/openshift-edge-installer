@@ -13,7 +13,12 @@ spec:
   imageSetRef:
     name: "{{ metadata.name }}"
   manifestsConfigMapRefs:
-    - name: "agent-config-map"
+{% if controlPlane.replicas == 1 %}
+    - name: "disable-sno-network-diag"
+{% endif %}
+{% if edgeCluster.relocatable is defined %}
+    - name: "relocatable-config"
+{% endif %}
 {% if edgeCluster.installManifestsFolder is defined %}
 {% for file in lookup('ansible.builtin.fileglob', lookup('ansible.builtin.vars', 'install_manifests_folder') + '/*', wantlist=True) %}
     - name: "manifest-{{ loop.index0 }}"
