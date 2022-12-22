@@ -3,3 +3,7 @@ os_images:
     version: "4.11.9"
     url: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.11/4.11.9/rhcos-4.11.9-x86_64-live.x86_64.iso"
     cpuArchitecture: "x86_64"
+  - openshiftVersion: "4.12"
+    version: "4.12.0-ec.2"
+    url: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/pre-release/4.12.0-ec.2/rhcos-4.12.0-ec.2-x86_64-live.x86_64.iso"
+    cpuArchitecture: "x86_64"

@@ -50,18 +50,9 @@
       register: k8s_result
       until: k8s_result is not failed
 
-    # see https://github.com/openshift/assisted-service/pull/2747
-    - name: Configure CIM to use mirror registry
-      when: mirror_url is defined
+    - name: Add CIM Config Map
       kubernetes.core.k8s:
-        definition:
-          apiVersion: v1
-          kind: ConfigMap
-          metadata:
-            name: assisted-service-config
-            namespace: multicluster-engine
-          data:
-            PUBLIC_CONTAINER_REGISTRIES: "quay.io,registry.svc.ci.openshift.org,registry.redhat.io"
+        template: assisted-service-config.yaml.j2
         apply: true
         state: present
       register: k8s_result
