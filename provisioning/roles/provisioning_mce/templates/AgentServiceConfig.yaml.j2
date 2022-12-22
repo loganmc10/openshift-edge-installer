@@ -2,10 +2,8 @@ apiVersion: agent-install.openshift.io/v1beta1
 kind: AgentServiceConfig
 metadata:
   name: agent
-{% if mirror_url is defined %}
   annotations:
     unsupported.agent-install.openshift.io/assisted-service-configmap: assisted-service-config
-{% endif %}
 spec:
   databaseStorage:
     accessModes:

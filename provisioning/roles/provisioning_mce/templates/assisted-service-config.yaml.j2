@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: assisted-service-config
+  namespace: multicluster-engine
+data:
+{% if mirror_url is defined %}
+  PUBLIC_CONTAINER_REGISTRIES: "quay.io,registry.svc.ci.openshift.org,registry.redhat.io"
+{% endif %}
