@@ -17,3 +17,13 @@
   when: additionalTrustBundle is defined
   ansible.builtin.set_fact:
     install_overrides: "{{ install_overrides | combine({'additionalTrustBundle': additionalTrustBundle}, recursive=true) }}"
+
+- name: Add additionalTrustBundlePolicy to config
+  when: additionalTrustBundlePolicy is defined
+  ansible.builtin.set_fact:
+    install_overrides: "{{ install_overrides | combine({'additionalTrustBundlePolicy': additionalTrustBundlePolicy}, recursive=true) }}"
+
+- name: Add featureSet to config
+  when: featureSet is defined
+  ansible.builtin.set_fact:
+    install_overrides: "{{ install_overrides | combine({'featureSet': featureSet}, recursive=true) }}"
