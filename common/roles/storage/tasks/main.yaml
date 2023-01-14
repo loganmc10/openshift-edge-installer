@@ -1,3 +1,22 @@
+- name: Get ClusterVersion
+  kubernetes.core.k8s_info:
+    api_version: config.openshift.io/v1
+    kind: ClusterVersion
+    name: version
+  register: cluster_version
+  until: cluster_version is not failed
+
+# before 4.12, the LVMS operator was known as ODF-LVM
+- name: Use ODF-LVM Storage Class
+  when: cluster_version.resources[0].status.desired.version is ansible.builtin.version("4.12.0", "lt")
+  ansible.builtin.set_fact:
+    lvms_storage_class: odf-lvm-vg1
+
+- name: Use ODF-LVM Operator
+  when: cluster_version.resources[0].status.desired.version is ansible.builtin.version("4.12.0", "lt")
+  ansible.builtin.set_fact:
+    lvms_operator_name: odf-lvm-operator
+
 - name: Gather storage class info
   kubernetes.core.k8s_info:
     api_version: storage.k8s.io/v1
@@ -148,8 +167,7 @@
 
     - name: Remove StorageClasses
       loop:
-        - "odf-lvm-vg1"
-        - "lvms-vg1"
+        - "{{ lvms_storage_class }}"
         - "ocs-storagecluster-ceph-rgw"
         - "ocs-storagecluster-cephfs"
         - "local-storage"

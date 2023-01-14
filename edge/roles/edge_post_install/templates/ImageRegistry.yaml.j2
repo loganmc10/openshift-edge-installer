@@ -4,7 +4,7 @@ metadata:
   name: cluster
 spec:
   managementState: Managed
-{% if odf_lvm.resources | length | int == 1 %}
+{% if odf_storage_class.resources | length | int == 0 %}
   rolloutStrategy: Recreate
   replicas: 1
   storage:
