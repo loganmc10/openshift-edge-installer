@@ -50,6 +50,7 @@
       register: k8s_result
       until: k8s_result is not failed
 
+    # TODO: it seems like PUBLIC_CONTAINER_REGISTRIES may not be required in ACM 2.7/MCE 2.2, need to check when they are released
     - name: Add CIM Config Map
       kubernetes.core.k8s:
         template: assisted-service-config.yaml.j2
