@@ -67,7 +67,7 @@
       ansible.builtin.include_tasks:
         file: storage_odf.yaml
 
-    - name: Install ODF LVM
+    - name: Install LVMS
       when: worker_nodes.resources | length | int < 3
       ansible.builtin.include_tasks:
         file: storage_lvm.yaml
@@ -98,13 +98,13 @@
         wait_timeout: 1200
       ignore_errors: true # noqa ignore-errors
 
-    - name: Remove ODF LVMCluster
+    - name: Remove LVMCluster
       kubernetes.core.k8s:
         definition:
           apiVersion: lvm.topolvm.io/v1alpha1
           kind: LVMCluster
           metadata:
-            name: odf-lvmcluster
+            name: lvmcluster
             namespace: openshift-storage
         state: absent
         wait: true
@@ -149,6 +149,7 @@
     - name: Remove StorageClasses
       loop:
         - "odf-lvm-vg1"
+        - "lvms-vg1"
         - "ocs-storagecluster-ceph-rgw"
         - "ocs-storagecluster-cephfs"
         - "local-storage"

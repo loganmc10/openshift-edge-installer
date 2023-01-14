@@ -1,7 +1,7 @@
 - name: Try to set default storage
   when: >
     (has_default_storage is not defined) and
-    ((item.metadata.name == "ocs-storagecluster-cephfs") or (item.metadata.name.startswith("odf-lvm-")))
+    ((item.metadata.name == "ocs-storagecluster-cephfs") or (item.metadata.name.startswith("odf-lvm-") or (item.metadata.name.startswith("lvms-")))
   kubernetes.core.k8s:
     definition:
       apiVersion: storage.k8s.io/v1

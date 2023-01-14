@@ -1,16 +1,16 @@
-- name: Check for ODF LVM
+- name: Check for LVMS
   kubernetes.core.k8s_info:
     api_version: operators.coreos.com/v1alpha1
     kind: Subscription
-    name: odf-lvm-operator
+    name: odf-lvm-operator # TODO: support LVMS
     namespace: openshift-storage
-  register: odf_lvm
-  until: odf_lvm is not failed
+  register: lvms
+  until: lvms is not failed
 
-# have to manually create the PVC when using ODF-LVM
-# this is because the image registry attempts to create a PVC as ReadWriteMany, which ODF-LVM doesn't support
+# have to manually create the PVC when using LVMS
+# this is because the image registry attempts to create a PVC as ReadWriteMany, which LVMS doesn't support
 - name: Create PVC for Image Registry
-  when: odf_lvm.resources | length | int == 1
+  when: lvms.resources | length | int == 1
   kubernetes.core.k8s:
     definition:
       apiVersion: v1
