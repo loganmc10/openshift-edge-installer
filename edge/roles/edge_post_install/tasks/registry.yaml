@@ -4,6 +4,7 @@
     kind: StorageClass
     name: ocs-storagecluster-cephfs
   register: odf_storage_class
+  until: odf_storage_class is not failed
 
 # have to manually create the PVC when using LVMS
 # this is because the image registry attempts to create a PVC as ReadWriteMany, which LVMS doesn't support
