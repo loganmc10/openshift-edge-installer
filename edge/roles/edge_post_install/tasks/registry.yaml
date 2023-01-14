@@ -1,16 +1,14 @@
-- name: Check for LVMS
+- name: Check for ODF StorageClass
   kubernetes.core.k8s_info:
-    api_version: operators.coreos.com/v1alpha1
-    kind: Subscription
-    name: odf-lvm-operator # TODO: support LVMS
-    namespace: openshift-storage
-  register: lvms
-  until: lvms is not failed
+    api_version: storage.k8s.io/v1
+    kind: StorageClass
+    name: ocs-storagecluster-cephfs
+  register: odf_storage_class
 
 # have to manually create the PVC when using LVMS
 # this is because the image registry attempts to create a PVC as ReadWriteMany, which LVMS doesn't support
 - name: Create PVC for Image Registry
-  when: lvms.resources | length | int == 1
+  when: odf_storage_class.resources | length | int == 0
   kubernetes.core.k8s:
     definition:
       apiVersion: v1

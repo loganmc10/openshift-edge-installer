@@ -2,7 +2,7 @@
   ansible.builtin.include_role:
     name: "{{ playbook_dir }}/../common/roles/install_operator"
   vars:
-    operator_name: odf-lvm-operator # TODO: support LVMS
+    operator_name: "{{ lvms_operator_name }}"
     operator_namespace: openshift-storage
     all_namespaces: false
 
@@ -42,7 +42,7 @@
   kubernetes.core.k8s_info:
     api_version: storage.k8s.io/v1
     kind: StorageClass
-    name: odf-lvm-vg1 # TODO: support LVMS
+    name: "{{ lvms_storage_class }]"
   register: lvm_storage_class
   until: lvm_storage_class.resources | length | int == 1
   retries: 60
