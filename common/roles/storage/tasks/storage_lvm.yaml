@@ -42,7 +42,7 @@
   kubernetes.core.k8s_info:
     api_version: storage.k8s.io/v1
     kind: StorageClass
-    name: "{{ lvms_storage_class }]"
+    name: "{{ lvms_storage_class }}"
   register: lvm_storage_class
   until: lvm_storage_class.resources | length | int == 1
   retries: 60
