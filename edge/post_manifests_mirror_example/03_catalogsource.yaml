@@ -4,5 +4,5 @@ metadata:
   name: redhat-operators
   namespace: openshift-marketplace
 spec:
-  image: <mirror_url>:8443/redhat/redhat-operator-index:v4.11
+  image: <mirror_url>:8443/redhat/redhat-operator-index:v4.12
   sourceType: grpc

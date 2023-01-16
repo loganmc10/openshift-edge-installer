@@ -4,6 +4,10 @@ os_images: # Optional, you can specify a location for MCE to get OS ISOs from
     version: "4.11.9"
     url: "https://<local_http_mirror>/rhcos-4.11.9-x86_64-live.x86_64.iso"
     cpuArchitecture: "x86_64"
+  - openshiftVersion: "4.12"
+    version: "4.12.0"
+    url: "https://<local_http_mirror>/rhcos-4.12.0-x86_64-live.x86_64.iso"
+    cpuArchitecture: "x86_64"
 
 provisioning_network_config: # Optional, see https://docs.openshift.com/container-platform/latest/rest_api/provisioning_apis/provisioning-metal3-io-v1alpha1.html#spec
   # below is an example of a possible provisioning network configuration
