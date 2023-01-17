@@ -14,7 +14,7 @@ data:
     [[registry]]
        prefix = ""
        location = "quay.io/openshift-release-dev/ocp-v4.0-art-dev"
-       mirror-by-digest-only = false
+       mirror-by-digest-only = true
 
        [[registry.mirror]]
        location = "{{ mirror_url }}:{{ mirror_port }}/openshift/release"
@@ -22,7 +22,7 @@ data:
     [[registry]]
        prefix = ""
        location = "quay.io/openshift-release-dev/ocp-release"
-       mirror-by-digest-only = false
+       mirror-by-digest-only = true
 
        [[registry.mirror]]
        location = "{{ mirror_url }}:{{ mirror_port }}/openshift/release-images"
@@ -30,7 +30,7 @@ data:
     [[registry]]
        prefix = ""
        location = "registry.redhat.io/multicluster-engine"
-       mirror-by-digest-only = false
+       mirror-by-digest-only = true
 
        [[registry.mirror]]
        location = "{{ mirror_url }}:{{ mirror_port }}/multicluster-engine"
@@ -38,7 +38,7 @@ data:
     [[registry]]
        prefix = ""
        location = "registry.redhat.io/redhat"
-       mirror-by-digest-only = false
+       mirror-by-digest-only = true
 
        [[registry.mirror]]
        location = "{{ mirror_url }}:{{ mirror_port }}/redhat"
@@ -46,7 +46,7 @@ data:
     [[registry]]
        prefix = ""
        location = "registry.redhat.io/rhel8"
-       mirror-by-digest-only = false
+       mirror-by-digest-only = true
 
        [[registry.mirror]]
        location = "{{ mirror_url }}:{{ mirror_port }}/rhel8"
