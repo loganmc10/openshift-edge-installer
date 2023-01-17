@@ -15,3 +15,6 @@ spec:
     - mirrors:
         - <mirror_url>:8443/odf4
       source: registry.redhat.io/odf4
+    - mirrors:
+        - <mirror_url>:8443/lvms4
+      source: registry.redhat.io/lvms4
