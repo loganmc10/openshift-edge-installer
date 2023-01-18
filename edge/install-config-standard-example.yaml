@@ -22,8 +22,8 @@ edgeCluster:
     # If you are using a mirror, you must configure a CatalogSource using postInstallManifestsFolder
     # See the post_manifests_mirror_example folder for an example of how to do this
     enabled: true
-    catalogSource: redhat-operators
-    imageRegistry: false # Will deploy the integrated OCP registry if true
+    catalogSource: redhat-operators # Optional, defaults to redhat-operators
+    imageRegistry: false # Will deploy the integrated OCP registry if true, defaults to false
   performanceProfileSpec: # Optional
     # You can omit machineConfigPoolSelector and nodeSelector, they will be automatically added
     worker: # MachineConfigPool name, should be 'master' for compact cluster
