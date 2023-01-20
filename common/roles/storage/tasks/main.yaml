@@ -169,6 +169,8 @@
       loop:
         - "{{ lvms_storage_class }}"
         - "ocs-storagecluster-ceph-rgw"
+        - "ocs-storagecluster-ceph-rbd"
+        - "openshift-storage.noobaa.io"
         - "ocs-storagecluster-cephfs"
         - "local-storage"
       loop_control:

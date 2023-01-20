@@ -24,6 +24,7 @@ edgeCluster:
     enabled: true
     catalogSource: redhat-operators # Optional, defaults to redhat-operators
     imageRegistry: false # Will deploy the integrated OCP registry if true, defaults to false
+    noobaa: false # Install NooBaa (S3 compatible storage), defaults to false
   performanceProfileSpec: # Optional
     # You can omit machineConfigPoolSelector and nodeSelector, they will be automatically added
     master: # MachineConfigPool name, should be 'master' for SNO
