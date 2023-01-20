@@ -203,8 +203,8 @@
               register: k8s_result
               until: k8s_result is not failed
   always:
-    - name: Remove Namespace
-      when: (edgeCluster.removeNamespace is defined) and (edgeCluster.removeNamespace)
+    - name: Remove Edge Cluster Namespace
+      when: ((edgeCluster.keepNamespace is defined) and (not edgeCluster.keepNamespace)) or (edgeCluster.keepNamespace is not defined)
       kubernetes.core.k8s:
         definition:
           apiVersion: v1
