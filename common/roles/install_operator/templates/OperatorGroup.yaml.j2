@@ -1,7 +1,7 @@
 apiVersion: operators.coreos.com/v1
 kind: OperatorGroup
 metadata:
-  name: "{{ operator_name }}"
+  name: "{{ operator_namespace }}"
   namespace: "{{ operator_namespace }}"
 {% if not all_namespaces %}
 spec:

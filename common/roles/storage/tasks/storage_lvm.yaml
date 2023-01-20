@@ -53,3 +53,27 @@
   loop_control:
     label: "{{ item.metadata.name }}"
   ansible.builtin.include_tasks: set_storage.yaml
+
+- name: Install NooBaa
+  when: (edgeCluster.odfStorage.noobaa is defined) and (edgeCluster.odfStorage.noobaa)
+  block:
+    - name: Install MCG operator # noqa role-name[path]
+      ansible.builtin.include_role:
+        name: "{{ playbook_dir }}/../common/roles/install_operator"
+      vars:
+        operator_name: mcg-operator
+        operator_namespace: openshift-storage
+        all_namespaces: false
+
+    - name: Apply NooBaa CR
+      kubernetes.core.k8s:
+        template: NooBaa.yaml.j2
+        apply: true
+        state: present
+        wait: true
+        wait_timeout: 1200
+        wait_condition:
+          type: Available
+          status: "True"
+      register: k8s_result
+      until: k8s_result is not failed
