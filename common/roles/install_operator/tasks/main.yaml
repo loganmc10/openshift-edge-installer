@@ -1,12 +1,6 @@
 - name: Create Namespace
   kubernetes.core.k8s:
-    definition:
-      apiVersion: v1
-      kind: Namespace
-      metadata:
-        name: "{{ operator_namespace }}"
-        annotations:
-          workload.openshift.io/allowed: management # needed if this is being applied on a SNO server with workload partitioning
+    template: Namespace.yaml.j2
     apply: true
     state: present
   register: k8s_result

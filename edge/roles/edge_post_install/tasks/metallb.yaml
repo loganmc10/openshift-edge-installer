@@ -5,6 +5,7 @@
     operator_name: metallb-operator
     operator_namespace: metallb-system
     all_namespaces: true
+    cluster_monitoring: false
 
 - name: Create MetalLB
   kubernetes.core.k8s:

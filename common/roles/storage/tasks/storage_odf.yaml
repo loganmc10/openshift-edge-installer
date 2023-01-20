@@ -42,6 +42,7 @@
     operator_name: ocs-operator
     operator_namespace: openshift-storage
     all_namespaces: false
+    cluster_monitoring: false
 
 - name: Create StorageCluster
   kubernetes.core.k8s:

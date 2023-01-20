@@ -5,6 +5,7 @@
     operator_name: "{{ lvms_operator_name }}"
     operator_namespace: openshift-storage
     all_namespaces: false
+    cluster_monitoring: false
 
 - name: Install LVMCluster
   kubernetes.core.k8s:
@@ -64,6 +65,7 @@
         operator_name: mcg-operator
         operator_namespace: openshift-storage
         all_namespaces: false
+        cluster_monitoring: false
 
     - name: Apply NooBaa CR
       kubernetes.core.k8s:

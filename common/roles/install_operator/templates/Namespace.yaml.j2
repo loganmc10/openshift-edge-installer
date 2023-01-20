@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: "{{ operator_namespace }}"
+  annotations:
+    workload.openshift.io/allowed: management # needed if this is being applied on a SNO server with workload partitioning
+{% if cluster_monitoring %}
+  labels:
+    openshift.io/cluster-monitoring: "true"
+{% endif %}
