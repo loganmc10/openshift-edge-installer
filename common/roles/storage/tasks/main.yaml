@@ -117,6 +117,19 @@
         wait_timeout: 1200
       ignore_errors: true # noqa ignore-errors
 
+    - name: Remove NooBaa
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: noobaa.io/v1alpha1
+          kind: NooBaa
+          metadata:
+            name: noobaa
+            namespace: openshift-storage
+        state: absent
+        wait: true
+        wait_timeout: 1200
+      ignore_errors: true # noqa ignore-errors
+
     - name: Remove LVMCluster
       kubernetes.core.k8s:
         definition:
