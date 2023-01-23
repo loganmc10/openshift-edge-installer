@@ -152,6 +152,11 @@
         template: AgentClusterInstall.yaml.j2
         apply: true
         state: present
+        wait: true
+        wait_condition:
+          type: SpecSynced
+          status: "True"
+        wait_timeout: 600
       vars:
         install_manifests_folder: "{{ edgeCluster.installManifestsFolder }}"
       register: k8s_result
@@ -170,6 +175,11 @@
         template: InfraEnv.yaml.j2
         apply: true
         state: present
+        wait: true
+        wait_condition:
+          type: ImageCreated
+          status: "True"
+        wait_timeout: 600
       register: k8s_result
       until: k8s_result is not failed
 
