@@ -147,6 +147,14 @@
     - name: Setup install config overrides
       ansible.builtin.include_tasks: install_config_overrides.yaml
 
+    - name: Create ClusterDeployment
+      kubernetes.core.k8s:
+        template: ClusterDeployment.yaml.j2
+        apply: true
+        state: present
+      register: k8s_result
+      until: k8s_result is not failed
+
     - name: Create AgentClusterInstall
       kubernetes.core.k8s:
         template: AgentClusterInstall.yaml.j2
@@ -159,14 +167,6 @@
         wait_timeout: 600
       vars:
         install_manifests_folder: "{{ edgeCluster.installManifestsFolder }}"
-      register: k8s_result
-      until: k8s_result is not failed
-
-    - name: Create ClusterDeployment
-      kubernetes.core.k8s:
-        template: ClusterDeployment.yaml.j2
-        apply: true
-        state: present
       register: k8s_result
       until: k8s_result is not failed
 
