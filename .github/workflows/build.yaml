@@ -15,7 +15,7 @@ jobs:
           dnf -q -y update
           dnf -q -y install python3-pip git ShellCheck
           pip3 install --upgrade pip
-          pip3 install --upgrade ansible-core kubernetes jmespath ansible-lint netaddr
+          pip3 install --upgrade ansible-core kubernetes ansible-lint netaddr
           ansible-galaxy collection install -U kubernetes.core community.general ansible.utils
           git config --global --add safe.directory /__w/openshift-edge-installer/openshift-edge-installer
       - uses: actions/checkout@v3

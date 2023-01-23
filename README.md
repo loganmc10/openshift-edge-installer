@@ -14,7 +14,7 @@ After the installation of an edge cluster is complete, the edge cluster does not
   * If ODF is being installed, each node needs to have 2 disks (one for the OS, and one for ODF).
 * Local machine:
   * Install the following on your machine:
-    * Python modules: ```pip install --upgrade ansible-core kubernetes jmespath netaddr```
+    * Python modules: ```pip install --upgrade ansible-core kubernetes netaddr```
     * Ansible collections: ```ansible-galaxy collection install -U kubernetes.core community.general ansible.utils```
     * [oc binary](https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz)
   * Alternatively, use the provided container. Usage instructions are included in the README for each playbook.

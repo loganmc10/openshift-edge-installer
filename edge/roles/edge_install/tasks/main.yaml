@@ -147,16 +147,6 @@
     - name: Setup install config overrides
       ansible.builtin.include_tasks: install_config_overrides.yaml
 
-    - name: Create AgentClusterInstall
-      kubernetes.core.k8s:
-        template: AgentClusterInstall.yaml.j2
-        apply: true
-        state: present
-      vars:
-        install_manifests_folder: "{{ edgeCluster.installManifestsFolder }}"
-      register: k8s_result
-      until: k8s_result is not failed
-
     - name: Create ClusterDeployment
       kubernetes.core.k8s:
         template: ClusterDeployment.yaml.j2
@@ -165,11 +155,31 @@
       register: k8s_result
       until: k8s_result is not failed
 
+    - name: Create AgentClusterInstall
+      kubernetes.core.k8s:
+        template: AgentClusterInstall.yaml.j2
+        apply: true
+        state: present
+        wait: true
+        wait_condition:
+          type: SpecSynced
+          status: "True"
+        wait_timeout: 600
+      vars:
+        install_manifests_folder: "{{ edgeCluster.installManifestsFolder }}"
+      register: k8s_result
+      until: k8s_result is not failed
+
     - name: Create InfraEnv
       kubernetes.core.k8s:
         template: InfraEnv.yaml.j2
         apply: true
         state: present
+        wait: true
+        wait_condition:
+          type: ImageCreated
+          status: "True"
+        wait_timeout: 600
       register: k8s_result
       until: k8s_result is not failed
 
@@ -183,16 +193,6 @@
         state: present
       register: create_bmh
       until: create_bmh is not failed
-
-    - name: Wait for BareMetalHosts to provision
-      kubernetes.core.k8s_info:
-        api_version: metal3.io/v1alpha1
-        kind: BareMetalHost
-        namespace: "{{ metadata.name }}"
-      register: bmh_list
-      until: bmh_list | community.general.json_query('resources[*].status.provisioning.state') | unique == ["provisioned"]
-      retries: 30
-      delay: 20
 
     - name: Get Events URL
       kubernetes.core.k8s_info:

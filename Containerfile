@@ -9,7 +9,7 @@ WORKDIR /app
 
 RUN microdnf -y update && microdnf -y install python3-pip && microdnf -y clean all && \
     pip install --upgrade pip && \
-    pip install --upgrade ansible-core kubernetes jmespath netaddr && \
+    pip install --upgrade ansible-core kubernetes netaddr && \
     ansible-galaxy collection install -U kubernetes.core community.general ansible.utils && \
     echo -e '#!/bin/bash\nansible-playbook /app/edge/edge-playbook.yaml --extra-vars "@/install-config.yaml"' > /usr/bin/edge && \
     chmod +x /usr/bin/edge && \
