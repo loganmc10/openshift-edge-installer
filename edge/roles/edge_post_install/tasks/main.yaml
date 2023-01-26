@@ -205,12 +205,29 @@
   always:
     - name: Remove Edge Cluster Namespace
       when: ((edgeCluster.keepNamespace is defined) and (not edgeCluster.keepNamespace)) or (edgeCluster.keepNamespace is not defined)
-      kubernetes.core.k8s:
-        definition:
-          apiVersion: v1
-          kind: Namespace
-          metadata:
-            name: "{{ metadata.name }}"
-        state: absent
-        wait: true
-        wait_timeout: 1200
+      block:
+        - name: Delete BareMetalHosts
+          loop: "{{ platform.baremetal.hosts }}"
+          loop_control:
+            label: "{{ item.name }}"
+          kubernetes.core.k8s:
+            definition:
+              apiVersion: metal3.io/v1alpha1
+              kind: BareMetalHost
+              metadata:
+                name: "{{ item.name }}"
+                namespace: "{{ metadata.name }}"
+            state: absent
+            wait: true
+            wait_timeout: 1200
+
+        - name: Delete Namespace
+          kubernetes.core.k8s:
+            definition:
+              apiVersion: v1
+              kind: Namespace
+              metadata:
+                name: "{{ metadata.name }}"
+            state: absent
+            wait: true
+            wait_timeout: 1200
