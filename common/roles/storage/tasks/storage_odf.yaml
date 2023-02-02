@@ -39,7 +39,7 @@
   ansible.builtin.include_role:
     name: "{{ playbook_dir }}/../common/roles/install_operator"
   vars:
-    operator_name: ocs-operator
+    operator_name: odf-operator
     operator_namespace: openshift-storage
     all_namespaces: false
     cluster_monitoring: false
