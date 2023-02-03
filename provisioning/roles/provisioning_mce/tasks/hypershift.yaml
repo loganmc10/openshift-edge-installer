@@ -53,3 +53,30 @@
           status: "True"
       register: k8s_result
       until: k8s_result is not failed
+
+    - name: Install MetalLB operator # noqa role-name[path]
+      ansible.builtin.include_role:
+        name: "{{ playbook_dir }}/../common/roles/install_operator"
+      vars:
+        operator_name: metallb-operator
+        operator_namespace: metallb-system
+        all_namespaces: true
+        cluster_monitoring: false
+
+    - name: Create MetalLB
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: metallb.io/v1beta1
+          kind: MetalLB
+          metadata:
+            name: metallb
+            namespace: metallb-system
+        apply: true
+        state: present
+        wait: true
+        wait_condition:
+          type: Available
+          status: "True"
+        wait_timeout: 1200
+      register: k8s_result
+      until: k8s_result is not failed
