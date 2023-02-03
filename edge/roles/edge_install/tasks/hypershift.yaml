@@ -123,6 +123,16 @@
   ansible.builtin.set_fact:
     worker_count: "{{ (worker_count | int) + item.replicas }}"
 
+- name: Wait for Agents to come online
+  kubernetes.core.k8s_info:
+    api_version: agent-install.openshift.io/v1beta1
+    kind: Agent
+    namespace: "{{ metadata.name }}"
+  register: agents
+  until: (agents.resources | length | int) == (worker_count | int)
+  retries: 60
+  delay: 10
+
 - name: Create NodePool
   kubernetes.core.k8s:
     template: NodePool.yaml.j2
