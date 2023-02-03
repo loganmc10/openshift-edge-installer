@@ -34,105 +34,15 @@
         all_namespaces: true
         cluster_monitoring: false
 
-    - name: Create MetalLB
-      kubernetes.core.k8s:
-        definition:
-          apiVersion: metallb.io/v1beta1
-          kind: MetalLB
-          metadata:
-            name: metallb
-            namespace: metallb-system
-        apply: true
-        state: present
-        wait: true
-        wait_condition:
-          type: Available
-          status: "True"
-        wait_timeout: 1200
-      register: k8s_result
-      until: k8s_result is not failed
-
-    - name: Create IPAddressPool for Ingress
-      kubernetes.core.k8s:
-        template: IPAddressPool.yaml.j2
-        apply: true
-        state: present
-      register: k8s_result
-      until: k8s_result is not failed
+    - name: Setup MetalLB for Ingress LB
+      when: access_control_node
+      ansible.builtin.include_tasks: metallb.yaml
       vars:
-        pool_type: ingress
-        addresses: "{{ platform.baremetal.ingressVIPs | default([platform.baremetal.ingressVIP]) }}"
+        api_lb: false
+        ingress_lb: true
 
-    - name: Create L2Advertisement
-      kubernetes.core.k8s:
-        definition:
-          apiVersion: metallb.io/v1beta1
-          kind: L2Advertisement
-          metadata:
-            name: ingress-adv
-            namespace: metallb-system
-          spec:
-            ipAddressPools:
-              - ingress-address-pool
-        apply: true
-        state: present
-      register: k8s_result
-      until: k8s_result is not failed
-
-    - name: Create Service for Ingress
-      kubernetes.core.k8s:
-        definition:
-          kind: Service
-          apiVersion: v1
-          metadata:
-            annotations:
-              metallb.universe.tf/address-pool: ingress-address-pool
-            name: metallb-ingress
-            namespace: openshift-ingress
-          spec:
-            ports:
-              - name: http
-                protocol: TCP
-                port: 80
-                targetPort: 80
-              - name: https
-                protocol: TCP
-                port: 443
-                targetPort: 443
-            selector:
-              ingresscontroller.operator.openshift.io/deployment-ingresscontroller: default
-            type: LoadBalancer
-        apply: true
-        state: present
-      register: k8s_result
-      until: k8s_result is not failed
-
-    - name: Apply post-install manifests
-      when: edgeCluster.postInstallManifestsFolder is defined
-      loop: "{{ lookup('ansible.builtin.fileglob', lookup('ansible.builtin.vars', 'post_install_manifests_folder') + '/*', wantlist=True) | sort }}"
-      loop_control:
-        pause: 15
-        label: "{{ item }}"
-      kubernetes.core.k8s:
-        src: "{{ item }}"
-        wait: true
-        apply: true
-        state: present
-      vars:
-        # this var is copied in like this because ansible.builtin.vars doesn't support dicts
-        post_install_manifests_folder: "{{ edgeCluster.postInstallManifestsFolder }}"
-      register: k8s_result
-      until: k8s_result is not failed
-
-    - name: Run post-install scripts
-      when: edgeCluster.postInstallScriptsFolder is defined
-      loop: "{{ lookup('ansible.builtin.fileglob', lookup('ansible.builtin.vars', 'post_install_scripts_folder') + '/*', wantlist=True) | sort }}"
-      loop_control:
-        label: "{{ item }}"
-      ansible.builtin.include_tasks: post_scripts.yaml
-      vars:
-        # this var is copied in like this because ansible.builtin.vars doesn't support dicts
-        post_install_scripts_folder: "{{ edgeCluster.postInstallScriptsFolder }}"
+    - name: Apply post-install manifests and scripts
+      ansible.builtin.include_tasks: post_install.yaml
 
     - name: Install Storage and Registry
       when: (edgeCluster.odfStorage is defined) and (edgeCluster.odfStorage.enabled)
