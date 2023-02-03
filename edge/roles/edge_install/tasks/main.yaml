@@ -1,7 +1,44 @@
-- name: Standard cluster install
-  when: ((edgeCluster.hypershift is defined) and (not edgeCluster.hypershift)) or (edgeCluster.hypershift is not defined)
-  ansible.builtin.include_tasks: standard.yaml
+- name: Install edge cluster
+  block:
+    - name: Standard cluster install
+      when: ((edgeCluster.hypershift is defined) and (not edgeCluster.hypershift)) or (edgeCluster.hypershift is not defined)
+      ansible.builtin.include_tasks: standard.yaml
 
-- name: Hypershift install
-  when: (edgeCluster.hypershift is defined) and (edgeCluster.hypershift)
-  ansible.builtin.include_tasks: hypershift.yaml
+    - name: Hypershift install
+      when: (edgeCluster.hypershift is defined) and (edgeCluster.hypershift)
+      ansible.builtin.include_tasks: hypershift.yaml
+  rescue:
+    - name: Delete ClusterImageSet
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: hive.openshift.io/v1
+          kind: ClusterImageSet
+          metadata:
+            name: "{{ metadata.name }}"
+        state: absent
+        wait: true
+        wait_timeout: 1200
+
+    - name: Delete BareMetalHosts
+      loop: "{{ platform.baremetal.hosts }}"
+      loop_control:
+        label: "{{ item.name }}"
+      kubernetes.core.k8s:
+        template: BareMetalHost.yaml.j2
+        state: absent
+        wait: true
+        wait_timeout: 1200
+
+    - name: Delete Namespace
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: v1
+          kind: Namespace
+          metadata:
+            name: "{{ metadata.name }}"
+        state: absent
+        wait: true
+        wait_timeout: 1200
+
+    - name: End playbook
+      ansible.builtin.meta: end_play
