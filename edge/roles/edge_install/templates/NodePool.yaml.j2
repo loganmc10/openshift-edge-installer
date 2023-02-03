@@ -9,6 +9,7 @@ spec:
     image: "{{ edgeCluster.clusterImageSet }}"
   management:
     upgradeType: InPlace
+  replicas: {{ worker_count }}
   platform:
     type: "Agent"
     agent:

@@ -81,6 +81,13 @@
   register: k8s_result
   until: k8s_result is not failed
 
+- name: Count workers
+  loop: "{{ compute }}"
+  loop_control:
+    label: "{{ item.name }}"
+  ansible.builtin.set_fact:
+    worker_count: "{{ (worker_count | int) + item.replicas }}"
+
 - name: Create NodePool
   kubernetes.core.k8s:
     template: NodePool.yaml.j2
