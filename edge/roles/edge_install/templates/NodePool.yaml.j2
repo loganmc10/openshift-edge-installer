@@ -1,0 +1,17 @@
+apiVersion: hypershift.openshift.io/v1alpha1
+kind: NodePool
+metadata:
+  name: "{{ metadata.name }}"
+  namespace: "{{ metadata.name }}"
+spec:
+  clusterName: "{{ metadata.name }}"
+  release:
+    image: "{{ edgeCluster.clusterImageSet }}"
+  management:
+    upgradeType: InPlace
+  platform:
+    type: "Agent"
+    agent:
+      agentLabelSelector:
+        matchLabels:
+          infraenvs.agent-install.openshift.io: "{{ metadata.name }}"
