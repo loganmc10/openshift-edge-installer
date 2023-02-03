@@ -18,6 +18,22 @@ spec:
     name: assisted-deployment-pull-secret
   sshKey:
     name: "{{ metadata.name }}-sshkey"
+{% if fips is defined %}
+  fips: {{ fips }}
+{% endif %}
+{% if imageContentSources is defined %}
+  imageContentSources:
+    {{ imageContentSources | to_nice_yaml(indent=2) | trim | indent(4) }}
+{% endif %}
+{% if additionalTrustBundle is defined %}
+  additionalTrustBundle:
+    {{ additionalTrustBundle | to_nice_yaml(indent=2) | trim | indent(4) }}
+{% endif %}
+{% if proxy is defined %}
+  configuration:
+    proxy:
+      {{ proxy | to_nice_yaml(indent=2) | trim | indent(6) }}
+{% endif %}
   services:
     - service: APIServer
       servicePublishingStrategy:

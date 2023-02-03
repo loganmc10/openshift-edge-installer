@@ -106,3 +106,43 @@
         state: present
       register: k8s_result
       until: k8s_result is not failed
+
+    - name: Apply post-install manifests
+      when: edgeCluster.postInstallManifestsFolder is defined
+      loop: "{{ lookup('ansible.builtin.fileglob', lookup('ansible.builtin.vars', 'post_install_manifests_folder') + '/*', wantlist=True) | sort }}"
+      loop_control:
+        pause: 15
+        label: "{{ item }}"
+      kubernetes.core.k8s:
+        src: "{{ item }}"
+        wait: true
+        apply: true
+        state: present
+      vars:
+        # this var is copied in like this because ansible.builtin.vars doesn't support dicts
+        post_install_manifests_folder: "{{ edgeCluster.postInstallManifestsFolder }}"
+      register: k8s_result
+      until: k8s_result is not failed
+
+    - name: Run post-install scripts
+      when: edgeCluster.postInstallScriptsFolder is defined
+      loop: "{{ lookup('ansible.builtin.fileglob', lookup('ansible.builtin.vars', 'post_install_scripts_folder') + '/*', wantlist=True) | sort }}"
+      loop_control:
+        label: "{{ item }}"
+      ansible.builtin.include_tasks: post_scripts.yaml
+      vars:
+        # this var is copied in like this because ansible.builtin.vars doesn't support dicts
+        post_install_scripts_folder: "{{ edgeCluster.postInstallScriptsFolder }}"
+
+    - name: Install Storage and Registry
+      when: (edgeCluster.odfStorage is defined) and (edgeCluster.odfStorage.enabled)
+      block:
+        - name: Install ODF # noqa role-name[path]
+          ansible.builtin.include_role:
+            name: "{{ playbook_dir }}/../common/roles/storage"
+          vars:
+            catalog_source: "{{ edgeCluster.odfStorage.catalogSource | default('redhat-operators') }}"
+
+        - name: Install Image Registry
+          when: (edgeCluster.odfStorage.imageRegistry is defined) and (edgeCluster.odfStorage.imageRegistry)
+          ansible.builtin.include_tasks: registry.yaml
