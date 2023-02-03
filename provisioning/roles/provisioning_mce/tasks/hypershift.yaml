@@ -1,0 +1,55 @@
+- name: Check for Hypershift
+  kubernetes.core.k8s_info:
+    api_version: apiextensions.k8s.io/v1
+    kind: CustomResourceDefinition
+    name: hostedclusters.hypershift.openshift.io
+  register: hostedclusters
+  until: hostedclusters is not failed
+
+- name: Set up Hypershift
+  when: hostedclusters.resources | length | int == 0
+  block:
+    - name: Manage local-cluster
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: cluster.open-cluster-management.io/v1
+          kind: ManagedCluster
+          metadata:
+            labels:
+              local-cluster: "true"
+              cloud: auto-detect
+              vendor: auto-detect
+            name: local-cluster
+          spec:
+            hubAcceptsClient: true
+            leaseDurationSeconds: 60
+        apply: true
+        state: present
+        wait: true
+        wait_timeout: 1200
+        wait_condition:
+          type: ManagedClusterConditionAvailable
+          status: "True"
+      register: k8s_result
+      until: k8s_result is not failed
+
+    - name: patch MCE
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: multicluster.openshift.io/v1
+          kind: MultiClusterEngine
+          metadata:
+            name: multiclusterengine
+          spec:
+            overrides:
+              components:
+                - enabled: true
+                  name: hypershift-preview
+        state: present
+        wait: true
+        wait_timeout: 1200
+        wait_condition:
+          type: Available
+          status: "True"
+      register: k8s_result
+      until: k8s_result is not failed

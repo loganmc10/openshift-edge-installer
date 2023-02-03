@@ -72,6 +72,10 @@
         wait_timeout: 1200
       register: k8s_result
       until: k8s_result is not failed
+
+    - name: Deploy Hypershift
+      when: (hypershift is defined) and (hypershift)
+      ansible.builtin.include_tasks: hypershift.yaml
   rescue: # CRs need to be removed before the namespaces holding the operators are removed, or else the CR finalizers will get stuck
     - name: Delete CIM
       kubernetes.core.k8s:
@@ -80,6 +84,18 @@
           kind: AgentServiceConfig
           metadata:
             name: agent
+        state: absent
+        wait: true
+        wait_timeout: 1200
+      ignore_errors: true # noqa ignore-errors
+
+    - name: Delete ManagedCluster
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: cluster.open-cluster-management.io/v1
+          kind: ManagedCluster
+          metadata:
+            name: local-cluster
         state: absent
         wait: true
         wait_timeout: 1200
