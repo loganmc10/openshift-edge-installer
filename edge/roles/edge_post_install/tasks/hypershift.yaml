@@ -1,0 +1,105 @@
+- name: Wait for NodePool to be ready
+  kubernetes.core.k8s_info:
+    api_version: hypershift.openshift.io/v1alpha1
+    kind: NodePool
+    name: "{{ metadata.name }}"
+    namespace: "{{ metadata.name }}"
+    wait: true
+    wait_condition:
+      type: Ready
+      status: "True"
+    wait_sleep: 60
+    wait_timeout: 14400
+
+- name: Update kubeconfig
+  ansible.builtin.include_tasks: kubeconfig.yaml
+
+- name: Set required environment vars
+  ansible.builtin.set_fact:
+    kubeconfig_env_vars:
+      KUBECONFIG: "{{ kubeconfig_file.dest }}"
+
+- name: Run tasks on edge cluster
+  environment: "{{ kubeconfig_env_vars }}"
+  block:
+    - name: Install MetalLB operator # noqa role-name[path]
+      ansible.builtin.include_role:
+        name: "{{ playbook_dir }}/../common/roles/install_operator"
+      vars:
+        operator_name: metallb-operator
+        operator_namespace: metallb-system
+        all_namespaces: true
+        cluster_monitoring: false
+
+    - name: Create MetalLB
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: metallb.io/v1beta1
+          kind: MetalLB
+          metadata:
+            name: metallb
+            namespace: metallb-system
+        apply: true
+        state: present
+        wait: true
+        wait_condition:
+          type: Available
+          status: "True"
+        wait_timeout: 1200
+      register: k8s_result
+      until: k8s_result is not failed
+
+    - name: Create IPAddressPool for Ingress
+      kubernetes.core.k8s:
+        template: IPAddressPool.yaml.j2
+        apply: true
+        state: present
+      register: k8s_result
+      until: k8s_result is not failed
+      vars:
+        pool_type: ingress
+        addresses: "{{ platform.baremetal.ingressVIPs | default([platform.baremetal.ingressVIP]) }}"
+
+    - name: Create L2Advertisement
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: metallb.io/v1beta1
+          kind: L2Advertisement
+          metadata:
+            name: ingress-adv
+            namespace: metallb-system
+          spec:
+            ipAddressPools:
+              - ingress-address-pool
+        apply: true
+        state: present
+      register: k8s_result
+      until: k8s_result is not failed
+
+    - name: Create Service for Ingress
+      kubernetes.core.k8s:
+        definition:
+          kind: Service
+          apiVersion: v1
+          metadata:
+            annotations:
+              metallb.universe.tf/address-pool: ingress-address-pool
+            name: metallb-ingress
+            namespace: openshift-ingress
+          spec:
+            ports:
+              - name: http
+                protocol: TCP
+                port: 80
+                targetPort: 80
+              - name: https
+                protocol: TCP
+                port: 443
+                targetPort: 443
+            selector:
+              ingresscontroller.operator.openshift.io/deployment-ingresscontroller: default
+            type: LoadBalancer
+        apply: true
+        state: present
+      register: k8s_result
+      until: k8s_result is not failed
