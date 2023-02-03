@@ -53,6 +53,26 @@
   register: k8s_result
   until: k8s_result is not failed
 
+- name: Create CAPI Role
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: Role
+      metadata:
+        name: capi-provider-role
+        namespace: "{{ metadata.name }}"
+      rules:
+        - apiGroups:
+            - agent-install.openshift.io
+          resources:
+            - agents
+          verbs:
+            - "*"
+    apply: true
+    state: present
+  register: k8s_result
+  until: k8s_result is not failed
+
 - name: Create HostedCluster
   kubernetes.core.k8s:
     template: HostedCluster.yaml.j2
