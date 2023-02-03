@@ -25,17 +25,7 @@
 - name: Run tasks on edge cluster
   environment: "{{ kubeconfig_env_vars }}"
   block:
-    - name: Install MetalLB operator # noqa role-name[path]
-      ansible.builtin.include_role:
-        name: "{{ playbook_dir }}/../common/roles/install_operator"
-      vars:
-        operator_name: metallb-operator
-        operator_namespace: metallb-system
-        all_namespaces: true
-        cluster_monitoring: false
-
     - name: Setup MetalLB for Ingress LB
-      when: access_control_node
       ansible.builtin.include_tasks: metallb.yaml
       vars:
         api_lb: false
