@@ -1,0 +1,43 @@
+- name: Create BMC secrets
+  loop: "{{ platform.baremetal.hosts }}"
+  loop_control:
+    label: "{{ item.name }}"
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      data:
+        password: "{{ item.bmc.password | b64encode }}"
+        username: "{{ item.bmc.username | b64encode }}"
+      metadata:
+        name: "{{ item.name }}-bmc-secret"
+        namespace: "{{ metadata.name }}"
+      type: Opaque
+    apply: true
+    state: present
+  register: k8s_result
+  until: k8s_result is not failed
+
+- name: Create InfraEnv
+  kubernetes.core.k8s:
+    template: InfraEnv.yaml.j2
+    apply: true
+    state: present
+    wait: true
+    wait_condition:
+      type: ImageCreated
+      status: "True"
+    wait_timeout: 600
+  register: k8s_result
+  until: k8s_result is not failed
+
+- name: Create BareMetalHosts
+  loop: "{{ platform.baremetal.hosts }}"
+  loop_control:
+    label: "{{ item.name }}"
+  kubernetes.core.k8s:
+    template: BareMetalHost.yaml.j2
+    apply: true
+    state: present
+  register: create_bmh
+  until: create_bmh is not failed

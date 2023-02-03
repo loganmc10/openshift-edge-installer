@@ -1,0 +1,51 @@
+apiVersion: hypershift.openshift.io/v1beta1
+kind: HostedCluster
+metadata:
+  name: "{{ metadata.name }}"
+  namespace: "{{ metadata.name }}"
+spec:
+  release:
+    image: "{{ edgeCluster.clusterImageSet }}"
+  platform:
+    type: "Agent"
+    agent:
+      agentNamespace: "{{ metadata.name }}"
+  dns:
+    baseDomain: "{{ baseDomain }}"
+  networking:
+    {{ networking | to_nice_yaml(indent=2) | trim | indent(4) }}
+  pullSecret:
+    name: assisted-deployment-pull-secret
+  sshKey:
+    name: "{{ metadata.name }}-sshkey"
+  services:
+    - service: APIServer
+      servicePublishingStrategy:
+        type: NodePort
+        nodePort:
+          address: "api.{{ metadata.name }}.{{ baseDomain }}"
+    - service: OAuthServer
+      servicePublishingStrategy:
+        type: NodePort
+        nodePort:
+          address: "api.{{ metadata.name }}.{{ baseDomain }}"
+    - service: OIDC
+      servicePublishingStrategy:
+        type: NodePort
+        nodePort:
+          address: "api.{{ metadata.name }}.{{ baseDomain }}"
+    - service: Konnectivity
+      servicePublishingStrategy:
+        type: NodePort
+        nodePort:
+          address: "api.{{ metadata.name }}.{{ baseDomain }}"
+    - service: Ignition
+      servicePublishingStrategy:
+        type: NodePort
+        nodePort:
+          address: "api.{{ metadata.name }}.{{ baseDomain }}"
+    - service: OVNSbDb
+      servicePublishingStrategy:
+        type: NodePort
+        nodePort:
+          address: "api.{{ metadata.name }}.{{ baseDomain }}"

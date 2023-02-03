@@ -4,9 +4,11 @@ metadata:
   name: "{{ metadata.name }}"
   namespace: "{{ metadata.name }}"
 spec:
+{% if edgeCluster.hypershift is not defined or (edgeCluster.hypershift is defined and not edgeCluster.hypershift) %}
   clusterRef:
     name: "{{ metadata.name }}"
     namespace: "{{ metadata.name }}"
+{% endif %}
   sshAuthorizedKey: "{{ sshKey }}"
   agentLabelSelector:
     matchLabels:

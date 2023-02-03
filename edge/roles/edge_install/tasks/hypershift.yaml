@@ -1,0 +1,62 @@
+- name: Create Namespace
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: "{{ metadata.name }}"
+    apply: true
+    state: present
+  register: k8s_result
+  until: k8s_result is not failed
+
+- name: Create image pull secret
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      data:
+        .dockerconfigjson: "{{ pullSecret | b64encode }}"
+      metadata:
+        name: assisted-deployment-pull-secret
+        namespace: "{{ metadata.name }}"
+      type: kubernetes.io/dockerconfigjson
+    apply: true
+    state: present
+  register: k8s_result
+  until: k8s_result is not failed
+
+- name: Setup host networking
+  when: nmstate_host.networkConfig is defined
+  loop: "{{ platform.baremetal.hosts }}"
+  loop_control:
+    label: "{{ nmstate_host.name }}"
+    loop_var: nmstate_host
+  ansible.builtin.include_tasks: setup_host_networking.yaml
+
+- name: Setup InfraEnv and BMH
+  ansible.builtin.include_tasks: setup_bmh.yaml
+
+- name: Create SSH key secret
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: "{{ metadata.name }}-sshkey"
+        namespace: "{{ metadata.name }}"
+      data:
+        id_rsa.pub: "{{ sshKey | b64encode }}"
+      type: Opaque
+    apply: true
+    state: present
+  register: k8s_result
+  until: k8s_result is not failed
+
+- name: Create HostedCluster
+  kubernetes.core.k8s:
+    template: HostedCluster.yaml.j2
+    apply: true
+    state: present
+  register: k8s_result
+  until: k8s_result is not failed
