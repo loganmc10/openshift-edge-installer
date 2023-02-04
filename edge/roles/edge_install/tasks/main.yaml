@@ -1,5 +1,33 @@
 - name: Install edge cluster
   block:
+    - name: Create Namespace
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: v1
+          kind: Namespace
+          metadata:
+            name: "{{ metadata.name }}"
+        apply: true
+        state: present
+      register: k8s_result
+      until: k8s_result is not failed
+
+    - name: Create image pull secret
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: v1
+          kind: Secret
+          data:
+            .dockerconfigjson: "{{ pullSecret | b64encode }}"
+          metadata:
+            name: assisted-deployment-pull-secret
+            namespace: "{{ metadata.name }}"
+          type: kubernetes.io/dockerconfigjson
+        apply: true
+        state: present
+      register: k8s_result
+      until: k8s_result is not failed
+
     - name: Standard cluster install
       when: ((edgeCluster.hypershift is defined) and (not edgeCluster.hypershift.enabled)) or (edgeCluster.hypershift is not defined)
       ansible.builtin.include_tasks: standard.yaml

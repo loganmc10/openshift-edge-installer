@@ -1,4 +1,4 @@
-- name: Update kubeconfig
+- name: Get kubeconfig
   ansible.builtin.include_tasks: kubeconfig.yaml
 
 - name: Wait for NodePool to be ready
