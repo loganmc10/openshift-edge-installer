@@ -4,7 +4,7 @@ metadata:
   name: "{{ metadata.name }}"
   namespace: "{{ metadata.name }}"
 spec:
-{% if edgeCluster.hypershift is not defined or (edgeCluster.hypershift is defined and not edgeCluster.hypershift) %}
+{% if edgeCluster.hypershift is not defined or (edgeCluster.hypershift is defined and not edgeCluster.hypershift.enabled) %}
   clusterRef:
     name: "{{ metadata.name }}"
     namespace: "{{ metadata.name }}"

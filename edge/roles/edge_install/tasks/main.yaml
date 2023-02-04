@@ -1,11 +1,11 @@
 - name: Install edge cluster
   block:
     - name: Standard cluster install
-      when: ((edgeCluster.hypershift is defined) and (not edgeCluster.hypershift)) or (edgeCluster.hypershift is not defined)
+      when: ((edgeCluster.hypershift is defined) and (not edgeCluster.hypershift.enabled)) or (edgeCluster.hypershift is not defined)
       ansible.builtin.include_tasks: standard.yaml
 
     - name: Hypershift install
-      when: (edgeCluster.hypershift is defined) and (edgeCluster.hypershift)
+      when: (edgeCluster.hypershift is defined) and (edgeCluster.hypershift.enabled)
       ansible.builtin.include_tasks: hypershift.yaml
   rescue:
     - name: Delete ClusterImageSet
