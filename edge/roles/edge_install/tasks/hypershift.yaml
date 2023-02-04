@@ -102,31 +102,6 @@
   register: k8s_result
   until: k8s_result is not failed
 
-- name: Count workers
-  loop: "{{ compute }}"
-  loop_control:
-    label: "{{ item.name }}"
-  ansible.builtin.set_fact:
-    worker_count: "{{ (worker_count | int) + item.replicas }}"
-
-- name: Wait for Agents to come online
-  kubernetes.core.k8s_info:
-    api_version: agent-install.openshift.io/v1beta1
-    kind: Agent
-    namespace: "{{ metadata.name }}"
-  register: agents
-  until: (agents.resources | length | int) == (worker_count | int)
-  retries: 60
-  delay: 10
-
-- name: Create NodePool
-  kubernetes.core.k8s:
-    template: NodePool.yaml.j2
-    apply: true
-    state: present
-  register: k8s_result
-  until: k8s_result is not failed
-
 - name: Wait for API Server to be deployed
   kubernetes.core.k8s_info:
     api_version: v1
@@ -148,6 +123,31 @@
         namespace: "{{ metadata.name }}-{{ metadata.name }}"
         annotations:
           metallb.universe.tf/address-pool: "{{ metadata.name }}-api-address-pool"
+    state: present
+  register: k8s_result
+  until: k8s_result is not failed
+
+- name: Count workers
+  loop: "{{ compute }}"
+  loop_control:
+    label: "{{ item.name }}"
+  ansible.builtin.set_fact:
+    worker_count: "{{ (worker_count | int) + item.replicas }}"
+
+- name: Wait for Agents to come online
+  kubernetes.core.k8s_info:
+    api_version: agent-install.openshift.io/v1beta1
+    kind: Agent
+    namespace: "{{ metadata.name }}"
+  register: agents
+  until: (agents.resources | length | int) == (worker_count | int)
+  retries: 60
+  delay: 10
+
+- name: Create NodePool
+  kubernetes.core.k8s:
+    template: NodePool.yaml.j2
+    apply: true
     state: present
   register: k8s_result
   until: k8s_result is not failed
