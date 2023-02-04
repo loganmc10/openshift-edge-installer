@@ -25,14 +25,14 @@
 - name: Run tasks on edge cluster
   environment: "{{ kubeconfig_env_vars }}"
   block:
+    - name: Apply post-install manifests and scripts
+      ansible.builtin.include_tasks: post_install.yaml
+
     - name: Setup MetalLB for Ingress LB
       ansible.builtin.include_tasks: metallb.yaml
       vars:
         api_lb: false
         ingress_lb: true
-
-    - name: Apply post-install manifests and scripts
-      ansible.builtin.include_tasks: post_install.yaml
 
     - name: Install Storage and Registry
       when: (edgeCluster.odfStorage is defined) and (edgeCluster.odfStorage.enabled)
