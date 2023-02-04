@@ -27,7 +27,7 @@ spec:
 {% endif %}
 {% if additionalTrustBundle is defined %}
   additionalTrustBundle:
-    {{ additionalTrustBundle | to_nice_yaml(indent=2) | trim | indent(4) }}
+    name: trusted-ca
 {% endif %}
 {% if proxy is defined %}
   configuration:

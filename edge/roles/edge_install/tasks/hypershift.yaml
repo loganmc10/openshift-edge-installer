@@ -53,6 +53,15 @@
   register: k8s_result
   until: k8s_result is not failed
 
+- name: Create additionalTrustBundle CM
+  when: additionalTrustBundle is defined
+  kubernetes.core.k8s:
+    template: TrustedCa.yaml.j2
+    apply: true
+    state: present
+  register: k8s_result
+  until: k8s_result is not failed
+
 - name: Create CAPI Role
   kubernetes.core.k8s:
     definition:
