@@ -62,6 +62,11 @@
   register: k8s_result
   until: k8s_result is not failed
 
+- name: Add proxy to config
+  when: proxy is defined
+  ansible.builtin.set_fact:
+    hypershift_configuration: "{{ hypershift_configuration | combine({'proxy': proxy}, recursive=true) }}"
+
 - name: Create CAPI Role
   kubernetes.core.k8s:
     definition:

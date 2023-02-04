@@ -29,11 +29,8 @@ spec:
   additionalTrustBundle:
     name: trusted-ca
 {% endif %}
-{% if proxy is defined %}
   configuration:
-    proxy:
-      {{ proxy | to_nice_yaml(indent=2) | trim | indent(6) }}
-{% endif %}
+    {{ hypershift_configuration | to_nice_yaml(indent=2) | trim | indent(4) }}
   services:
     - service: APIServer
       servicePublishingStrategy:
