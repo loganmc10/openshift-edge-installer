@@ -54,7 +54,7 @@ platform:
     apiVIP: <api_address>
     ingressVIP: <ingress_address>
     hosts:
-      - name: openshift-master-0
+      - name: openshift-ctrl-0
         role: master
         bmc:
           address: "redfish-virtualmedia://<bmc_ip_address>/redfish/v1/Systems/1"
@@ -74,7 +74,7 @@ platform:
                 dhcp: true
               ipv6:
                 enabled: false
-      - name: openshift-master-1
+      - name: openshift-ctrl-1
         role: master
         bmc:
           address: "redfish-virtualmedia://<bmc_ip_address>/redfish/v1/Systems/1"
@@ -94,7 +94,7 @@ platform:
                 dhcp: true
               ipv6:
                 enabled: false
-      - name: openshift-master-2
+      - name: openshift-ctrl-2
         role: master
         bmc:
           address: "redfish-virtualmedia://<bmc_ip_address>/redfish/v1/Systems/1"

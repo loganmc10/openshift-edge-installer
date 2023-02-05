@@ -1,5 +1,5 @@
 # Deploying Hosted Control Plane Clusters
-When you enable the ```hypershift``` option, the control plane for the edge cluster is hosted as pods on the provisioning cluster. Therefore, there are no control-plane/master nodes.
+When you enable the ```hypershift``` option, the control plane for the edge cluster is hosted as pods on the provisioning cluster. Therefore, there are no control plane nodes.
 ## Provisioning cluster setup
 The provisioning cluster must be configured with ```hypershift: true```, see the [configuration example](../../provisioning/provisioning-config-example.yaml).
 
@@ -11,4 +11,4 @@ The Ingress address is served via MetalLB on the hosted cluster. This means that
 ## Hosted cluster configuration
 See the [configuration example](../install-config-hypershift-example.yaml) for a list of valid options. Not every option that is valid for standard clusters is valid for hosted clusters.
 
-You should not define any control-plane/master nodes, as Hypershift clusters do not require them.
+You should not define any control plane nodes, as Hypershift clusters do not require them.

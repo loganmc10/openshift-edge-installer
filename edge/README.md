@@ -1,7 +1,7 @@
 # Purpose
-This playbook installs an edge cluster. You should already have a provisioning cluster configured.
+This playbook installs an edge cluster. You should already have a provisioning cluster configured. See [HYPERSHIFT.md](docs/HYPERSHIFT.md) for information on setting up a cluster using Hosted Control Planes.
 # Usage
-Example install config files are provided in ```install-config-sno-example.yaml``` and ```install-config-standard-example.yaml```
+Example install config files are provided in ```install-config-sno-example.yaml```, ```install-config-standard-example.yaml``` and ```install-config-hypershift-example.yaml```.
 
 The install config uses the same format as an IPI install, except that it also requires you to set clusterImageSet. The example shows how to point the clusterImageSet to a mirror registry.
 
@@ -21,7 +21,7 @@ Finally, you can specify a path to a folder containing scripts to be executed af
 ```
 postInstallScriptsFolder: post_scripts
 ```
-Other options are documented in ```install-config-sno-example.yaml``` and ```install-config-standard-example.yaml```
+Other options are documented in ```install-config-sno-example.yaml```, ```install-config-standard-example.yaml``` and ```install-config-hypershift-example.yaml```.
 
 ---
 To run the playbook:
@@ -65,23 +65,3 @@ If your server doesn't support virtual media, you'll need to specify either the 
 and then boot the server manually using the Discovery ISO (the ISO URL is printed when the playbook is executed).
 
 Even though you are manually booting the ISO, if you don't provide a redfish/ipmi address in the install-config.yaml file, then the Multicluster Engine won't automatically approve the node, and it won't apply the proper settings (hostname, role, etc) to the node.
-# Ansible Playbook Workflow
-* Create a ClusterImageSet so that the installer knows which version of OpenShift to install.
-* Create a namespace for the install.
-* Create secrets for the BMC login credentials.
-* Create an image pull secret that the new cluster will use.
-* Generate ConfigMaps for extra install-time manifests.
-* Configure workload partitioning if required.
-* Create an AgentClusterInstall and ClusterDeployment with the install parameters.
-* Create NMStateConfigs that specify host networking configuration.
-* Create InfraEnv, which will generate the discovery ISO.
-* Create BareMetalHosts for each host, tied to the InfraEnv.
-* Baremetal Operator will automatically mount the discovery ISO to hosts that support Virtual Media, and the installation will begin.
-* Events URL printed to console.
-* Discovery ISO URL (used only for hosts that don't support automatic booting via Virtual Media) printed to console.
-* kubeconfig written to disk.
-* Wait for cluster install to complete.
-* Apply post-install manifests.
-* Configure MetalLB for multi-node relocatable clusters.
-* Install ODF if required.
-* Apply PerformanceProfiles if required.
