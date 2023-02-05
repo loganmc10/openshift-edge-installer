@@ -140,7 +140,7 @@
   register: agents
   until: (agents.resources | length | int) == (worker_count | int)
   retries: 60
-  delay: 10
+  delay: 20
 
 - name: Create NodePool
   kubernetes.core.k8s:
