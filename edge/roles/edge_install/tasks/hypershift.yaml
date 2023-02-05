@@ -127,13 +127,6 @@
   register: k8s_result
   until: k8s_result is not failed
 
-- name: Count workers
-  loop: "{{ compute }}"
-  loop_control:
-    label: "{{ item.name }}"
-  ansible.builtin.set_fact:
-    worker_count: "{{ (worker_count | int) + item.replicas }}"
-
 - name: Wait for Agents to come online
   kubernetes.core.k8s_info:
     api_version: agent-install.openshift.io/v1beta1
@@ -149,5 +142,7 @@
     template: NodePool.yaml.j2
     apply: true
     state: present
+  vars:
+    install_manifests_folder: "{{ edgeCluster.installManifestsFolder }}"
   register: k8s_result
   until: k8s_result is not failed

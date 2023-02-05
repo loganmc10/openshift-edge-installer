@@ -8,6 +8,7 @@ edgeCluster:
   clusterImageSet: <mirror_url>:8443/openshift/release-images:4.12.0-x86_64 # Required
   additionalNTPSources: # Optional
     - pool.ntp.org
+  installManifestsFolder: install_manifests # Optional, see README.md. For Hypershift, only MachineConfigs are supported
   postInstallManifestsFolder: post_manifests # Optional, see README.md
   postInstallScriptsFolder: post_scripts # Optional, see README.md
   odfStorage: # Optional

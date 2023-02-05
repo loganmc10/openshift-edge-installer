@@ -4,5 +4,9 @@ metadata:
   name: "manifest-{{ idx }}"
   namespace: "{{ metadata.name }}"
 data:
+{% if edgeCluster.hypershift is not defined or (edgeCluster.hypershift is defined and not edgeCluster.hypershift.enabled) %}
   {{ item | basename }}: |
+{% else %}
+  config: |
+{% endif %}
     {{ lookup('ansible.builtin.file', lookup('ansible.builtin.vars', 'item')) | indent(4) }}

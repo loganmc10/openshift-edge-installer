@@ -28,6 +28,30 @@
       register: k8s_result
       until: k8s_result is not failed
 
+    # these manifests are applied early in the install process, often they are MachineConfigs, applying them early helps avoid extra reboots
+    - name: Create user-defined manifest config maps
+      when: edgeCluster.installManifestsFolder is defined
+      loop: "{{ lookup('ansible.builtin.fileglob', lookup('ansible.builtin.vars', 'install_manifests_folder') + '/*', wantlist=True) | sort }}"
+      loop_control:
+        index_var: idx
+        label: "{{ item }}"
+      kubernetes.core.k8s:
+        template: ConfigMap.yaml.j2
+        apply: true
+        state: present
+      vars:
+        # this var is copied in like this because ansible.builtin.vars doesn't support dicts
+        install_manifests_folder: "{{ edgeCluster.installManifestsFolder }}"
+      register: k8s_result
+      until: k8s_result is not failed
+
+    - name: Count workers
+      loop: "{{ compute }}"
+      loop_control:
+        label: "{{ item.name }}"
+      ansible.builtin.set_fact:
+        worker_count: "{{ (worker_count | int) + item.replicas }}"
+
     - name: Standard cluster install
       when: ((edgeCluster.hypershift is defined) and (not edgeCluster.hypershift.enabled)) or (edgeCluster.hypershift is not defined)
       ansible.builtin.include_tasks: standard.yaml
