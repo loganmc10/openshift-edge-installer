@@ -34,6 +34,11 @@
   register: k8s_result
   until: k8s_result is not failed
 
+- name: Populate HostedCluster configuration
+  when: edgeCluster.hypershift.configuration is defined
+  ansible.builtin.set_fact:
+    hypershift_configuration: "{{ edgeCluster.hypershift.configuration }}"
+
 - name: Add proxy to config
   when: proxy is defined
   ansible.builtin.set_fact:
