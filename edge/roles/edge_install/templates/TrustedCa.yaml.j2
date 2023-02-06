@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: trusted-ca
+  namespace: "{{ metadata.name }}"
+data:
+  ca-bundle.crt: |
+    {{ additionalTrustBundle | indent(4) }}

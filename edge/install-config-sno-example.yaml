@@ -53,7 +53,7 @@ networking:
 platform:
   baremetal:
     hosts:
-      - name: openshift-master-0
+      - name: openshift-ctrl-0
         role: master
         bmc:
           address: "redfish-virtualmedia://<bmc_ip_address>/redfish/v1/Systems/1"

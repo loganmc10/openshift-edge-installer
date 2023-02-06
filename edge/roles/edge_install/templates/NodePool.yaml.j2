@@ -1,0 +1,24 @@
+apiVersion: hypershift.openshift.io/v1beta1
+kind: NodePool
+metadata:
+  name: "{{ metadata.name }}"
+  namespace: "{{ metadata.name }}"
+spec:
+  clusterName: "{{ metadata.name }}"
+  release:
+    image: "{{ edgeCluster.clusterImageSet }}"
+  management:
+    upgradeType: InPlace
+  replicas: {{ worker_count }}
+  platform:
+    type: "Agent"
+    agent:
+      agentLabelSelector:
+        matchLabels:
+          infraenvs.agent-install.openshift.io: "{{ metadata.name }}"
+{% if edgeCluster.installManifestsFolder is defined %}
+  config:
+{% for file in lookup('ansible.builtin.fileglob', lookup('ansible.builtin.vars', 'install_manifests_folder') + '/*', wantlist=True) %}
+    - name: "manifest-{{ loop.index0 }}"
+{% endfor %}
+{% endif %}
