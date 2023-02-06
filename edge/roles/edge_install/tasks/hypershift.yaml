@@ -91,14 +91,6 @@
   register: k8s_result
   until: k8s_result is not failed
 
-- name: Get route domain
-  kubernetes.core.k8s_info:
-    api_version: config.openshift.io/v1
-    kind: Ingress
-    name: cluster
-  register: ingress
-  until: ingress is not failed
-
 - name: Create HostedCluster
   kubernetes.core.k8s:
     template: HostedCluster.yaml.j2
@@ -141,6 +133,19 @@
   until: (agents.resources | length | int) == (worker_count | int)
   retries: 60
   delay: 20
+
+- name: Wait for Agents to become ready
+  kubernetes.core.k8s_info:
+    api_version: agent-install.openshift.io/v1beta1
+    kind: Agent
+    namespace: "{{ metadata.name }}"
+    wait: true
+    wait_condition:
+      type: RequirementsMet
+      status: "True"
+    wait_timeout: 1200
+  register: k8s_result
+  until: k8s_result is not failed
 
 - name: Create NodePool
   kubernetes.core.k8s:

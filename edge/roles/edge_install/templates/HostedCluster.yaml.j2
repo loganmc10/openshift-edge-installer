@@ -40,25 +40,15 @@ spec:
     - service: OAuthServer
       servicePublishingStrategy:
         type: Route
-        route:
-          hostname: "oauth-{{ metadata.name }}.{{ ingress.resources[0].spec.domain }}"
     - service: OIDC
       servicePublishingStrategy:
         type: Route
-        route:
-          hostname: "oidc-{{ metadata.name }}.{{ ingress.resources[0].spec.domain }}"
     - service: Konnectivity
       servicePublishingStrategy:
         type: Route
-        route:
-          hostname: "konnectivity-{{ metadata.name }}.{{ ingress.resources[0].spec.domain }}"
     - service: Ignition
       servicePublishingStrategy:
         type: Route
-        route:
-          hostname: "ignition-{{ metadata.name }}.{{ ingress.resources[0].spec.domain }}"
     - service: OVNSbDb
       servicePublishingStrategy:
         type: Route
-        route:
-          hostname: "ovnsbdb-{{ metadata.name }}.{{ ingress.resources[0].spec.domain }}"
