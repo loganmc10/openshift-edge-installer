@@ -14,9 +14,6 @@
     wait_sleep: 60
     wait_timeout: 14400
 
-- name: Update kubeconfig
-  ansible.builtin.include_tasks: kubeconfig.yaml
-
 - name: Set required environment vars
   ansible.builtin.set_fact:
     kubeconfig_env_vars:
