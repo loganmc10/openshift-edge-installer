@@ -1,7 +1,12 @@
+- name: Enable Hypershift
+  when: (edgeCluster.hypershift is defined) and (edgeCluster.hypershift.enabled)
+  ansible.builtin.set_fact:
+    hypershift: true
+
 - name: Standard cluster post-install
-  when: ((edgeCluster.hypershift is defined) and (not edgeCluster.hypershift.enabled)) or (edgeCluster.hypershift is not defined)
+  when: not hypershift
   ansible.builtin.include_tasks: standard.yaml
 
 - name: Hypershift post-install
-  when: (edgeCluster.hypershift is defined) and (edgeCluster.hypershift.enabled)
+  when: hypershift
   ansible.builtin.include_tasks: hypershift.yaml
