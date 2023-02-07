@@ -154,6 +154,6 @@ platform:
                 dhcp: true
               ipv6:
                 enabled: false
-pullSecret: '{"auths":{"<mirror_url>:8443":{"auth":"aW5pdDpYaTA0eTk3TFdGR1E4M1ptMW82MnpwcmJrdzV0S2hITg=="}}}'
+pullSecret: '{"auths":{"<mirror_url>:8443":{"auth":"<base64 encoded auth>"}}}'
 sshKey: |
   ssh-rsa ...
