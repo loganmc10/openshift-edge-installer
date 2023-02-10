@@ -10,9 +10,6 @@ spec:
     namespace: "{{ metadata.name }}"
 {% endif %}
   sshAuthorizedKey: "{{ sshKey }}"
-  agentLabelSelector:
-    matchLabels:
-      cluster-name: "{{ metadata.name }}"
   pullSecretRef:
     name: assisted-deployment-pull-secret
   nmStateConfigLabelSelector:
