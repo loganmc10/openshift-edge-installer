@@ -31,10 +31,12 @@ items:
     autoAssign: false
 ```
 
-## Changing the IP address
+## Changing an external IP address (when moving the cluster to a new subnet)
 The external IP address can be changed via DHCP or statically.
 
-To change the static IP, you would login to the node and modify the NetworkManager connection file in ```/etc/NetworkManager/system-connections``` for your interface, for instance, ```/etc/NetworkManager/system-connections/eno2.nmconnection```:
+If the external IP address is assigned via DHCP, no action is required on your part when the cluster is moved to a new subnet.
+
+To change a static IP, you would login to the node and modify the NetworkManager connection file in ```/etc/NetworkManager/system-connections``` for your interface, for instance, ```/etc/NetworkManager/system-connections/eno2.nmconnection```:
 ```
 [connection]
 id=eno2
