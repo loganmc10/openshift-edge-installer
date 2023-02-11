@@ -1,8 +1,10 @@
 # Purpose
-This playbook configures the Multicluster Engine on a Provisioning Cluster.
+This playbook configures the Multicluster Engine on a Provisioning/Management Cluster.
 
-For a Hypershift install, it also configured Hypershift and MetalLB. To enable Hypershift, set ```hypershift: true``` in your provisioning config.
+
 # Usage
+## Hypershift
+To enable Hypershift, set ```hypershift: true``` in your provisioning config. Hypershift and MetalLB will be configured. 
 ## Without mirror registry or provisioning customizations
 ```
 export KUBECONFIG=~/path/to/kubeconfig
