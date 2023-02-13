@@ -30,7 +30,7 @@ networking:
       hostPrefix: 23
   networkType: OVNKubernetes
   serviceNetwork:
-    - cidr: 172.30.0.0/16
+    - 172.30.0.0/16
 platform:
   baremetal:
     apiVIP: <api_address> # Should be in the same subnet as the provisioning cluster

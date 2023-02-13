@@ -13,7 +13,13 @@ spec:
   dns:
     baseDomain: "{{ baseDomain }}"
   networking:
-    {{ networking | to_nice_yaml(indent=2) | trim | indent(4) }}
+    {{ networking | ansible.utils.remove_keys(target=['serviceNetwork']) | to_nice_yaml(indent=2) | trim | indent(4) }}
+{% if networking.serviceNetwork is defined %}
+    serviceNetwork:
+{% for item in networking.serviceNetwork %}
+      - cidr: "{{ item }}"
+{% endfor %}
+{% endif %}
   pullSecret:
     name: assisted-deployment-pull-secret
   sshKey:
