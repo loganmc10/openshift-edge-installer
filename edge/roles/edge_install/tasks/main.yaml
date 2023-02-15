@@ -52,7 +52,7 @@
       ansible.builtin.set_fact:
         worker_count: "{{ (worker_count | int) + item.replicas }}"
 
-    - name: Enable Hypershift
+    - name: Enable HyperShift
       when: (edgeCluster.hypershift is defined) and (edgeCluster.hypershift.enabled)
       ansible.builtin.set_fact:
         hypershift: true
@@ -61,7 +61,7 @@
       when: not hypershift
       ansible.builtin.include_tasks: standard.yaml
 
-    - name: Hypershift install
+    - name: HyperShift install
       when: hypershift
       ansible.builtin.include_tasks: hypershift.yaml
   rescue:

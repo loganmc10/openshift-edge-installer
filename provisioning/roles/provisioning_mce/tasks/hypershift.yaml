@@ -1,4 +1,4 @@
-- name: Check for Hypershift
+- name: Check for HyperShift
   kubernetes.core.k8s_info:
     api_version: apiextensions.k8s.io/v1
     kind: CustomResourceDefinition
@@ -6,7 +6,7 @@
   register: hostedclusters
   until: hostedclusters is not failed
 
-- name: Set up Hypershift
+- name: Set up HyperShift
   when: hostedclusters.resources | length | int == 0
   block:
     - name: Manage local-cluster

@@ -1,10 +1,9 @@
 # Purpose
 This playbook configures the Multicluster Engine on a Provisioning/Management Cluster.
 
-
 # Usage
-## Hypershift
-To enable Hypershift, set ```hypershift: true``` in your provisioning config. Hypershift and MetalLB will be configured. 
+## HyperShift
+To enable [HyperShift](https://hypershift-docs.netlify.app/), set ```hypershift: true``` in your provisioning config. HyperShift and MetalLB will be configured. 
 ## Without mirror registry or provisioning customizations
 ```
 export KUBECONFIG=~/path/to/kubeconfig
@@ -22,7 +21,7 @@ The mirror registry should be populated using the [oc mirror](https://docs.opens
 An example provisioning config file is provided in ```provisioning-config-example.yaml```
 ```
 export KUBECONFIG=~/path/to/kubeconfig
-ansible-playbook provisioning-playbook.yaml --extra-vars "@provisioning-config.yaml"
+ansible-playbook provisioning-playbook.yaml -e "@provisioning-config.yaml"
 ```
 Alternatively, using a container:
 ```

@@ -1,7 +1,7 @@
 # Purpose
 This playbook installs an edge cluster. You should already have a provisioning cluster configured. See [HYPERSHIFT.md](docs/HYPERSHIFT.md) for information on setting up a cluster using Hosted Control Planes.
 # Usage
-Example install config files are provided in ```install-config-sno-example.yaml```, ```install-config-standard-example.yaml``` and ```install-config-hypershift-example.yaml```.
+Example [install config](https://docs.openshift.com/container-platform/latest/installing/installing_bare_metal_ipi/ipi-install-installation-workflow.html#additional-resources_config) files are provided in ```install-config-sno-example.yaml```, ```install-config-standard-example.yaml``` and ```install-config-hypershift-example.yaml```.
 
 The install config uses the same format as an IPI install, except that it also requires you to set clusterImageSet. The example shows how to point the clusterImageSet to a mirror registry.
 
@@ -27,7 +27,7 @@ Other options are documented in ```install-config-sno-example.yaml```, ```instal
 To run the playbook:
 ```
 export KUBECONFIG=~/path/to/provisioning/kubeconfig
-ansible-playbook edge-playbook.yaml --extra-vars "@install-config.yaml"
+ansible-playbook edge-playbook.yaml -e "@install-config.yaml"
 ```
 Alternatively, using a container:
 ```
@@ -36,7 +36,7 @@ podman run --pull always -it --rm -v </path/to/provisioning/kubeconfig>:/kubecon
   -v ${PWD}:/app/edge/kubeconfigs:Z \
   quay.io/loganmc10/openshift-edge-installer:latest edge
 ```
-The Events URL will be printed to the console (so that you can check the progress of the install). A kubeconfig file will be written to the playbook folder with this name: ```kubeconfigs/<cluster-name>-admin-kubeconfig```
+The Events URL will be printed to the console (so that you can check the progress of the installation). A kubeconfig file will be written to the playbook folder with this name: ```kubeconfigs/<cluster-name>-admin-kubeconfig```
 # Disconnected registry
 
 The mirror registry should be populated using the [oc mirror](https://docs.openshift.com/container-platform/latest/installing/disconnected_install/installing-mirroring-disconnected.html) plugin.
