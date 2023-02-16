@@ -62,6 +62,6 @@ If your server doesn't support virtual media, you'll need to specify either the 
 
 ```ipmi://<out-of-band-ip>```
 
-and then boot the server manually using the Discovery ISO (the ISO URL is printed when the playbook is executed).
+and then boot the server manually using the Discovery ISO (the ISO URL can be retrieved from the InfraEnv).
 
 Even though you are manually booting the ISO, if you don't provide a redfish/ipmi address in the install-config.yaml file, then the Multicluster Engine won't automatically approve the node, and it won't apply the proper settings (hostname, role, etc) to the node.

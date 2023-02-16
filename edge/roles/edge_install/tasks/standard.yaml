@@ -110,22 +110,6 @@
   retries: 100
   delay: 10
 
-# this only needs to be used if the host doesn't support Virtual Media
-- name: Get Discovery ISO URL
-  kubernetes.core.k8s_info:
-    api_version: agent-install.openshift.io/v1beta1
-    kind: InfraEnv
-    name: "{{ metadata.name }}"
-    namespace: "{{ metadata.name }}"
-  register: infraenv
-  until: infraenv.resources[0].status.isoDownloadURL is defined
-  retries: 100
-  delay: 10
-
 - name: Print Events URL
   ansible.builtin.debug:
     msg: "{{ aci.resources[0].status.debugInfo.eventsURL }}"
-
-- name: Print Discovery ISO URL
-  ansible.builtin.debug:
-    msg: "{{ infraenv.resources[0].status.isoDownloadURL }}"
