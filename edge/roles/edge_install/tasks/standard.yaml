@@ -52,15 +52,6 @@
     loop_var: nmstate_host
   ansible.builtin.include_tasks: setup_host_networking.yaml
 
-- name: Create disable sno network diag CM
-  when: controlPlane.replicas == 1
-  kubernetes.core.k8s:
-    template: DisableSnoNetworkDiag.yaml.j2
-    apply: true
-    state: present
-  register: k8s_result
-  until: k8s_result is not failed
-
 - name: Create relocatable CM
   when: edgeCluster.relocatable is defined
   kubernetes.core.k8s:

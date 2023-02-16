@@ -13,9 +13,6 @@ spec:
   imageSetRef:
     name: "{{ metadata.name }}"
   manifestsConfigMapRefs:
-{% if controlPlane.replicas == 1 %}
-    - name: "disable-sno-network-diag"
-{% endif %}
 {% if edgeCluster.relocatable is defined %}
     - name: "relocatable-config"
 {% endif %}
