@@ -12,3 +12,5 @@
 
 ## How do I do GitOps?
 The edge cluster install config files can be committed to a Git repo. You could then configure a CI/CD pipeline (GitHub Actions, Gitlab CI, etc) to execute the Ansible playbook using those files as inputs whenever a change is committed to the repo.
+
+If you're interested in managing a HyperShift cluster using ArgoCD, see https://github.com/loganmc10/hypershift-helm
