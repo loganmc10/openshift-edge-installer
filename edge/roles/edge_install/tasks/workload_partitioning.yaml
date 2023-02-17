@@ -4,9 +4,7 @@
       [crio.runtime.workloads.management]
       activation_annotation = "target.workload.openshift.io/management"
       annotation_prefix = "resources.workload.openshift.io"
-      [crio.runtime.workloads.management.resources]
-      cpushares = 0
-      CPUs = "{{ edgeCluster.performanceProfileSpec.master.cpu.reserved }}"
+      resources = { "cpushares" = 0, "cpuset" = "{{ edgeCluster.performanceProfileSpec.master.cpu.reserved }}" }
     openshift_workload_pinning: |
       {
         "management": {
