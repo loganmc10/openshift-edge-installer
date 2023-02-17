@@ -23,14 +23,6 @@ edgeCluster:
     # See the post_manifests_mirror_example folder for an example of how to do this
     enabled: true
     catalogSource: redhat-operators # Optional, defaults to redhat-operators
-  performanceProfileSpec: # Optional
-    # You can omit machineConfigPoolSelector and nodeSelector, they will be automatically added
-    worker: # MachineConfigPool name, should be 'master' for compact cluster
-      cpu:
-        isolated: <isolated_set> # Example: "2-31,34-63"  there should be no spaces
-        reserved: <reserved_set> # Example: "0-1,32-33"  there should be no spaces
-      numa:
-        topologyPolicy: "restricted"
 
 baseDomain: <cluster_domain>
 compute:

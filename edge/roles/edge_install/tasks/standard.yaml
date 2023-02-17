@@ -14,7 +14,7 @@
   until: k8s_result is not failed
 
 - name: Setup workload partitioning
-  when: (edgeCluster.performanceProfileSpec is defined) and (controlPlane.replicas == 1)
+  when: (edgeCluster.cpuSet is defined) and (controlPlane.replicas == 1)
   ansible.builtin.include_tasks: workload_partitioning.yaml
 
 - name: Check for IPv4
