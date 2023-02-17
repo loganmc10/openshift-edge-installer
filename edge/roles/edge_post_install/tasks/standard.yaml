@@ -87,6 +87,30 @@
           when: (edgeCluster.routingViaHost is defined and edgeCluster.routingViaHost) or (edgeCluster.relocatable is defined)
           ansible.builtin.include_tasks: routing_via_host.yaml
 
+        - name: Get MachineConfigPools
+          kubernetes.core.k8s_info:
+            api_version: machineconfiguration.openshift.io/v1
+            kind: MachineConfigPool
+          register: machine_config_pools
+          until: machine_config_pools is not failed
+
+        # Pause MCPs in case one of the post-install manifests is a MachineConfig
+        - name: Pause MCPs
+          loop: "{{ machine_config_pools.resources }}"
+          loop_control:
+            label: "{{ item.metadata.name }}"
+          kubernetes.core.k8s:
+            definition:
+              apiVersion: machineconfiguration.openshift.io/v1
+              kind: MachineConfigPool
+              metadata:
+                name: "{{ item.metadata.name }}"
+              spec:
+                paused: true
+            state: present
+          register: k8s_result
+          until: k8s_result is not failed
+
         - name: Apply post-install manifests
           ansible.builtin.include_tasks: post_manifests.yaml
 
@@ -108,6 +132,22 @@
           when: (edgeCluster.autoApproveCSRs is defined) and (edgeCluster.autoApproveCSRs)
           ansible.builtin.include_role:
             name: "edge_csr_approver"
+
+        - name: Unpause MCPs
+          loop: "{{ machine_config_pools.resources }}"
+          loop_control:
+            label: "{{ item.metadata.name }}"
+          kubernetes.core.k8s:
+            definition:
+              apiVersion: machineconfiguration.openshift.io/v1
+              kind: MachineConfigPool
+              metadata:
+                name: "{{ item.metadata.name }}"
+              spec:
+                paused: false
+            state: present
+          register: k8s_result
+          until: k8s_result is not failed
   always:
     - name: Remove Edge Cluster Namespace
       when: ((edgeCluster.keepNamespace is defined) and (not edgeCluster.keepNamespace)) or (edgeCluster.keepNamespace is not defined)
