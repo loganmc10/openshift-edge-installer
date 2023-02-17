@@ -17,6 +17,18 @@
   when: (edgeCluster.performanceProfileSpec is defined) and (controlPlane.replicas == 1)
   ansible.builtin.include_tasks: workload_partitioning.yaml
 
+- name: Create PerformanceProfile
+  when: edgeCluster.performanceProfileSpec is defined
+  loop: "{{ edgeCluster.performanceProfileSpec | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  kubernetes.core.k8s:
+    template: PerformanceProfile.yaml.j2
+    apply: true
+    state: present
+  register: k8s_result
+  until: k8s_result is not failed
+
 - name: Check for IPv4
   loop: "{{ networking.serviceNetwork }}"
   when: item | ansible.utils.ipv4

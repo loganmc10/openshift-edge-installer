@@ -21,8 +21,13 @@ spec:
     - name: "manifest-{{ loop.index0 }}"
 {% endfor %}
 {% endif %}
-{% if edgeCluster.performanceProfileSpec is defined and controlPlane.replicas == 1 %}
+{% if edgeCluster.performanceProfileSpec is defined %}
+{% if controlPlane.replicas == 1 %}
     - name: "workload-partitioning-master"
+{% endif %}
+{% for item in edgeCluster.performanceProfileSpec | dict2items %}
+    - name: "performance-profile-{{ item.key }}"
+{% endfor %}
 {% endif %}
 {% if controlPlane.replicas == 3 %}
 {% if edgeCluster.relocatable is defined %}
