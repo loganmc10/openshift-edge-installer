@@ -87,8 +87,8 @@
           when: (edgeCluster.routingViaHost is defined and edgeCluster.routingViaHost) or (edgeCluster.relocatable is defined)
           ansible.builtin.include_tasks: routing_via_host.yaml
 
-        - name: Apply post-install manifests and scripts
-          ansible.builtin.include_tasks: post_install.yaml
+        - name: Apply post-install manifests
+          ansible.builtin.include_tasks: post_manifests.yaml
 
         - name: Setup MetalLB for relocatable cluster
           when: access_control_node

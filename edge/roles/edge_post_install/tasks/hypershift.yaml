@@ -22,8 +22,8 @@
 - name: Run tasks on edge cluster
   environment: "{{ kubeconfig_env_vars }}"
   block:
-    - name: Apply post-install manifests and scripts
-      ansible.builtin.include_tasks: post_install.yaml
+    - name: Apply post-install manifests
+      ansible.builtin.include_tasks: post_manifests.yaml
 
     - name: Setup MetalLB for Ingress LB
       ansible.builtin.include_tasks: metallb.yaml

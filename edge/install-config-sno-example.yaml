@@ -7,7 +7,6 @@ edgeCluster:
     - pool.ntp.org
   installManifestsFolder: install_manifests # Optional, see README.md
   postInstallManifestsFolder: post_manifests # Optional, see README.md
-  postInstallScriptsFolder: post_scripts # Optional, see README.md
   keepNamespace: false # Optional, retains the edge cluster namespace on the provisioning cluster when the installation is complete, defaults to false
   autoApproveCSRs: false # Optional, see docs/CSR_APPROVER.md
   diskEncryption: # Optional
@@ -24,7 +23,7 @@ edgeCluster:
     enabled: true
     catalogSource: redhat-operators # Optional, defaults to redhat-operators
     noobaa: false # Install NooBaa (S3 compatible storage), defaults to false
-  cpuSet: <reserved_set> # Optional, example: "0-1,32-33"  there should be no spaces. See https://docs.openshift.com/container-platform/latest/scalability_and_performance/sno-du-enabling-workload-partitioning-on-single-node-openshift.html
+  reservedCpuSet: <reserved_set> # Optional, example: "0-1,32-33"  there should be no spaces. See https://docs.openshift.com/container-platform/latest/scalability_and_performance/sno-du-enabling-workload-partitioning-on-single-node-openshift.html
 
 baseDomain: <cluster_domain>
 compute:

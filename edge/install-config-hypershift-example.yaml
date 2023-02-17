@@ -10,7 +10,6 @@ edgeCluster:
     - pool.ntp.org
   installManifestsFolder: install_manifests # Optional, see README.md. For Hypershift, only MachineConfigs are supported
   postInstallManifestsFolder: post_manifests # Optional, see README.md
-  postInstallScriptsFolder: post_scripts # Optional, see README.md
   odfStorage: # Optional
     # If you are using a mirror, you must configure a CatalogSource using postInstallManifestsFolder
     # See the post_manifests_mirror_example folder for an example of how to do this

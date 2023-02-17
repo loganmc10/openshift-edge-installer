@@ -21,7 +21,7 @@ spec:
     - name: "manifest-{{ loop.index0 }}"
 {% endfor %}
 {% endif %}
-{% if edgeCluster.cpuSet is defined and controlPlane.replicas == 1 %}
+{% if edgeCluster.reservedCpuSet is defined and controlPlane.replicas == 1 %}
     - name: "workload-partitioning-master"
 {% endif %}
 {% if controlPlane.replicas == 3 %}

@@ -14,13 +14,3 @@
     post_install_manifests_folder: "{{ edgeCluster.postInstallManifestsFolder }}"
   register: k8s_result
   until: k8s_result is not failed
-
-- name: Run post-install scripts
-  when: edgeCluster.postInstallScriptsFolder is defined
-  loop: "{{ lookup('ansible.builtin.fileglob', lookup('ansible.builtin.vars', 'post_install_scripts_folder') + '/*', wantlist=True) | sort }}"
-  loop_control:
-    label: "{{ item }}"
-  ansible.builtin.include_tasks: post_scripts.yaml
-  vars:
-    # this var is copied in like this because ansible.builtin.vars doesn't support dicts
-    post_install_scripts_folder: "{{ edgeCluster.postInstallScriptsFolder }}"

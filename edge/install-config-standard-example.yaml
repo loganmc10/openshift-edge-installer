@@ -7,7 +7,6 @@ edgeCluster:
     - pool.ntp.org
   installManifestsFolder: install_manifests # Optional, see README.md
   postInstallManifestsFolder: post_manifests # Optional, see README.md
-  postInstallScriptsFolder: post_scripts # Optional, see README.md
   keepNamespace: false # Optional, retains the edge cluster namespace on the provisioning cluster when the installation is complete, defaults to false
   autoApproveCSRs: false # Optional, see docs/CSR_APPROVER.md
   diskEncryption: # Optional

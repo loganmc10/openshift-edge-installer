@@ -17,10 +17,6 @@ As well as a path to a folder containing extra manifests (YAML) to be applied af
 ```
 postInstallManifestsFolder: post_manifests
 ```
-Finally, you can specify a path to a folder containing scripts to be executed after the cluster installation is complete. The KUBECONFIG environment variable will already be set to communicate with the new cluster during the execution of these scripts:
-```
-postInstallScriptsFolder: post_scripts
-```
 Other options are documented in ```install-config-sno-example.yaml```, ```install-config-standard-example.yaml``` and ```install-config-hypershift-example.yaml```.
 
 ---
