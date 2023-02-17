@@ -16,7 +16,6 @@ edgeCluster:
     # See the post_manifests_mirror_example folder for an example of how to do this
     enabled: true
     catalogSource: redhat-operators # Optional, defaults to redhat-operators
-    imageRegistry: false # Will deploy the integrated OCP registry if true, defaults to false
 
 baseDomain: <cluster_domain>
 compute:
