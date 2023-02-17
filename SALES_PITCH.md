@@ -2,7 +2,7 @@
 * Support for disconnected mirrors.
 * Zero touch (utilizing the Multicluster Engine Operator).
 * Can configure ODF on provisioning and edge clusters (SNO and multi-node clusters).
-* Can configure PerformanceProfiles and workload partitioning.
+* Can configure workload partitioning.
 * Ability to add install-time and post-install manifests.
 * Ability to configure a relocatable edge cluster.
 * Option to auto approve CSRs (for edge clusters that may be offline for extended periods).

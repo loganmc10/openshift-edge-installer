@@ -1,4 +1,4 @@
-- name: Clean disk
+- name: Clean disk # noqa no-changed-when
   loop: "{{ node.status.discoveredDevices }}"
   loop_control:
     label: "{{ item.path }}"

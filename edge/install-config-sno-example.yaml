@@ -7,7 +7,6 @@ edgeCluster:
     - pool.ntp.org
   installManifestsFolder: install_manifests # Optional, see README.md
   postInstallManifestsFolder: post_manifests # Optional, see README.md
-  postInstallScriptsFolder: post_scripts # Optional, see README.md
   keepNamespace: false # Optional, retains the edge cluster namespace on the provisioning cluster when the installation is complete, defaults to false
   autoApproveCSRs: false # Optional, see docs/CSR_APPROVER.md
   diskEncryption: # Optional
@@ -24,14 +23,7 @@ edgeCluster:
     enabled: true
     catalogSource: redhat-operators # Optional, defaults to redhat-operators
     noobaa: false # Install NooBaa (S3 compatible storage), defaults to false
-  performanceProfileSpec: # Optional
-    # You can omit machineConfigPoolSelector and nodeSelector, they will be automatically added
-    master: # MachineConfigPool name, should be 'master' for SNO
-      cpu:
-        isolated: <isolated_set> # Example: "2-31,34-63"  there should be no spaces
-        reserved: <reserved_set> # Example: "0-1,32-33"  there should be no spaces
-      numa:
-        topologyPolicy: "restricted"
+  reservedCpuSet: <reserved_set> # Optional, example: "0-1,32-33"  there should be no spaces. See https://docs.openshift.com/container-platform/latest/scalability_and_performance/sno-du-enabling-workload-partitioning-on-single-node-openshift.html
 
 baseDomain: <cluster_domain>
 compute:
@@ -87,3 +79,31 @@ platform:
 pullSecret: '{"auths":{"<mirror_url>:8443":{"auth":"<base64 encoded auth>"}}}'
 sshKey: |
   ssh-rsa ...
+imageContentSources:
+  - mirrors:
+      - <mirror_url>:8443/openshift/release
+    source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
+  - mirrors:
+      - <mirror_url>:8443/openshift/release-images
+    source: quay.io/openshift-release-dev/ocp-release
+  - mirrors:
+      - <mirror_url>:8443/multicluster-engine
+    source: registry.redhat.io/multicluster-engine
+  - mirrors:
+      - <mirror_url>:8443/redhat
+    source: registry.redhat.io/redhat
+  - mirrors:
+      - <mirror_url>:8443/rhel8
+    source: registry.redhat.io/rhel8
+  - mirrors:
+      - <mirror_url>:8443/openshift4
+    source: registry.redhat.io/openshift4
+  - mirrors:
+      - <mirror_url>:8443/rhceph
+    source: registry.redhat.io/rhceph
+  - mirrors:
+      - <mirror_url>:8443/odf4
+    source: registry.redhat.io/odf4
+  - mirrors:
+      - <mirror_url>:8443/lvms4
+    source: registry.redhat.io/lvms4
