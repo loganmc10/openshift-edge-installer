@@ -149,6 +149,21 @@ sshKey: |
   ssh-rsa ...
 imageContentSources:
   - mirrors:
+      - <mirror_url>:8443/openshift/release
+    source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
+  - mirrors:
+      - <mirror_url>:8443/openshift/release-images
+    source: quay.io/openshift-release-dev/ocp-release
+  - mirrors:
+      - <mirror_url>:8443/multicluster-engine
+    source: registry.redhat.io/multicluster-engine
+  - mirrors:
+      - <mirror_url>:8443/redhat
+    source: registry.redhat.io/redhat
+  - mirrors:
+      - <mirror_url>:8443/rhel8
+    source: registry.redhat.io/rhel8
+  - mirrors:
       - <mirror_url>:8443/openshift4
     source: registry.redhat.io/openshift4
   - mirrors:

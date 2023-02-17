@@ -39,7 +39,7 @@ The mirror registry should be populated using the [oc mirror](https://docs.opens
 
 ---
 
-If the provisioning cluster was configured to use a mirror registry, then the SSL certificate for the mirror registry will automatically be added to additionalTrustedCA on the edge cluster. ImageContentSourcePolicys for the base installation will also be added to the edge cluster, pointing to the mirror registry.
+If the provisioning cluster was configured to use a mirror registry, then the SSL certificate for the mirror registry will automatically be added to additionalTrustedCA on the edge cluster.
 
 If you want to install Operators on the edge cluster from the disconnected registry, you'll need to add ImageContentSources for those operators in your install-config.yaml, as well as create a CatalogSource pointing to the mirror registry.
 
