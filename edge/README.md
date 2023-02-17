@@ -45,9 +45,9 @@ The mirror registry should be populated using the [oc mirror](https://docs.opens
 
 If the provisioning cluster was configured to use a mirror registry, then the SSL certificate for the mirror registry will automatically be added to additionalTrustedCA on the edge cluster. ImageContentSourcePolicys for the base installation will also be added to the edge cluster, pointing to the mirror registry.
 
-If you want to install Operators on the edge cluster from the disconnected registry, you'll need to add ImageContentSourcePolicys for those operators, as well as create a CatalogSource pointing to the mirror registry.
+If you want to install Operators on the edge cluster from the disconnected registry, you'll need to add ImageContentSources for those operators in your install-config.yaml, as well as create a CatalogSource pointing to the mirror registry.
 
-See the ```post_manifests_mirror_example``` folder for an example of how you can use the ```postInstallManifestsFolder``` option in the install-config to configure these during the installation process.
+See the ```post_manifests_mirror_example``` folder for an example of how you can use the ```postInstallManifestsFolder``` option in the install-config to configure a CatalogSource during the installation process.
 # Automatic installation via virtual media
 Firmware requirements for booting via virtual media are documented [here](https://docs.openshift.com/container-platform/latest/installing/installing_bare_metal_ipi/ipi-install-prerequisites.html#ipi-install-firmware-requirements-for-installing-with-virtual-media_ipi-install-prerequisites)
 

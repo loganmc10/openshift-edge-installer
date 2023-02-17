@@ -148,3 +148,16 @@ platform:
 pullSecret: '{"auths":{"<mirror_url>:8443":{"auth":"<base64 encoded auth>"}}}'
 sshKey: |
   ssh-rsa ...
+imageContentSources:
+  - mirrors:
+      - <mirror_url>:8443/openshift4
+    source: registry.redhat.io/openshift4
+  - mirrors:
+      - <mirror_url>:8443/rhceph
+    source: registry.redhat.io/rhceph
+  - mirrors:
+      - <mirror_url>:8443/odf4
+    source: registry.redhat.io/odf4
+  - mirrors:
+      - <mirror_url>:8443/lvms4
+    source: registry.redhat.io/lvms4
