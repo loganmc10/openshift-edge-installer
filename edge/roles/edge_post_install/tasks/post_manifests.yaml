@@ -2,7 +2,7 @@
   when: edgeCluster.postInstallManifestsFolder is defined
   loop: "{{ lookup('ansible.builtin.fileglob', lookup('ansible.builtin.vars', 'post_install_manifests_folder') + '/*', wantlist=True) | sort }}"
   loop_control:
-    pause: 15
+    pause: 5
     label: "{{ item }}"
   kubernetes.core.k8s:
     src: "{{ item }}"
