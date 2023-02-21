@@ -2,5 +2,6 @@
   hosts: localhost
   gather_facts: false
   roles:
+    - {role: "{{ playbook_dir }}/../common/roles/install_deps", tags: 'install_deps'} # noqa role-name[path]
     - {role: 'edge_install', tags: 'edge_install'}
     - {role: 'edge_post_install', tags: 'edge_post_install'}

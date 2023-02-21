@@ -1,0 +1,5 @@
+- name: Install python packages
+  ansible.builtin.pip:
+    name:
+      - kubernetes
+      - netaddr

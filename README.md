@@ -17,7 +17,7 @@ HyperShift Install:
   * If ODF is being installed, each node needs to have 2 disks (one for the OS, and one for ODF).
 * Local machine:
   * Install the following on your machine:
-    * Python modules: ```pip install ansible-core kubernetes netaddr```
+    * Ansible
     * Ansible collections: ```ansible-galaxy collection install kubernetes.core community.general ansible.utils```
     * [oc binary](https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz)
   * Alternatively, use the provided container. Usage instructions are included in the README for each playbook.
