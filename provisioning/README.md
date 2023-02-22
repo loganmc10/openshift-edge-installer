@@ -11,7 +11,7 @@ ansible-playbook provisioning-playbook.yaml
 ```
 Alternatively, using a container:
 ```
-podman run --pull always -it --rm -v </path/to/kubeconfig>:/kubeconfig:Z quay.io/loganmc10/openshift-edge-installer:latest provisioning
+podman run -it --rm -v </path/to/kubeconfig>:/kubeconfig:Z quay.io/loganmc10/openshift-edge-installer:<tag> provisioning
 ```
 ## With mirror registry or provisioning customizations
 The mirror registry should be populated using the [oc mirror](https://docs.openshift.com/container-platform/latest/installing/disconnected_install/installing-mirroring-disconnected.html) plugin.
@@ -25,7 +25,7 @@ ansible-playbook provisioning-playbook.yaml -e "@provisioning-config.yaml"
 ```
 Alternatively, using a container:
 ```
-podman run --pull always -it --rm -v </path/to/kubeconfig>:/kubeconfig:Z \
+podman run -it --rm -v </path/to/kubeconfig>:/kubeconfig:Z \
   -v </path/to/provisioning-config.yaml>:/provisioning-config.yaml:Z \
-  quay.io/loganmc10/openshift-edge-installer:latest provisioning
+  quay.io/loganmc10/openshift-edge-installer:<tag> provisioning
 ```
