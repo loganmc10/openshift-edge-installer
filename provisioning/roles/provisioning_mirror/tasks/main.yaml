@@ -54,7 +54,7 @@
           metadata:
             name: "{{ image_config.resources[0].spec.additionalTrustedCA.name }}"
             namespace: openshift-config
-          data: "{{ image_config_map.resources[0].data | combine({mirror_url + '..' + (mirror_port | string): mirror_ssl_cert}) }}"
+          data: "{{ image_config_map.resources[0].data | combine({mirror_hostname + '..' + (mirror_port | string): mirror_ssl_cert}) }}"
         state: present
       register: k8s_result
       until: k8s_result is not failed

@@ -17,7 +17,7 @@ data:
        mirror-by-digest-only = true
 
        [[registry.mirror]]
-       location = "{{ mirror_url }}:{{ mirror_port }}/openshift/release"
+       location = "{{ mirror_hostname }}:{{ mirror_port }}/openshift/release"
 
     [[registry]]
        prefix = ""
@@ -25,7 +25,7 @@ data:
        mirror-by-digest-only = true
 
        [[registry.mirror]]
-       location = "{{ mirror_url }}:{{ mirror_port }}/openshift/release-images"
+       location = "{{ mirror_hostname }}:{{ mirror_port }}/openshift/release-images"
 
     [[registry]]
        prefix = ""
@@ -33,7 +33,7 @@ data:
        mirror-by-digest-only = true
 
        [[registry.mirror]]
-       location = "{{ mirror_url }}:{{ mirror_port }}/multicluster-engine"
+       location = "{{ mirror_hostname }}:{{ mirror_port }}/multicluster-engine"
 
     [[registry]]
        prefix = ""
@@ -41,7 +41,7 @@ data:
        mirror-by-digest-only = true
 
        [[registry.mirror]]
-       location = "{{ mirror_url }}:{{ mirror_port }}/redhat"
+       location = "{{ mirror_hostname }}:{{ mirror_port }}/redhat"
 
     [[registry]]
        prefix = ""
@@ -49,4 +49,4 @@ data:
        mirror-by-digest-only = true
 
        [[registry.mirror]]
-       location = "{{ mirror_url }}:{{ mirror_port }}/rhel8"
+       location = "{{ mirror_hostname }}:{{ mirror_port }}/rhel8"

@@ -23,7 +23,7 @@ spec:
         storage: {{ asc_im_size }}
   osImages:
     {{ os_images | to_nice_yaml(indent=2) | trim | indent(4) }}
-{% if mirror_url is defined %}
+{% if mirror_hostname is defined %}
   mirrorRegistryRef:
     name: mirror-registry-config-map
   unauthenticatedRegistries:

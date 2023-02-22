@@ -2,7 +2,7 @@ apiVersion: v1
 
 # Additional parameters for openshift-edge-installer
 edgeCluster:
-  clusterImageSet: <mirror_url>:8443/openshift/release-images:4.12.0-x86_64 # Required
+  clusterImageSet: <mirror_hostname>:8443/openshift/release-images:4.12.0-x86_64 # Required
   additionalNTPSources: # Optional
     - pool.ntp.org
   installManifestsFolder: install_manifests # Optional, see README.md
@@ -144,34 +144,34 @@ platform:
                 dhcp: true
               ipv6:
                 enabled: false
-pullSecret: '{"auths":{"<mirror_url>:8443":{"auth":"<base64 encoded auth>"}}}'
+pullSecret: '{"auths":{"<mirror_hostname>:8443":{"auth":"<base64 encoded auth>"}}}'
 sshKey: |
   ssh-rsa ...
 imageContentSources:
   - mirrors:
-      - <mirror_url>:8443/openshift/release
+      - <mirror_hostname>:8443/openshift/release
     source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
   - mirrors:
-      - <mirror_url>:8443/openshift/release-images
+      - <mirror_hostname>:8443/openshift/release-images
     source: quay.io/openshift-release-dev/ocp-release
   - mirrors:
-      - <mirror_url>:8443/multicluster-engine
+      - <mirror_hostname>:8443/multicluster-engine
     source: registry.redhat.io/multicluster-engine
   - mirrors:
-      - <mirror_url>:8443/redhat
+      - <mirror_hostname>:8443/redhat
     source: registry.redhat.io/redhat
   - mirrors:
-      - <mirror_url>:8443/rhel8
+      - <mirror_hostname>:8443/rhel8
     source: registry.redhat.io/rhel8
   - mirrors:
-      - <mirror_url>:8443/openshift4
+      - <mirror_hostname>:8443/openshift4
     source: registry.redhat.io/openshift4
   - mirrors:
-      - <mirror_url>:8443/rhceph
+      - <mirror_hostname>:8443/rhceph
     source: registry.redhat.io/rhceph
   - mirrors:
-      - <mirror_url>:8443/odf4
+      - <mirror_hostname>:8443/odf4
     source: registry.redhat.io/odf4
   - mirrors:
-      - <mirror_url>:8443/lvms4
+      - <mirror_hostname>:8443/lvms4
     source: registry.redhat.io/lvms4

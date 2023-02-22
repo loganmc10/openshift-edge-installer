@@ -18,9 +18,9 @@ provisioning_network_config: # Optional, see https://docs.openshift.com/containe
 
 hypershift: false # Optional, enables Hosted Control Planes on the cluster, defaults to false
 
-mirror_url: <mirror_url> # Optional
-mirror_port: 8443 # Required if mirror_url is defined
-mirror_ssl_cert: | # Required if mirror_url is defined
+mirror_hostname: <mirror_hostname> # Optional
+mirror_port: 8443 # Required if mirror_hostname is defined
+mirror_ssl_cert: | # Required if mirror_hostname is defined
   -----BEGIN CERTIFICATE-----
   MIIDijCCAnKgAwIBAgIUA0gWHLy5W2y4xpNq39kUeKrmyogwDQYJKoZIhvcNAQEL
   BQAwgYUxCzAJBgNVBAYTAlVTMQswCQYDVQQIDAJWQTERMA8GA1UEBwwITmV3IFlv
