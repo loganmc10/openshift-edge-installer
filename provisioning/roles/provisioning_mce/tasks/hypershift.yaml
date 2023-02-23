@@ -26,7 +26,7 @@
         apply: true
         state: present
         wait: true
-        wait_timeout: 1200
+        wait_timeout: 600
         wait_condition:
           type: ManagedClusterConditionAvailable
           status: "True"
@@ -77,6 +77,6 @@
     wait_condition:
       type: Available
       status: "True"
-    wait_timeout: 1200
+    wait_timeout: 600
   register: k8s_result
   until: k8s_result is not failed

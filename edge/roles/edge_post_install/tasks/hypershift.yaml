@@ -11,8 +11,10 @@
     wait_condition:
       type: Ready
       status: "True"
-    wait_sleep: 60
-    wait_timeout: 14400
+    wait_timeout: 600
+  register: k8s_result
+  until: k8s_result is not failed
+  retries: 20
 
 - name: Set required environment vars
   ansible.builtin.set_fact:

@@ -14,8 +14,10 @@
         wait_condition:
           type: Completed
           status: "True"
-        wait_sleep: 60
-        wait_timeout: 14400
+        wait_timeout: 600
+      register: k8s_result
+      until: k8s_result is not failed
+      retries: 20
 
     - name: Update kubeconfig
       # during the install, the kubeconfig is modified to included additional CAs, here we update the kubeconfig to include those
@@ -125,7 +127,7 @@
                 namespace: "{{ metadata.name }}"
             state: absent
             wait: true
-            wait_timeout: 1200
+            wait_timeout: 600
 
         - name: Delete Namespace
           kubernetes.core.k8s:
@@ -136,4 +138,4 @@
                 name: "{{ metadata.name }}"
             state: absent
             wait: true
-            wait_timeout: 1200
+            wait_timeout: 600

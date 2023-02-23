@@ -102,7 +102,7 @@
             namespace: openshift-local-storage
         state: absent
         wait: true
-        wait_timeout: 1200
+        wait_timeout: 600
       ignore_errors: true # noqa ignore-errors
 
     - name: Remove StorageCluster
@@ -115,7 +115,7 @@
             namespace: openshift-storage
         state: absent
         wait: true
-        wait_timeout: 1200
+        wait_timeout: 600
       ignore_errors: true # noqa ignore-errors
 
     - name: Remove NooBaa
@@ -128,7 +128,7 @@
             namespace: openshift-storage
         state: absent
         wait: true
-        wait_timeout: 1200
+        wait_timeout: 600
       ignore_errors: true # noqa ignore-errors
 
     - name: Remove LVMCluster
@@ -141,7 +141,7 @@
             namespace: openshift-storage
         state: absent
         wait: true
-        wait_timeout: 1200
+        wait_timeout: 600
       ignore_errors: true # noqa ignore-errors
 
     - name: Remove LocalVolumeSet
@@ -154,7 +154,7 @@
             namespace: openshift-local-storage
         state: absent
         wait: true
-        wait_timeout: 1200
+        wait_timeout: 600
       ignore_errors: true # noqa ignore-errors
 
     - name: Remove ODF namespace
@@ -166,7 +166,7 @@
             name: openshift-storage
         state: absent
         wait: true
-        wait_timeout: 1200
+        wait_timeout: 600
 
     - name: Remove LSO namespace
       kubernetes.core.k8s:
@@ -177,7 +177,7 @@
             name: openshift-local-storage
         state: absent
         wait: true
-        wait_timeout: 1200
+        wait_timeout: 600
 
     - name: Remove StorageClasses
       loop:
@@ -197,7 +197,7 @@
             name: "{{ item }}"
         state: absent
         wait: true
-        wait_timeout: 1200
+        wait_timeout: 600
 
     - name: End playbook
       ansible.builtin.meta: end_play

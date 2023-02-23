@@ -143,7 +143,7 @@
     wait_condition:
       type: RequirementsMet
       status: "True"
-    wait_timeout: 1200
+    wait_timeout: 600
   register: k8s_result
   until: k8s_result is not failed
 

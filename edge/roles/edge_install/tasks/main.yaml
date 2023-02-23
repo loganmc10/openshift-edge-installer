@@ -74,7 +74,7 @@
             name: "{{ metadata.name }}"
         state: absent
         wait: true
-        wait_timeout: 1200
+        wait_timeout: 600
 
     - name: Delete BareMetalHosts
       loop: "{{ platform.baremetal.hosts }}"
@@ -84,7 +84,7 @@
         template: BareMetalHost.yaml.j2
         state: absent
         wait: true
-        wait_timeout: 1200
+        wait_timeout: 600
 
     - name: Delete Namespace
       kubernetes.core.k8s:
@@ -95,7 +95,7 @@
             name: "{{ metadata.name }}"
         state: absent
         wait: true
-        wait_timeout: 1200
+        wait_timeout: 600
 
     - name: End playbook
       ansible.builtin.meta: end_play
