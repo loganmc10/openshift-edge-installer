@@ -13,10 +13,6 @@
   register: k8s_result
   until: k8s_result is not failed
 
-- name: Setup workload partitioning
-  when: (edgeCluster.reservedCpuSet is defined) and (controlPlane.replicas == 1)
-  ansible.builtin.include_tasks: workload_partitioning.yaml
-
 - name: Check for IPv4
   loop: "{{ networking.serviceNetwork }}"
   when: item | ansible.utils.ipv4

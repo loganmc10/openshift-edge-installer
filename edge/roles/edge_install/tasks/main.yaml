@@ -52,6 +52,10 @@
       ansible.builtin.set_fact:
         worker_count: "{{ (worker_count | int) + item.replicas }}"
 
+    - name: Setup workload partitioning
+      when: edgeCluster.reservedCpuSet is defined
+      ansible.builtin.include_tasks: workload_partitioning.yaml
+
     - name: Enable HyperShift
       when: (edgeCluster.hypershift is defined) and (edgeCluster.hypershift.enabled)
       ansible.builtin.set_fact:

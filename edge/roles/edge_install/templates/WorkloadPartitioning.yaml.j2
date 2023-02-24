@@ -1,16 +1,20 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "workload-partitioning-master"
+  name: "workload-partitioning"
   namespace: "{{ metadata.name }}"
 data:
-  01_workload_partitioning_master.yaml: |
+{% if not hypershift %}
+  01_workload_partitioning.yaml: |
+{% else %}
+  config: |
+{% endif %}
     apiVersion: machineconfiguration.openshift.io/v1
     kind: MachineConfig
     metadata:
       labels:
-        machineconfiguration.openshift.io/role: "master"
-      name: 02-master-workload-partitioning
+        machineconfiguration.openshift.io/role: "{{ 'master' if (worker_count | int) == 0 else 'worker' }}"
+      name: 02-workload-partitioning
     spec:
       config:
         ignition:
