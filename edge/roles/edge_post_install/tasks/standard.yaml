@@ -83,12 +83,6 @@
     - name: Run tasks on edge cluster
       environment: "{{ kubeconfig_env_vars }}"
       block:
-        # applied during post-install because it doesn't seem to work as an install-time manifest
-        # routingViaHost is required for relocatable clusters
-        - name: Configure routingViaHost
-          when: (edgeCluster.routingViaHost is defined and edgeCluster.routingViaHost) or (edgeCluster.relocatable is defined)
-          ansible.builtin.include_tasks: routing_via_host.yaml
-
         - name: Apply post-install manifests
           ansible.builtin.include_tasks: post_manifests.yaml
 

@@ -13,6 +13,15 @@
   register: k8s_result
   until: k8s_result is not failed
 
+- name: Configure routingViaHost
+  when: (edgeCluster.routingViaHost is defined and edgeCluster.routingViaHost) or (edgeCluster.relocatable is defined)
+  kubernetes.core.k8s:
+    template: RoutingViaHost.yaml.j2
+    apply: true
+    state: present
+  register: k8s_result
+  until: k8s_result is not failed
+
 - name: Check for IPv4
   loop: "{{ networking.serviceNetwork }}"
   when: item | ansible.utils.ipv4
