@@ -28,6 +28,11 @@
       register: k8s_result
       until: k8s_result is not failed
 
+    - name: Enable HyperShift
+      when: (edgeCluster.hypershift is defined) and (edgeCluster.hypershift.enabled)
+      ansible.builtin.set_fact:
+        hypershift: true
+
     # these manifests are applied early in the install process, often they are MachineConfigs, applying them early helps avoid extra reboots
     - name: Create user-defined manifest config maps
       when: edgeCluster.installManifestsFolder is defined
@@ -51,11 +56,6 @@
         label: "{{ item.name }}"
       ansible.builtin.set_fact:
         worker_count: "{{ (worker_count | int) + item.replicas }}"
-
-    - name: Enable HyperShift
-      when: (edgeCluster.hypershift is defined) and (edgeCluster.hypershift.enabled)
-      ansible.builtin.set_fact:
-        hypershift: true
 
     - name: Setup workload partitioning
       when: edgeCluster.reservedCpuSet is defined
