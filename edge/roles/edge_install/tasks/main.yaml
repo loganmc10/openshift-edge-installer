@@ -57,6 +57,10 @@
       ansible.builtin.set_fact:
         hypershift: true
 
+    - name: Setup workload partitioning
+      when: edgeCluster.reservedCpuSet is defined
+      ansible.builtin.include_tasks: workload_partitioning.yaml
+
     - name: Standard cluster install
       when: not hypershift
       ansible.builtin.include_tasks: standard.yaml

@@ -16,9 +16,12 @@ spec:
       agentLabelSelector:
         matchLabels:
           infraenvs.agent-install.openshift.io: "{{ metadata.name }}"
-{% if edgeCluster.installManifestsFolder is defined %}
   config:
+{% if edgeCluster.installManifestsFolder is defined %}
 {% for file in lookup('ansible.builtin.fileglob', lookup('ansible.builtin.vars', 'install_manifests_folder') + '/*', wantlist=True) %}
     - name: "manifest-{{ loop.index0 }}"
 {% endfor %}
+{% endif %}
+{% if edgeCluster.reservedCpuSet is defined %}
+    - name: "workload-partitioning"
 {% endif %}
