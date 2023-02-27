@@ -80,3 +80,33 @@
     wait_timeout: 600
   register: k8s_result
   until: k8s_result is not failed
+
+- name: Set up GitOps
+  when: (hypershift.gitops is defined) and (hypershift.gitops)
+  block:
+    - name: Install GitOps operator # noqa role-name[path]
+      ansible.builtin.include_role:
+        name: "{{ playbook_dir }}/../common/roles/install_operator"
+      vars:
+        operator_name: openshift-gitops-operator
+        operator_namespace: openshift-operators
+
+    - name: Create ClusterRoleBinding for GitOps
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: rbac.authorization.k8s.io/v1
+          kind: ClusterRoleBinding
+          metadata:
+            name: gitops-cluster-admin
+          subjects:
+            - kind: ServiceAccount
+              name: openshift-gitops-argocd-application-controller
+              namespace: openshift-gitops
+          roleRef:
+            kind: ClusterRole
+            name: cluster-admin
+            apiGroup: rbac.authorization.k8s.io
+        apply: true
+        state: present
+      register: k8s_result
+      until: k8s_result is not failed

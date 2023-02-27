@@ -16,7 +16,9 @@ provisioning_network_config: # Optional, see https://docs.openshift.com/containe
   provisioningNetwork: Unmanaged
   provisioningNetworkCIDR: 192.168.43.128/25
 
-hypershift: false # Optional, enables Hosted Control Planes on the cluster, defaults to false
+hypershift: # Optional, enables Hosted Control Planes on the cluster
+  enabled: true
+  gitops: false # Optional, installs the GitOps operator (ArgoCD), defaults to false
 
 mirror_hostname: <mirror_hostname> # Optional
 mirror_port: 8443 # Required if mirror_hostname is defined
