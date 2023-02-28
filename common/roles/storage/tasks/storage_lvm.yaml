@@ -35,7 +35,9 @@
     name: lvmcluster
     namespace: openshift-storage
   register: lvmcluster
-  until: (lvmcluster.resources[0].status.deviceClassStatuses is defined) and (lvmcluster.resources[0].status.deviceClassStatuses | length > 0)
+  until:
+    - lvmcluster.resources[0].status.deviceClassStatuses is defined
+    - lvmcluster.resources[0].status.deviceClassStatuses | length > 0
   retries: 60
   delay: 10
 
