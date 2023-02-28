@@ -30,10 +30,10 @@
   loop: "{{ storage_classes.resources }}"
   loop_control:
     label: "{{ item.metadata.name }}"
-  when: >
-    (("annotations" in item["metadata"]) and
-    ("storageclass.kubernetes.io/is-default-class" in item["metadata"]["annotations"]) and
-    (item["metadata"]["annotations"]["storageclass.kubernetes.io/is-default-class"] == "true"))
+  when:
+    - ("annotations" in item["metadata"])
+    - ("storageclass.kubernetes.io/is-default-class" in item["metadata"]["annotations"])
+    - item["metadata"]["annotations"]["storageclass.kubernetes.io/is-default-class"] == "true"
 
 - name: Check for suitable default storage
   loop: "{{ storage_classes.resources }}"

@@ -82,7 +82,9 @@
   until: k8s_result is not failed
 
 - name: Set up GitOps
-  when: (hypershift.gitops is defined) and (hypershift.gitops)
+  when:
+    - hypershift.gitops is defined
+    - hypershift.gitops
   block:
     - name: Install GitOps operator # noqa role-name[path]
       ansible.builtin.include_role:

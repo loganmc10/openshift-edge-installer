@@ -29,7 +29,9 @@
       until: k8s_result is not failed
 
     - name: Enable HyperShift
-      when: (edgeCluster.hypershift is defined) and (edgeCluster.hypershift.enabled)
+      when:
+        - edgeCluster.hypershift is defined
+        - edgeCluster.hypershift.enabled
       ansible.builtin.set_fact:
         hypershift: true
 

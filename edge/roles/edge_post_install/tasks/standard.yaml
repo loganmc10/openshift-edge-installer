@@ -31,7 +31,9 @@
     # in a multi-node relocatable cluster, the API needs to be exposed using MetalLB
     # before MetalLB is installed, we access the cluster by connecting directly to a control plane node
     - name: Set up access to relocatable cluster
-      when: (controlPlane.replicas == 3) and (edgeCluster.relocatable is defined)
+      when:
+        - controlPlane.replicas == 3
+        - edgeCluster.relocatable is defined
       block:
         - name: Set fact for multinode relocatable cluster
           ansible.builtin.set_fact:
@@ -57,10 +59,10 @@
           loop: "{{ control_plane_node.status.hardware.nics }}"
           loop_control:
             label: "{{ item.ip | default(item.name) }}"
-          when: >
-            (item.ip is defined) and
-            (item.ip | ansible.utils.ipv4) and
-            (not (relocatable_ipv4_subnet | ansible.utils.network_in_usable(item.ip)))
+          when:
+            - item.ip is defined
+            - item.ip | ansible.utils.ipv4
+            - not (relocatable_ipv4_subnet | ansible.utils.network_in_usable(item.ip))
           ansible.builtin.set_fact:
             node_ip: "{{ item.ip }}"
 
@@ -68,11 +70,11 @@
           loop: "{{ control_plane_node.status.hardware.nics }}"
           loop_control:
             label: "{{ item.ip | default(item.name) }}"
-          when: >
-            (node_ip is not defined) and
-            (item.ip is defined) and
-            (item.ip | ansible.utils.ipv6) and
-            (not (relocatable_ipv6_subnet | ansible.utils.network_in_usable(item.ip)))
+          when:
+            - node_ip is not defined
+            - item.ip is defined
+            - item.ip | ansible.utils.ipv6
+            - not (relocatable_ipv6_subnet | ansible.utils.network_in_usable(item.ip))
           ansible.builtin.set_fact:
             node_ip: "{{ item.ip }}"
 
@@ -94,14 +96,18 @@
             ingress_lb: true
 
         - name: Install Storage # noqa role-name[path]
-          when: (edgeCluster.odfStorage is defined) and (edgeCluster.odfStorage.enabled)
+          when:
+            - edgeCluster.odfStorage is defined
+            - edgeCluster.odfStorage.enabled
           ansible.builtin.include_role:
             name: "{{ playbook_dir }}/../common/roles/storage"
           vars:
             catalog_source: "{{ edgeCluster.odfStorage.catalogSource | default('redhat-operators') }}"
 
         - name: Auto approve CSRs
-          when: (edgeCluster.autoApproveCSRs is defined) and (edgeCluster.autoApproveCSRs)
+          when:
+            - edgeCluster.autoApproveCSRs is defined
+            - edgeCluster.autoApproveCSRs
           ansible.builtin.include_role:
             name: "edge_csr_approver"
   always:
