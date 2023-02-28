@@ -34,7 +34,9 @@
         ingress_lb: true
 
     - name: Install Storage # noqa role-name[path]
-      when: (edgeCluster.odfStorage is defined) and (edgeCluster.odfStorage.enabled)
+      when:
+        - edgeCluster.odfStorage is defined
+        - edgeCluster.odfStorage.enabled
       ansible.builtin.include_role:
         name: "{{ playbook_dir }}/../common/roles/storage"
       vars:

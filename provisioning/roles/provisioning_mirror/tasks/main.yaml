@@ -10,7 +10,9 @@
   until: image_config is not failed
 
 - name: Create additionalTrustedCA
-  when: (mirror_ssl_cert is defined) and (image_config.resources[0].spec.additionalTrustedCA is not defined)
+  when:
+    - mirror_ssl_cert is defined
+    - image_config.resources[0].spec.additionalTrustedCA is not defined
   block:
     - name: Create mirror registry config map for provisioning cluster
       kubernetes.core.k8s:
@@ -35,7 +37,9 @@
       until: k8s_result is not failed
 
 - name: Add SSL cert to additionalTrustedCA
-  when: (mirror_ssl_cert is defined) and (image_config.resources[0].spec.additionalTrustedCA is defined)
+  when:
+    - mirror_ssl_cert is defined
+    - image_config.resources[0].spec.additionalTrustedCA is defined
   block:
     - name: Get current config map
       kubernetes.core.k8s_info:

@@ -2,7 +2,7 @@
   loop: "{{ node.status.discoveredDevices }}"
   loop_control:
     label: "{{ item.path }}"
-  when: (item.type == "disk")
+  when: item.type == "disk"
   ansible.builtin.shell: |
     oc debug node/{{ node.spec.nodeName }} -- chroot /host sgdisk --zap-all {{ item.path }}
 
