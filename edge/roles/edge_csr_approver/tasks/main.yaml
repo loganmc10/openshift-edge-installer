@@ -106,5 +106,33 @@
     template: MachineConfig.yaml.j2
     apply: true
     state: present
+  register: csr_mc
+  until: csr_mc is not failed
+
+- name: Wait for MCP to begin progressing # noqa no-handler
+  when: csr_mc.changed
+  kubernetes.core.k8s_info:
+    api_version: machineconfiguration.openshift.io/v1
+    kind: MachineConfigPool
+    name: master
+    wait: true
+    wait_condition:
+      type: Updating
+      status: "True"
+    wait_timeout: 600
+  register: k8s_result
+  until: k8s_result is not failed
+
+- name: Wait for MCP to finish progressing # noqa no-handler
+  when: csr_mc.changed
+  kubernetes.core.k8s_info:
+    api_version: machineconfiguration.openshift.io/v1
+    kind: MachineConfigPool
+    name: master
+    wait: true
+    wait_condition:
+      type: Updating
+      status: "False"
+    wait_timeout: 600
   register: k8s_result
   until: k8s_result is not failed
