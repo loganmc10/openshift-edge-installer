@@ -4,7 +4,6 @@
 
 set -o pipefail
 
-export PATH=${PATH}:/usr/bin # make sure path includes /usr/bin
 export KUBECONFIG="/var/local/csr_approver/kubeconfig"
 
 # wait until API is online
