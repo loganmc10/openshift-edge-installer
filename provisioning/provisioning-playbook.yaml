@@ -1,8 +1,6 @@
 - name: Set up Multicluster Engine
   hosts: localhost
   gather_facts: false
-  vars_files:
-    - vars.yaml
   roles:
     - {role: "{{ playbook_dir }}/../common/roles/install_deps", tags: 'install_deps'} # noqa role-name[path]
     - {role: "{{ playbook_dir }}/../common/roles/storage", tags: 'provisioning_storage'} # noqa role-name[path]
