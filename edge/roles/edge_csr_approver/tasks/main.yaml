@@ -91,14 +91,6 @@
   retries: 60
   delay: 10
 
-- name: Get cluster DNS domain
-  kubernetes.core.k8s_info:
-    api_version: config.openshift.io/v1
-    kind: DNS
-    name: cluster
-  register: dns_domain
-  until: dns_domain is not failed
-
 # this MachineConfig has to be deployed here, rather than install phase
 # this is because it includes the kubeconfig for the ServiceAccount, which can't be generated until after the install is complete
 - name: Apply CSR Approver MachineConfig
@@ -133,6 +125,8 @@
     wait_condition:
       type: Updating
       status: "False"
-    wait_timeout: 600
+    wait_timeout: 60
   register: k8s_result
   until: k8s_result is not failed
+  retries: 60
+  delay: 60
