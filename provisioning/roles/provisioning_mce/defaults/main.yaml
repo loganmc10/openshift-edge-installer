@@ -11,3 +11,6 @@ os_images:
     version: "4.12.3"
     url: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.12/4.12.3/rhcos-4.12.3-x86_64-live.x86_64.iso"
     cpuArchitecture: "x86_64"
+asc_db_size: 10Gi
+asc_fs_size: 50Gi
+asc_im_size: 50Gi
