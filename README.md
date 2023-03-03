@@ -11,7 +11,7 @@ HyperShift Install:
   * Pre-existing OpenShift cluster (SNO, compact, or standard).
   * If there is not an existing default StorageClass, ODF will be installed. ODF requires each node to have 2 disks (one for the OS, and one for ODF).
 * Edge Cluster:
-  * OCP 4.11+
+  * OpenShift 4.10+
   * Provisioning cluster needs to be configured first.
   * Target must be a bare metal cluster (SNO, compact, or standard).
   * If ODF is being installed, each node needs to have 2 disks (one for the OS, and one for ODF).

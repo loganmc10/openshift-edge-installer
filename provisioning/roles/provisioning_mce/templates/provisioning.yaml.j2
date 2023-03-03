@@ -8,6 +8,6 @@ spec:
   {{ provisioning_network_config | to_nice_yaml(indent=2) | trim | indent(2) }}
 {% else %}
   provisioningNetwork: "Disabled"
-  provisioningMacAddresses: # this is here because OCP 4.11.17+ tries to populate this list using the Machines on the cluster, and SNO has no Machine object
+  provisioningMacAddresses: # this is here because OpenShift 4.11.17+ tries to populate this list using the Machines on the cluster, and SNO has no Machine object
     - aa:aa:aa:aa:aa:aa # can be any dummy address, it's not used when provisioningNetwork is Disabled
 {% endif %}
