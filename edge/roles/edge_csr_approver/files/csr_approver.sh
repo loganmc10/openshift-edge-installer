@@ -8,7 +8,7 @@ export KUBECONFIG="/var/local/csr_approver/kubeconfig"
 
 # wait until API is online
 until oc --request-timeout=30s get csr; do
-    sleep 10
+  sleep 10
 done
 
 count=30
