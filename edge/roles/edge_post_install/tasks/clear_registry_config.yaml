@@ -18,6 +18,28 @@
     wait: true
     wait_timeout: 600
 
+- name: Check for OperatorHub
+  kubernetes.core.k8s_info:
+    api_version: config.openshift.io/v1
+    kind: OperatorHub
+    name: cluster
+  register: operatorhub
+  until: operatorhub is not failed
+
+- name: Disable default sources
+  when: operatorhub.resources | length | int > 0
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: config.openshift.io/v1
+      kind: OperatorHub
+      metadata:
+        name: cluster
+      spec:
+        disableAllDefaultSources: true
+    state: present
+  register: k8s_result
+  until: k8s_result is not failed
+
 - name: Get CatalogSources
   kubernetes.core.k8s_info:
     api_version: operators.coreos.com/v1alpha1
