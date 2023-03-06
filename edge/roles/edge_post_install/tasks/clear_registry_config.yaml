@@ -13,7 +13,8 @@
     definition:
       apiVersion: operator.openshift.io/v1alpha1
       kind: ImageContentSourcePolicy
-      name: "{{ item.metadata.name }}"
+      metadata:
+        name: "{{ item.metadata.name }}"
     state: absent
     wait: true
     wait_timeout: 600
@@ -55,8 +56,9 @@
     definition:
       apiVersion: operators.coreos.com/v1alpha1
       kind: CatalogSource
-      name: "{{ item.metadata.name }}"
-      namespace: "{{ item.metadata.namespace }}"
+      metadata:
+        name: "{{ item.metadata.name }}"
+        namespace: "{{ item.metadata.namespace }}"
     state: absent
     wait: true
     wait_timeout: 600
