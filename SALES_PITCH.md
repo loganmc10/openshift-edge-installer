@@ -3,7 +3,7 @@
 * Zero touch (utilizing the Multicluster Engine Operator).
 * Can configure ODF on provisioning and edge clusters (SNO and multi-node clusters).
 * Can configure workload partitioning.
-* Ability to add install-time and post-install manifests.
+* Ability to add install-time manifests and post-install scripts.
 * Ability to configure a relocatable edge cluster.
 * Option to auto approve CSRs (for edge clusters that may be offline for extended periods).
 * Re-uses install-config.yaml (IPI install config) for configuration.

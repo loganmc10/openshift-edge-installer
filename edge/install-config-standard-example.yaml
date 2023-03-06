@@ -6,7 +6,7 @@ edgeCluster:
   additionalNTPSources: # Optional
     - pool.ntp.org
   installManifestsFolder: install_manifests # Optional, see README.md
-  postInstallManifestsFolder: post_manifests # Optional, see README.md
+  postInstallScriptsFolder: post_scripts # Optional, see README.md
   keepNamespace: false # Optional, retains the edge cluster namespace on the provisioning cluster when the installation is complete, defaults to false
   autoApproveCSRs: false # Optional, see docs/CSR_APPROVER.md
   diskEncryption: # Optional
@@ -19,8 +19,8 @@ edgeCluster:
   clearRegistryConfig: false # Optional, deletes ImageContentSourcePolicys and registry pull-secret at the end of the installation. Also disables the crio-wipe service.
   routingViaHost: false # Optional, see https://docs.openshift.com/container-platform/latest/rest_api/operator_apis/network-operator-openshift-io-v1.html#spec-defaultnetwork-ovnkubernetesconfig-gatewayconfig
   odfStorage: # Optional
-    # If you are using a mirror, you must configure a CatalogSource using postInstallManifestsFolder
-    # See the post_manifests_mirror_example folder for an example of how to do this
+    # If you are using a mirror, you must configure a CatalogSource using postInstallScriptsFolder
+    # See the post_scripts_mirror_example folder for an example of how to do this
     enabled: true
     catalogSource: redhat-operators # Optional, defaults to redhat-operators
   reservedCpuSet: <reserved_set> # Optional, example: "0-1,32-33"  there should be no spaces. See https://docs.openshift.com/container-platform/latest/scalability_and_performance/sno-du-enabling-workload-partitioning-on-single-node-openshift.html
