@@ -2,7 +2,7 @@
 
 oc patch OperatorHub cluster --type json -p '[{"op": "add", "path": "/spec/disableAllDefaultSources", "value": true}]'
 
-oc wait --for=delete catalogsource/redhat-operators -n openshift-marketplace
+oc wait --for=delete catalogsource/redhat-operators -n openshift-marketplace --timeout=15s || true
 
 cat << EOF | oc apply -f -
 apiVersion: operators.coreos.com/v1alpha1
