@@ -23,7 +23,9 @@
   until: k8s_result is not failed
 
 - name: Disable CRI-O wipe
-  when: edgeCluster.clearRegistryConfig is defined and edgeCluster.clearRegistryConfig
+  when:
+    - edgeCluster.clearRegistryConfig is defined
+    - edgeCluster.clearRegistryConfig
   kubernetes.core.k8s:
     template: CrioWipe.yaml.j2
     apply: true
