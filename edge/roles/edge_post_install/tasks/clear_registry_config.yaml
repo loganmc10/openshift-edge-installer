@@ -27,7 +27,7 @@
         name: pull-secret
         namespace: openshift-config
       data:
-        .dockerconfigjson: '{{ "{\"auths\":{}}" | b64encode }}'
+        .dockerconfigjson: '{{ ''{"auths":{}}'' | b64encode }}'
     state: present
   register: k8s_result
   until: k8s_result is not failed
