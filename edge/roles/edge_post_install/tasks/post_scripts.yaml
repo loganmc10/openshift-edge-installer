@@ -1,0 +1,11 @@
+- name: Run {{ item }} # noqa no-changed-when
+  ansible.builtin.command: "{{ item }}"
+  register: script_output
+
+- name: Print stdout
+  ansible.builtin.debug:
+    var: script_output.stdout_lines
+
+- name: Print stderr
+  ansible.builtin.debug:
+    var: script_output.stderr_lines
