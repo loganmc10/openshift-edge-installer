@@ -1,13 +1,8 @@
 #!/usr/bin/env bash
 
-cat << EOF | oc apply -f -
-apiVersion: config.openshift.io/v1
-kind: OperatorHub
-metadata:
-  name: cluster
-spec:
-  disableAllDefaultSources: true
-EOF
+oc patch OperatorHub cluster --type json -p '[{"op": "add", "path": "/spec/disableAllDefaultSources", "value": true}]'
+
+sleep 5
 
 cat << EOF | oc apply -f -
 apiVersion: operators.coreos.com/v1alpha1
