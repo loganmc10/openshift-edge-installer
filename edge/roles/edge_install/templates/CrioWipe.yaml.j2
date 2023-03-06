@@ -19,7 +19,7 @@ data:
         storage:
           files:
             - contents:
-                source: data:text/plain;charset=utf-8;base64,W2NyaW9dCmNsZWFuX3NodXRkb3duX2ZpbGUgPSAiIgo=
+                source: data:text/plain;charset=utf-8;base64,{{ lookup('ansible.builtin.file', '99-crio-disable-wipe.toml') | b64encode }}
               mode: 420
               path: /etc/crio/crio.conf.d/99-crio-disable-wipe.toml
   99-crio-disable-wipe-worker.yaml: |
@@ -36,6 +36,6 @@ data:
         storage:
           files:
             - contents:
-                source: data:text/plain;charset=utf-8;base64,W2NyaW9dCmNsZWFuX3NodXRkb3duX2ZpbGUgPSAiIgo=
+                source: data:text/plain;charset=utf-8;base64,{{ lookup('ansible.builtin.file', '99-crio-disable-wipe.toml') | b64encode }}
               mode: 420
               path: /etc/crio/crio.conf.d/99-crio-disable-wipe.toml
