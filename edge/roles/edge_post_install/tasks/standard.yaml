@@ -107,7 +107,7 @@
         - name: Clear Registry Config
           when:
             - edgeCluster.clearRegistryConfig is defined
-            - edgeCluster.clearRegistryConfig.enabled
+            - edgeCluster.clearRegistryConfig
           ansible.builtin.include_tasks: clear_registry_config.yaml
 
         - name: Auto approve CSRs
