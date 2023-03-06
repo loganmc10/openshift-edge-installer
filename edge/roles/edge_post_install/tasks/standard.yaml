@@ -104,6 +104,12 @@
           vars:
             catalog_source: "{{ edgeCluster.odfStorage.catalogSource | default('redhat-operators') }}"
 
+        - name: Clear Registry Config
+          when:
+            - edgeCluster.clearRegistryConfig is defined
+            - edgeCluster.clearRegistryConfig.enabled
+          ansible.builtin.include_tasks: clear_registry_config.yaml
+
         - name: Auto approve CSRs
           when:
             - edgeCluster.autoApproveCSRs is defined
