@@ -40,19 +40,19 @@ spec:
   ingressVIP: "{{ relocatable_ipv6_subnet | ansible.utils.nthhost(3) }}"
 {% endif %}
 {% else %}
-{% if platform.baremetal.apiVIP is defined %}
-  apiVIP: "{{ platform.baremetal.apiVIP }}"
-{% else %}
+{% if platform.baremetal.apiVIPs is defined %}
   apiVIP: "{{ platform.baremetal.apiVIPs[0] }}"
   apiVIPs:
     {{ platform.baremetal.apiVIPs | to_nice_yaml(indent=2) | trim | indent(4) }}
-{% endif %}
-{% if platform.baremetal.ingressVIP is defined %}
-  ingressVIP: "{{ platform.baremetal.ingressVIP }}"
 {% else %}
+  apiVIP: "{{ platform.baremetal.apiVIP }}"
+{% endif %}
+{% if platform.baremetal.ingressVIPs is defined %}
   ingressVIP: "{{ platform.baremetal.ingressVIPs[0] }}"
   ingressVIPs:
     {{ platform.baremetal.ingressVIPs | to_nice_yaml(indent=2) | trim | indent(4) }}
+{% else %}
+  ingressVIP: "{{ platform.baremetal.ingressVIP }}"
 {% endif %}
 {% endif %}
 {% endif %}
