@@ -13,7 +13,7 @@ You can also optionally set a path to a folder containing extra manifests (YAML)
 ```
 installManifestsFolder: install_manifests
 ```
-As well as a path to a folder containing scripts to be executed after the cluster installation is complete. The KUBECONFIG environment variable will already be set to communicate with the new cluster during the execution of these scripts
+Finally, you can set a path to a folder containing scripts to be executed after the cluster installation is complete. The KUBECONFIG environment variable will already be set to communicate with the new cluster during the execution of these scripts. The scripts in this folder need to have executable permission:
 ```
 postInstallScriptsFolder: post_scripts
 ```
