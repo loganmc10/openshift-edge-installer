@@ -1,5 +1,5 @@
 # CSR auto approval
-If a cluster has been offline for a period of time, some of the certificates on the cluster can expire.
+If a cluster has been offline for an extended period of time, some of the certificates on the cluster can expire.
 
 Manual intervention is typically required in order to approve the new certificates after this has happened.
 
