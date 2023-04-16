@@ -8,3 +8,8 @@ metadata:
   labels:
     openshift.io/cluster-monitoring: "true"
 {% endif %}
+  labels: #added for ocp 4.12+ for the stricter scc 
+    pod-security.kubernetes.io/audit: privileged
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/warn: privileged
+
