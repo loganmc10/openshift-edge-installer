@@ -1,5 +1,5 @@
 # Relocatable Edge Cluster
-This feature requires OpenShift 4.11 or higher.
+This feature requires OpenShift 4.12 or higher.
 
 When the ```relocatable``` option is enabled, the cluster is configured in such a way that its primary interface IP addresses can be changed without impacting the operation of the cluster.
 
