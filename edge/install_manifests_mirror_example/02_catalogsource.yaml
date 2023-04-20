@@ -2,15 +2,6 @@
 # capabilities:
 #   baselineCapabilitySet: None
 # See: https://docs.openshift.com/container-platform/latest/installing/cluster-capabilities.html
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: openshift-marketplace
-  annotations:
-    workload.openshift.io/allowed: management
-  labels:
-    openshift.io/cluster-monitoring: "true"
----
 apiVersion: operators.coreos.com/v1alpha1
 kind: CatalogSource
 metadata:
