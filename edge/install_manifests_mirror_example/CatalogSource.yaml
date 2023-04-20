@@ -1,0 +1,21 @@
+# You also need to disable the marketplace capability by adding the following to your install-config.yaml:
+# capabilities:
+#   baselineCapabilitySet: None
+# See: https://docs.openshift.com/container-platform/latest/installing/cluster-capabilities.html
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: openshift-marketplace
+  annotations:
+    workload.openshift.io/allowed: management
+  labels:
+    openshift.io/cluster-monitoring: "true"
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: redhat-operators
+  namespace: openshift-marketplace
+spec:
+  image: <mirror_hostname>:8443/redhat/redhat-operator-index:<ocp_version>
+  sourceType: grpc

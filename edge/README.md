@@ -43,7 +43,7 @@ If the provisioning cluster was configured to use a mirror registry, then the SS
 
 If you want to install Operators on the edge cluster from the disconnected registry, you'll need to add ImageContentSources for those operators in your install-config.yaml, as well as create a CatalogSource pointing to the mirror registry.
 
-See the ```post_scripts_mirror_example``` folder for an example of how you can use the ```postInstallScriptsFolder``` option in the install-config to configure a CatalogSource during the installation process.
+See the ```install_manifests_mirror_example``` folder for an example of how you can use the ```installManifestsFolder``` option in the install-config to configure a CatalogSource during the installation process.
 # Automatic installation via virtual media
 Firmware requirements for booting via virtual media are documented [here](https://docs.openshift.com/container-platform/latest/installing/installing_bare_metal_ipi/ipi-install-prerequisites.html#ipi-install-firmware-requirements-for-installing-with-virtual-media_ipi-install-prerequisites)
 
