@@ -1,5 +1,7 @@
 - name: Run {{ item }} # noqa no-changed-when
-  ansible.builtin.command: "{{ item }}"
+  ansible.builtin.command:
+    cmd: "{{ item }}"
+    chdir: "{{ edgeCluster.postInstallScriptsFolder }}"
   register: script_output
 
 - name: Print stdout
