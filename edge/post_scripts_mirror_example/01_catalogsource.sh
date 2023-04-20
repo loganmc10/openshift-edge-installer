@@ -7,7 +7,10 @@ oc_version=$(oc get clusterversion version -o jsonpath='{.status.desired.version
 
 oc patch OperatorHub cluster --type json -p '[{"op": "add", "path": "/spec/disableAllDefaultSources", "value": true}]'
 
-oc wait --for=delete catalogsource/community-operators -n openshift-marketplace
+until [[ $(oc get operatorhub cluster -o jsonpath='{.status.sources[?(@.name=="redhat-operators")].disabled}') == "true" ]]
+do
+  sleep 2
+done
 
 cat << EOF | oc apply -f -
 apiVersion: operators.coreos.com/v1alpha1
