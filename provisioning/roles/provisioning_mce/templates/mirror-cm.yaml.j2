@@ -17,7 +17,7 @@ data:
        mirror-by-digest-only = true
 
        [[registry.mirror]]
-       location = "{{ mirror_hostname }}:{{ mirror_port }}{% if mirror_subpath is defined %}/{{ mirror_subpath }}{% endif %}/openshift/release"
+       location = "{{ mirror_hostname }}{% if mirror_port != 443 %}:{{ mirror_port }}{% endif %}{% if mirror_subpath is defined %}/{{ mirror_subpath }}{% endif %}/openshift/release"
 
     [[registry]]
        prefix = ""
@@ -25,7 +25,7 @@ data:
        mirror-by-digest-only = true
 
        [[registry.mirror]]
-       location = "{{ mirror_hostname }}:{{ mirror_port }}{% if mirror_subpath is defined %}/{{ mirror_subpath }}{% endif %}/openshift/release-images"
+       location = "{{ mirror_hostname }}{% if mirror_port != 443 %}:{{ mirror_port }}{% endif %}{% if mirror_subpath is defined %}/{{ mirror_subpath }}{% endif %}/openshift/release-images"
 
     [[registry]]
        prefix = ""
@@ -33,7 +33,7 @@ data:
        mirror-by-digest-only = true
 
        [[registry.mirror]]
-       location = "{{ mirror_hostname }}:{{ mirror_port }}{% if mirror_subpath is defined %}/{{ mirror_subpath }}{% endif %}/multicluster-engine"
+       location = "{{ mirror_hostname }}{% if mirror_port != 443 %}:{{ mirror_port }}{% endif %}{% if mirror_subpath is defined %}/{{ mirror_subpath }}{% endif %}/multicluster-engine"
 
     [[registry]]
        prefix = ""
@@ -41,7 +41,7 @@ data:
        mirror-by-digest-only = true
 
        [[registry.mirror]]
-       location = "{{ mirror_hostname }}:{{ mirror_port }}{% if mirror_subpath is defined %}/{{ mirror_subpath }}{% endif %}/redhat"
+       location = "{{ mirror_hostname }}{% if mirror_port != 443 %}:{{ mirror_port }}{% endif %}{% if mirror_subpath is defined %}/{{ mirror_subpath }}{% endif %}/redhat"
 
     [[registry]]
        prefix = ""
@@ -49,4 +49,4 @@ data:
        mirror-by-digest-only = true
 
        [[registry.mirror]]
-       location = "{{ mirror_hostname }}:{{ mirror_port }}{% if mirror_subpath is defined %}/{{ mirror_subpath }}{% endif %}/rhel8"
+       location = "{{ mirror_hostname }}{% if mirror_port != 443 %}:{{ mirror_port }}{% endif %}{% if mirror_subpath is defined %}/{{ mirror_subpath }}{% endif %}/rhel8"
