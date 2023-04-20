@@ -101,6 +101,13 @@
           vars:
             catalog_source: "{{ edgeCluster.odfStorage.catalogSource | default('redhat-operators') }}"
 
+        - name: Auto approve CSRs
+          when:
+            - edgeCluster.autoApproveCSRs is defined
+            - edgeCluster.autoApproveCSRs
+          ansible.builtin.include_role:
+            name: "edge_csr_approver"
+
         - name: Run post-install scripts
           when: edgeCluster.postInstallScriptsFolder is defined
           loop: "{{ lookup('ansible.builtin.fileglob', lookup('ansible.builtin.vars', 'post_install_scripts_folder') + '/*', wantlist=True) | sort }}"
@@ -116,13 +123,6 @@
             - edgeCluster.clearRegistryConfig is defined
             - edgeCluster.clearRegistryConfig
           ansible.builtin.include_tasks: clear_registry_config.yaml
-
-        - name: Auto approve CSRs
-          when:
-            - edgeCluster.autoApproveCSRs is defined
-            - edgeCluster.autoApproveCSRs
-          ansible.builtin.include_role:
-            name: "edge_csr_approver"
   always:
     - name: Remove Edge Cluster Namespace
       when: ((edgeCluster.keepNamespace is defined) and (not edgeCluster.keepNamespace)) or (edgeCluster.keepNamespace is not defined)
