@@ -22,6 +22,7 @@ hypershift: # Optional, enables Hosted Control Planes on the cluster
 
 mirror_hostname: <mirror_hostname> # Optional
 mirror_port: 8443 # Required if mirror_hostname is defined
+mirror_subpath: sub_path # Optional, only required if the mirror contents exist inside a subpath on the registry
 mirror_ssl_cert: | # Required if mirror_hostname is defined
   -----BEGIN CERTIFICATE-----
   MIIDijCCAnKgAwIBAgIUA0gWHLy5W2y4xpNq39kUeKrmyogwDQYJKoZIhvcNAQEL
