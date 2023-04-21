@@ -8,7 +8,6 @@
 * Option to auto approve CSRs (for edge clusters that may be offline for extended periods).
 * Re-uses install-config.yaml (IPI install config) for configuration.
 * Easy to read Ansible playbook, what you see is what you get.
-* Can deploy HyperShift (Hosted Control Plane) clusters.
 
 ## How do I do GitOps?
 The edge cluster install config files can be committed to a Git repo. You could then configure a CI/CD pipeline (GitHub Actions, Gitlab CI, etc) to execute the Ansible playbook using those files as inputs whenever a change is committed to the repo.
