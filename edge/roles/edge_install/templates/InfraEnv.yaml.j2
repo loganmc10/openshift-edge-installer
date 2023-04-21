@@ -4,11 +4,9 @@ metadata:
   name: "{{ metadata.name }}"
   namespace: "{{ metadata.name }}"
 spec:
-{% if not hypershift %}
   clusterRef:
     name: "{{ metadata.name }}"
     namespace: "{{ metadata.name }}"
-{% endif %}
   sshAuthorizedKey: "{{ sshKey }}"
   pullSecretRef:
     name: assisted-deployment-pull-secret

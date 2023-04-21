@@ -4,11 +4,7 @@ metadata:
   name: "workload-partitioning"
   namespace: "{{ metadata.name }}"
 data:
-{% if not hypershift %}
   01_workload_partitioning.yaml: |
-{% else %}
-  config: |
-{% endif %}
     apiVersion: machineconfiguration.openshift.io/v1
     kind: MachineConfig
     metadata:

@@ -26,7 +26,6 @@
   until: k8s_result is not failed
 
 - name: Set up API LB
-  when: api_lb
   block:
     - name: Create IPAddressPool for API
       kubernetes.core.k8s:
@@ -80,7 +79,6 @@
       until: k8s_result is not failed
 
 - name: Set up Ingress LB
-  when: ingress_lb
   block:
     - name: Create IPAddressPool for Ingress
       kubernetes.core.k8s:

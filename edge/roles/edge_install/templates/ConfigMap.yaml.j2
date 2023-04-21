@@ -4,9 +4,5 @@ metadata:
   name: "manifest-{{ idx }}"
   namespace: "{{ metadata.name }}"
 data:
-{% if not hypershift %}
   {{ item | basename }}: |
-{% else %}
-  config: |
-{% endif %}
     {{ lookup('ansible.builtin.file', lookup('ansible.builtin.vars', 'item')) | indent(4) }}

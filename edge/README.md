@@ -1,7 +1,7 @@
 # Purpose
-This playbook installs an edge cluster. You should already have a provisioning cluster configured. See [HYPERSHIFT.md](docs/HYPERSHIFT.md) for information on setting up a cluster using Hosted Control Planes.
+This playbook installs an edge cluster. You should already have a provisioning cluster configured.
 # Usage
-Example [install config](https://docs.openshift.com/container-platform/latest/installing/installing_bare_metal_ipi/ipi-install-installation-workflow.html#additional-resources_config) files are provided in ```install-config-sno-example.yaml```, ```install-config-standard-example.yaml``` and ```install-config-hypershift-example.yaml```.
+Example [install config](https://docs.openshift.com/container-platform/latest/installing/installing_bare_metal_ipi/ipi-install-installation-workflow.html#additional-resources_config) files are provided in ```install-config-sno-example.yaml``` and ```install-config-standard-example.yaml```.
 
 The install config uses the same format as an IPI install, except that it also requires you to set clusterImageSet. The example shows how to point the clusterImageSet to a mirror registry.
 
@@ -17,7 +17,7 @@ Finally, you can set a path to a folder containing scripts to be executed after 
 ```
 postInstallScriptsFolder: post_scripts
 ```
-Other options are documented in ```install-config-sno-example.yaml```, ```install-config-standard-example.yaml``` and ```install-config-hypershift-example.yaml```.
+Other options are documented in ```install-config-sno-example.yaml``` and ```install-config-standard-example.yaml```.
 
 ---
 To run the playbook:

@@ -1,11 +1,7 @@
 ## Overview
 The purpose of this project is to ease the setup of a provisioning cluster, as well as ease the process of installing an edge cluster.
 
-Standard Install:
-* After the installation of an edge cluster is complete, the edge cluster does not depend on the provisioning cluster for anything. The provisioning cluster is simply an installer.
-
-HyperShift Install:
-* The provisioning cluster hosts the control plane for the edge cluster. The edge cluster has no control plane nodes.
+After the installation of an edge cluster is complete, the edge cluster does not depend on the provisioning cluster for anything. The provisioning cluster is simply an installer.
 ## Prerequisites
 * Provisioning Cluster:
   * Pre-existing OpenShift cluster (SNO, compact, or standard).
