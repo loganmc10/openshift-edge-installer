@@ -88,9 +88,6 @@
         - name: Setup MetalLB for relocatable cluster
           when: access_control_node
           ansible.builtin.include_tasks: metallb.yaml
-          vars:
-            api_lb: true
-            ingress_lb: true
 
         - name: Install Storage # noqa role-name[path]
           when:
