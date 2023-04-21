@@ -69,7 +69,7 @@
     - name: Deploy HyperShift
       when:
         - hypershift is defined
-        - hypershift.enabled
+        - hypershift
       ansible.builtin.include_tasks: hypershift.yaml
   rescue: # CRs need to be removed before the namespaces holding the operators are removed, or else the CR finalizers will get stuck
     - name: Delete CIM
