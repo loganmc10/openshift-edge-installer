@@ -4,6 +4,8 @@ This playbook configures the Multicluster Engine on a Provisioning/Management Cl
 # Usage
 ## HyperShift
 To enable [HyperShift](https://hypershift-docs.netlify.app/), set ```hypershift.enabled: true``` in your provisioning config. HyperShift, ArgoCD, and MetalLB will be configured.
+
+To configure an edge cluster for HyperShift, look here: https://github.com/loganmc10/hypershift-helm
 ## Without mirror registry or provisioning customizations
 ```
 export KUBECONFIG=~/path/to/kubeconfig
