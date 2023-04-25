@@ -104,17 +104,18 @@
             - name: Install operator # noqa role-name[path]
               loop: "{{ edgeCluster.operators }}"
               loop_control:
-                label: "{{ item.name }}"
+                loop_var: operator
+                label: "{{ operator.name }}"
               ansible.builtin.include_role:
                 name: "{{ playbook_dir }}/../common/roles/install_operator"
               vars:
-                operator_name: "{{ item.name }}"
-                operator_namespace: "{{ item.namespace }}"
-                all_namespaces: "{{ item.allNamespaces | default(false) }}"
-                cluster_monitoring: "{{ item.clusterMonitoring | default(false) }}"
-                catalog_source: "{{ item.catalogSource | default('redhat-operators') }}"
-                channel: "{{ item.channel | default(omit) }}"
-                install_plan_approval: "{{ item.installPlanApproval | default('Automatic') }}"
+                operator_name: "{{ operator.name }}"
+                operator_namespace: "{{ operator.namespace }}"
+                all_namespaces: "{{ operator.allNamespaces | default(false) }}"
+                cluster_monitoring: "{{ operator.clusterMonitoring | default(false) }}"
+                catalog_source: "{{ operator.catalogSource | default('redhat-operators') }}"
+                channel: "{{ operator.channel | default(omit) }}"
+                install_plan_approval: "{{ operator.installPlanApproval | default('Automatic') }}"
 
         - name: Auto approve CSRs
           when:
