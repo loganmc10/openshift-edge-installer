@@ -112,9 +112,9 @@
                 operator_namespace: "{{ item.namespace }}"
                 all_namespaces: "{{ item.allNamespaces | default(false) }}"
                 cluster_monitoring: "{{ item.clusterMonitoring | default(false) }}"
+                catalog_source: "{{ item.catalogSource | default('redhat-operators') }}"
                 channel: "{{ item.channel | default(omit) }}"
-                catalog_source: "{{ item.catalogSource | default(omit) }}"
-                install_plan_approval: "{{ item.installPlanApproval | default(omit) }}"
+                install_plan_approval: "{{ item.installPlanApproval | default('Automatic') }}"
 
         - name: Auto approve CSRs
           when:
