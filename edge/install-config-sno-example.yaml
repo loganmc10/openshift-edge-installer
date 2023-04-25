@@ -30,7 +30,7 @@ edgeCluster:
       namespace: my-namespace
       allNamespaces: false # Defaults to false
       clusterMonitoring: false # Defaults to false
-      channel: stable # Can be omitted, will default to the defualt channel for the operator
+      channel: stable # Can be omitted, will default to the default channel for the operator
       catalogSource: redhat-operators # Defaults to redhat-operators
       installPlanApproval: Automatic # Defaults to Automatic
 
