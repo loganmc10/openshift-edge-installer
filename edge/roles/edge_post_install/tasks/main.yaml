@@ -114,6 +114,7 @@
                 cluster_monitoring: "{{ item.clusterMonitoring | default(false) }}"
                 channel: "{{ item.channel | default(omit) }}"
                 catalog_source: "{{ item.catalogSource | default(omit) }}"
+                install_plan_approval: "{{ item.installPlanApproval | default(omit) }}"
 
         - name: Auto approve CSRs
           when:

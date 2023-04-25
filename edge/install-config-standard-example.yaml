@@ -27,10 +27,11 @@ edgeCluster:
   operators: # Optional, a list of operators to install
     - name: my-operator
       namespace: my-namespace
-      allNamespaces: false
-      clusterMonitoring: false
+      allNamespaces: false # Defaults to false
+      clusterMonitoring: false # Defaults to false
       channel: stable # Can be omitted, will default to the defualt channel for the operator
       catalogSource: redhat-operators # Defaults to redhat-operators
+      installPlanApproval: Automatic # Defaults to Automatic
 
 baseDomain: <cluster_domain>
 compute:

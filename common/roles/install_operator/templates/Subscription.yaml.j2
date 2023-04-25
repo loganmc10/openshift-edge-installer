@@ -4,7 +4,7 @@ metadata:
   name: "{{ operator_name }}"
   namespace: "{{ operator_namespace }}"
 spec:
-  installPlanApproval: Automatic
+  installPlanApproval: "{{ install_plan_approval | default('Automatic') }}"
   name: "{{ operator_name }}"
   source: "{{ catalog_source | default('redhat-operators') }}"
   sourceNamespace: openshift-marketplace
