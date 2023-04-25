@@ -18,17 +18,7 @@
 
 - name: Create Subscription
   kubernetes.core.k8s:
-    definition:
-      apiVersion: operators.coreos.com/v1alpha1
-      kind: Subscription
-      metadata:
-        name: "{{ operator_name }}"
-        namespace: "{{ operator_namespace }}"
-      spec:
-        installPlanApproval: Automatic
-        name: "{{ operator_name }}"
-        source: "{{ catalog_source | default('redhat-operators') }}"
-        sourceNamespace: openshift-marketplace
+    template: Subscription.yaml.j2
     apply: true
     state: present
   register: create_sub

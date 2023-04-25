@@ -98,6 +98,23 @@
           vars:
             catalog_source: "{{ edgeCluster.odfStorage.catalogSource | default('redhat-operators') }}"
 
+        - name: Install operators
+          when: edgeCluster.operators is defined
+          block:
+            - name: Install operator # noqa role-name[path]
+              loop: "{{ edgeCluster.operators }}"
+              loop_control:
+                label: "{{ item.name }}"
+              ansible.builtin.include_role:
+                name: "{{ playbook_dir }}/../common/roles/install_operator"
+              vars:
+                operator_name: "{{ item.name }}"
+                operator_namespace: "{{ item.namespace }}"
+                all_namespaces: "{{ item.allNamespaces | default(false) }}"
+                cluster_monitoring: "{{ item.clusterMonitoring | default(false) }}"
+                channel: "{{ item.channel | default(omit) }}"
+                catalog_source: "{{ item.catalogSource | default(omit) }}"
+
         - name: Auto approve CSRs
           when:
             - edgeCluster.autoApproveCSRs is defined
