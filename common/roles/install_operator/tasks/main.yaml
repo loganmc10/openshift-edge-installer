@@ -1,4 +1,4 @@
-- name: Create Namespace
+- name: "Create Namespace for {{ operator_name }}"
   when: operator_namespace != "openshift-operators"
   kubernetes.core.k8s:
     template: Namespace.yaml.j2
@@ -7,7 +7,7 @@
   register: k8s_result
   until: k8s_result is not failed
 
-- name: Create OperatorGroup
+- name: "Create OperatorGroup for {{ operator_name }}"
   when: operator_namespace != "openshift-operators"
   kubernetes.core.k8s:
     template: OperatorGroup.yaml.j2
@@ -16,7 +16,7 @@
   register: k8s_result
   until: k8s_result is not failed
 
-- name: Create Subscription
+- name: "Create Subscription for {{ operator_name }}"
   kubernetes.core.k8s:
     template: Subscription.yaml.j2
     apply: true
