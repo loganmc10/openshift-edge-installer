@@ -29,8 +29,8 @@ edgeCluster:
       namespace: my-namespace
       allNamespaces: false
       clusterMonitoring: false
-      channel: stable
-      catalogSource: redhat-operators
+      channel: stable # Can be omitted, will default to the defualt channel for the operator
+      catalogSource: redhat-operators # Defaults to redhat-operators
 
 baseDomain: <cluster_domain>
 compute:
