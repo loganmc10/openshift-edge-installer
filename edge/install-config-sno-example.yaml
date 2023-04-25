@@ -14,8 +14,8 @@ edgeCluster:
     mode: "tpmv2"
   relocatable: # Optional, see docs/RELOCATABLE.md
     interface: <external_interface>
-    ipv4_subnet: "192.168.7.0/24" # Optional, defaults to 192.168.7.0/24
-    ipv6_subnet: "fd04::/64" # Optional, defaults to fd04::/64, only used for dual stack or IPv6 deployments
+    ipv4Subnet: "192.168.7.0/24" # Optional, defaults to 192.168.7.0/24
+    ipv6Subnet: "fd04::/64" # Optional, defaults to fd04::/64, only used for dual stack or IPv6 deployments
   clearRegistryConfig: false # Optional, deletes ImageContentSourcePolicys and registry pull-secret at the end of the installation. Also disables the crio-wipe service.
   routingViaHost: false # Optional, see https://docs.openshift.com/container-platform/latest/rest_api/operator_apis/network-operator-openshift-io-v1.html#spec-defaultnetwork-ovnkubernetesconfig-gatewayconfig
   odfStorage: # Optional
@@ -25,6 +25,14 @@ edgeCluster:
     catalogSource: redhat-operators # Optional, defaults to redhat-operators
     noobaa: false # Install NooBaa (S3 compatible storage), defaults to false
   reservedCpuSet: <reserved_set> # Optional, example: "0-1,32-33"  there should be no spaces. See https://docs.openshift.com/container-platform/latest/scalability_and_performance/sno-du-enabling-workload-partitioning-on-single-node-openshift.html
+  operators: # Optional, a list of operators to install
+    - name: my-operator
+      namespace: my-namespace
+      allNamespaces: false # Defaults to false
+      clusterMonitoring: false # Defaults to false
+      channel: stable # Can be omitted, will default to the default channel for the operator
+      catalogSource: redhat-operators # Defaults to redhat-operators
+      installPlanApproval: Automatic # Defaults to Automatic
 
 baseDomain: <cluster_domain>
 compute:

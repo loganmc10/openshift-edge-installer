@@ -1,4 +1,4 @@
-- name: Create Namespace
+- name: "Create Namespace for {{ operator_name }}"
   when: operator_namespace != "openshift-operators"
   kubernetes.core.k8s:
     template: Namespace.yaml.j2
@@ -7,7 +7,7 @@
   register: k8s_result
   until: k8s_result is not failed
 
-- name: Create OperatorGroup
+- name: "Create OperatorGroup for {{ operator_name }}"
   when: operator_namespace != "openshift-operators"
   kubernetes.core.k8s:
     template: OperatorGroup.yaml.j2
@@ -16,19 +16,9 @@
   register: k8s_result
   until: k8s_result is not failed
 
-- name: Create Subscription
+- name: "Create Subscription for {{ operator_name }}"
   kubernetes.core.k8s:
-    definition:
-      apiVersion: operators.coreos.com/v1alpha1
-      kind: Subscription
-      metadata:
-        name: "{{ operator_name }}"
-        namespace: "{{ operator_namespace }}"
-      spec:
-        installPlanApproval: Automatic
-        name: "{{ operator_name }}"
-        source: "{{ catalog_source | default('redhat-operators') }}"
-        sourceNamespace: openshift-marketplace
+    template: Subscription.yaml.j2
     apply: true
     state: present
   register: create_sub
