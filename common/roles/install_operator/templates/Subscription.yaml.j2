@@ -9,5 +9,5 @@ spec:
   source: "{{ catalog_source | default('redhat-operators') }}"
   sourceNamespace: openshift-marketplace
 {% if channel is defined %}
-    channel: "{{ channel }}"
+  channel: "{{ channel }}"
 {% endif %}
