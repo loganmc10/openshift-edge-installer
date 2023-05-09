@@ -5,14 +5,32 @@
   register: icsp_list
   until: icsp_list is not failed
 
-- name: Delete ICSPs
-  loop: "{{ icsp_list.resources }}"
+- name: Get ImageDigestMirrorSets
+  kubernetes.core.k8s_info:
+    api_version: config.openshift.io/v1
+    kind: ImageDigestMirrorSet
+  register: idms_list
+  until: idms_list is not failed
+
+- name: Get ImageTagMirrorSets
+  kubernetes.core.k8s_info:
+    api_version: config.openshift.io/v1
+    kind: ImageTagMirrorSet
+  register: itms_list
+  until: itms_list is not failed
+
+- name: Merge the lists
+  ansible.builtin.set_fact:
+    lists_merged: "{{ icsp_list.resources + idms_list.resources + itms_list.resources }}"
+
+- name: Delete mirror configuration
+  loop: "{{ lists_merged }}"
   loop_control:
     label: "{{ item.metadata.name }}"
   kubernetes.core.k8s:
     definition:
-      apiVersion: operator.openshift.io/v1alpha1
-      kind: ImageContentSourcePolicy
+      apiVersion: "{{ item.apiVersion }}"
+      kind: "{{ item.kind }}"
       metadata:
         name: "{{ item.metadata.name }}"
     state: absent
