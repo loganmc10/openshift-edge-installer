@@ -27,3 +27,8 @@
   when: featureSet is defined
   ansible.builtin.set_fact:
     install_overrides: "{{ install_overrides | combine({'featureSet': featureSet}, recursive=true) }}"
+
+- name: Add cpuPartitioningMode to config
+  when: cpuPartitioningMode is defined
+  ansible.builtin.set_fact:
+    install_overrides: "{{ install_overrides | combine({'cpuPartitioningMode': cpuPartitioningMode}, recursive=true) }}"
