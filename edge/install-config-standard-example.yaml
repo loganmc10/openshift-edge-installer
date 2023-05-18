@@ -23,7 +23,7 @@ edgeCluster:
     # See the install_manifests_mirror_example folder for an example of how to do this
     enabled: true
     catalogSource: redhat-operators # Optional, defaults to redhat-operators
-  reservedCpuSet: <reserved_set> # Optional, example: "0-1,32-33"  there should be no spaces. See https://docs.openshift.com/container-platform/latest/scalability_and_performance/sno-du-enabling-workload-partitioning-on-single-node-openshift.html
+  reservedCpuSet: <reserved_set> # Optional, used to enable workload partitioning, example: "0-1,32-33" (there should be no spaces). For OCP 4.13+, cpuPartitioningMode should be used instead, see https://docs.openshift.com/container-platform/latest/scalability_and_performance/enabling-workload-partitioning.html
   operators: # Optional, a list of operators to install
     - name: my-operator
       namespace: my-namespace
