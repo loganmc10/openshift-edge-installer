@@ -1,6 +1,8 @@
 # You also need to disable the marketplace capability by adding the following to your install-config.yaml:
 # capabilities:
 #   baselineCapabilitySet: None
+#   additionalEnabledCapabilities:
+#     - NodeTuning # (for OCP 4.13+)
 # See: https://docs.openshift.com/container-platform/latest/installing/cluster-capabilities.html
 apiVersion: operators.coreos.com/v1alpha1
 kind: CatalogSource
