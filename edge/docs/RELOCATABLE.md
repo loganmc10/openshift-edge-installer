@@ -4,7 +4,7 @@ This feature requires OpenShift 4.12 or higher.
 When the ```relocatable``` option is enabled, the cluster is configured in such a way that its primary interface IP addresses can be changed without impacting the operation of the cluster.
 
 ## How it works
-You set the value of ```relocatable.interface``` to the name of the external facing interface. A secondary static IP address is assigned to this interface. The machineNetwork CIDR is also set to a static internal subnet. Finally, a MachineConfig is created that modifies /etc/default/nodeip-configuration to tell the cluster to use the static IP as the node IP. 'routingViaHost' is also enabled.
+You set the value of ```relocatable.interface``` to the name of the external facing interface. A secondary static IP address is assigned to this interface. The machineNetwork CIDR is also set to a static internal subnet. Finally, a MachineConfig is created that modifies /etc/default/nodeip-configuration to tell the cluster to use the static IP as the node IP. 'routingViaHost' is also enabled for OCP 4.12.
 
 All of these actions together cause the server to use the static IP for everything related to OpenShift, while still allowing access to the cluster from outside via the primary interface IP address. This means that the external IP can be changed, and the cluster will continue to use the static IP internally for its operation.
 

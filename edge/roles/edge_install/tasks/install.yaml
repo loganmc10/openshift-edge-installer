@@ -13,15 +13,6 @@
   register: k8s_result
   until: k8s_result is not failed
 
-- name: Configure routingViaHost
-  when: (edgeCluster.routingViaHost is defined and edgeCluster.routingViaHost) or (edgeCluster.relocatable is defined)
-  kubernetes.core.k8s:
-    template: RoutingViaHost.yaml.j2
-    apply: true
-    state: present
-  register: k8s_result
-  until: k8s_result is not failed
-
 - name: Disable CRI-O wipe
   when:
     - edgeCluster.clearRegistryConfig is defined
@@ -108,6 +99,23 @@
     wait_timeout: 600
   vars:
     install_manifests_folder: "{{ edgeCluster.installManifestsFolder }}"
+  register: k8s_result
+  until: k8s_result is not failed
+
+- name: Get Cluster Version
+  kubernetes.core.k8s_info:
+    api_version: hive.openshift.io/v1
+    kind: ClusterDeployment
+    name: "{{ metadata.name }}"
+    namespace: "{{ metadata.name }}"
+  register: cluster_deployment
+  until: cluster_deployment.resources[0].status.installVersion is defined
+
+- name: Configure routingViaHost
+  kubernetes.core.k8s:
+    template: RoutingViaHost.yaml.j2
+    apply: true
+    state: present
   register: k8s_result
   until: k8s_result is not failed
 

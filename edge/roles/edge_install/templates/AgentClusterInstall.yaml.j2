@@ -24,9 +24,7 @@ spec:
 {% if edgeCluster.reservedCpuSet is defined %}
     - name: "workload-partitioning"
 {% endif %}
-{% if (edgeCluster.routingViaHost is defined and edgeCluster.routingViaHost) or (edgeCluster.relocatable is defined) %}
     - name: "routing-via-host"
-{% endif %}
 {% if edgeCluster.clearRegistryConfig is defined and edgeCluster.clearRegistryConfig %}
     - name: "crio-wipe"
 {% endif %}
