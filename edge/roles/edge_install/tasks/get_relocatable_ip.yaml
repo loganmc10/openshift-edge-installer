@@ -6,7 +6,7 @@
     interface_number: "{{ (interface_number | int) + 1 }}"
 
 - name: Create entry for IPv4 address list
-  when: cluster_ipv4 is defined
+  when: cluster_ipv4
   block:
     - name: Create IPv4 address line
       ansible.builtin.set_fact:
@@ -17,7 +17,7 @@
         relocatable_interface_macs: '{{ (relocatable_interface_macs | default("")) + bash_item }}'
 
 - name: Create entry for IPv6 address list
-  when: cluster_ipv6 is defined
+  when: cluster_ipv6
   block:
     - name: Create IPv6 address line
       ansible.builtin.set_fact:

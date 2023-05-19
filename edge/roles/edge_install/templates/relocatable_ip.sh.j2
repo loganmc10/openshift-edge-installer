@@ -21,7 +21,7 @@ for interface in {{ edgeCluster.relocatable.interface }} ovs-if-br-ex; do
     continue
   fi
   dev_name=$(nmcli -g connection.interface-name connection show "${interface}")
-{% if cluster_ipv4 is defined %}
+{% if cluster_ipv4 %}
   current_ipv4_addresses=$(nmcli -g ipv4.addresses connection show "${interface}")
   if [[ "${current_ipv4_addresses}" != *"${addresses_ipv4[${mac_address}]}"* ]]; then
     nmcli connection modify "${interface}" +ipv4.addresses "${addresses_ipv4[${mac_address}]}"{% if controlPlane.replicas == 3 %} +ipv4.dns "{{ relocatable_ipv4_subnet | ansible.utils.nthhost(2) }}"{% endif +%}
@@ -36,7 +36,7 @@ for interface in {{ edgeCluster.relocatable.interface }} ovs-if-br-ex; do
   fi
 {% endif %}
 
-{% if cluster_ipv6 is defined %}
+{% if cluster_ipv6 %}
   current_ipv6_addresses=$(nmcli -e no -g ipv6.addresses connection show "${interface}")
   if [[ "${current_ipv6_addresses}" != *"${addresses_ipv6[${mac_address}]}"* ]]; then
     nmcli connection modify "${interface}" +ipv6.addresses "${addresses_ipv6[${mac_address}]}"{% if controlPlane.replicas == 3 %} +ipv6.dns "{{ relocatable_ipv6_subnet | ansible.utils.nthhost(2) }}"{% endif +%}

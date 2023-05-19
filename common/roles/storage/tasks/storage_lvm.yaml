@@ -58,9 +58,7 @@
   ansible.builtin.include_tasks: set_storage.yaml
 
 - name: Install NooBaa
-  when:
-    - edgeCluster.odfStorage.noobaa is defined
-    - edgeCluster.odfStorage.noobaa
+  when: edgeCluster.odfStorage.noobaa | default(false)
   block:
     - name: Install MCG operator # noqa role-name[path]
       ansible.builtin.include_role:

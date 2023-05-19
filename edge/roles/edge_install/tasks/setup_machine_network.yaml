@@ -1,10 +1,10 @@
 - name: Create relocatable IPv4 machineNetwork
-  when: cluster_ipv4 is defined
+  when: cluster_ipv4
   ansible.builtin.set_fact:
     relocatable_machine_network: "{{ [{'cidr': relocatable_ipv4_subnet}] }}"
 
 - name: Create relocatable IPv6 machineNetwork
-  when: cluster_ipv6 is defined
+  when: cluster_ipv6
   ansible.builtin.set_fact:
     relocatable_machine_network: "{{ relocatable_machine_network | default([]) + [{'cidr': relocatable_ipv6_subnet}] }}"
 
