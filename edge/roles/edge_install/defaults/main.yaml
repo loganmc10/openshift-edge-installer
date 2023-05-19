@@ -3,3 +3,4 @@ worker_count: 0
 interface_number: 3
 relocatable_ipv4_subnet: "192.168.7.0/24"
 relocatable_ipv6_subnet: "fd04::/64"
+du_manifests: []

@@ -17,17 +17,16 @@ spec:
     - name: "relocatable-config"
 {% endif %}
 {% if edgeCluster.installManifestsFolder is defined %}
-{% for file in lookup('ansible.builtin.fileglob', lookup('ansible.builtin.vars', 'install_manifests_folder') + '/*', wantlist=True) %}
+{% for file in lookup('ansible.builtin.fileglob', edgeCluster.installManifestsFolder + '/*', wantlist=True) %}
     - name: "manifest-{{ loop.index0 }}"
 {% endfor %}
 {% endif %}
 {% if edgeCluster.reservedCpuSet is defined %}
     - name: "workload-partitioning"
 {% endif %}
-    - name: "routing-via-host"
-{% if edgeCluster.clearRegistryConfig is defined and edgeCluster.clearRegistryConfig %}
     - name: "crio-wipe"
-{% endif %}
+    - name: "routing-via-host"
+    - name: "du-profile"
 {% if controlPlane.replicas == 3 %}
 {% if edgeCluster.relocatable is defined %}
 {% if cluster_ipv4 is defined %}

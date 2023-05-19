@@ -31,7 +31,7 @@
     # these manifests are applied early in the install process, often they are MachineConfigs, applying them early helps avoid extra reboots
     - name: Create user-defined manifest config maps
       when: edgeCluster.installManifestsFolder is defined
-      loop: "{{ lookup('ansible.builtin.fileglob', lookup('ansible.builtin.vars', 'install_manifests_folder') + '/*', wantlist=True) | sort }}"
+      loop: "{{ lookup('ansible.builtin.fileglob', edgeCluster.installManifestsFolder + '/*', wantlist=True) | sort }}"
       loop_control:
         index_var: idx
         label: "{{ item }}"
@@ -39,9 +39,6 @@
         template: ConfigMap.yaml.j2
         apply: true
         state: present
-      vars:
-        # this var is copied in like this because ansible.builtin.vars doesn't support dicts
-        install_manifests_folder: "{{ edgeCluster.installManifestsFolder }}"
       register: k8s_result
       until: k8s_result is not failed
 

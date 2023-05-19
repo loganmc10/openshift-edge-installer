@@ -1,8 +1,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "manifest-{{ idx }}"
+  name: "du-profile"
   namespace: "{{ metadata.name }}"
 data:
+{% for item in du_manifests %}
+{% if (item | basename) not in (edgeCluster.duProfileManifests.exclude | default([])) %}
   {{ item | basename }}: |
     {{ lookup('ansible.builtin.file', item) | indent(4) }}
+{% endif %}
+{% endfor %}
