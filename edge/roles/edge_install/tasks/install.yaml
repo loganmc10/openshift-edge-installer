@@ -13,17 +13,6 @@
   register: k8s_result
   until: k8s_result is not failed
 
-- name: Disable CRI-O wipe
-  when:
-    - edgeCluster.clearRegistryConfig is defined
-    - edgeCluster.clearRegistryConfig
-  kubernetes.core.k8s:
-    template: CrioWipe.yaml.j2
-    apply: true
-    state: present
-  register: k8s_result
-  until: k8s_result is not failed
-
 - name: Check for IPv4
   loop: "{{ networking.serviceNetwork }}"
   when: item | ansible.utils.ipv4
@@ -126,6 +115,14 @@
 - name: Configure DU Profile
   kubernetes.core.k8s:
     template: DuProfile.yaml.j2
+    apply: true
+    state: present
+  register: du_profile
+  until: du_profile is not failed
+
+- name: Configure CRI-O wipe
+  kubernetes.core.k8s:
+    template: CrioWipe.yaml.j2
     apply: true
     state: present
   register: k8s_result
