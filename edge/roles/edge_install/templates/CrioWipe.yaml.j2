@@ -5,7 +5,7 @@ metadata:
   name: "crio-wipe"
   namespace: "{{ metadata.name }}"
 data:
-  99-crio-disable-wipe-master.yaml: |
+  90-crio-disable-wipe-master.yaml: |
     apiVersion: machineconfiguration.openshift.io/v1
     kind: MachineConfig
     metadata:
@@ -22,7 +22,7 @@ data:
                 source: data:text/plain;charset=utf-8;base64,{{ lookup('ansible.builtin.file', '99-crio-disable-wipe.toml') | b64encode }}
               mode: 420
               path: /etc/crio/crio.conf.d/99-crio-disable-wipe.toml
-  99-crio-disable-wipe-worker.yaml: |
+  90-crio-disable-wipe-worker.yaml: |
     apiVersion: machineconfiguration.openshift.io/v1
     kind: MachineConfig
     metadata:
