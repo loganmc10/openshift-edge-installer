@@ -5,8 +5,7 @@ metadata:
   name: "crio-wipe"
   namespace: "{{ metadata.name }}"
 data:
-{% if edgeCluster.clearRegistryConfig is defined and
-      edgeCluster.clearRegistryConfig and
+{% if edgeCluster.clearRegistryConfig | default(false) and
       '99-crio-disable-wipe-master.yaml' not in (du_profile.result.data | default({})) %}
   99-crio-disable-wipe-master.yaml: |
     apiVersion: machineconfiguration.openshift.io/v1
@@ -26,8 +25,7 @@ data:
               mode: 420
               path: /etc/crio/crio.conf.d/99-crio-disable-wipe.toml
 {% endif %}
-{% if edgeCluster.clearRegistryConfig is defined and
-      edgeCluster.clearRegistryConfig and
+{% if edgeCluster.clearRegistryConfig | default(false) and
       '99-crio-disable-wipe-worker.yaml' not in (du_profile.result.data | default({})) %}
   99-crio-disable-wipe-worker.yaml: |
     apiVersion: machineconfiguration.openshift.io/v1

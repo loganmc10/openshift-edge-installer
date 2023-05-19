@@ -27,7 +27,7 @@
 
 - name: Set relocatable IPv4 subnet
   when:
-    - cluster_ipv4 is defined
+    - cluster_ipv4
     - edgeCluster.relocatable is defined
     - edgeCluster.relocatable.ipv4Subnet is defined
   ansible.builtin.set_fact:
@@ -35,7 +35,7 @@
 
 - name: Set relocatable IPv6 subnet
   when:
-    - cluster_ipv6 is defined
+    - cluster_ipv6
     - edgeCluster.relocatable is defined
     - edgeCluster.relocatable.ipv6Subnet is defined
   ansible.builtin.set_fact:
@@ -107,9 +107,7 @@
   until: k8s_result is not failed
 
 - name: Setup DU Profile
-  when:
-    - edgeCluster.duProfileManifests is defined
-    - edgeCluster.duProfileManifests.enabled
+  when: edgeCluster.duProfileManifests.enabled | default (false)
   ansible.builtin.include_tasks: du_profile.yaml
 
 - name: Configure DU Profile

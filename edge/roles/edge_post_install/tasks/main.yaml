@@ -90,9 +90,7 @@
           ansible.builtin.include_tasks: metallb.yaml
 
         - name: Install Storage # noqa role-name[path]
-          when:
-            - edgeCluster.odfStorage is defined
-            - edgeCluster.odfStorage.enabled
+          when: edgeCluster.odfStorage.enabled | default(false)
           ansible.builtin.include_role:
             name: "{{ playbook_dir }}/../common/roles/storage"
           vars:
@@ -114,9 +112,7 @@
             install_plan_approval: "{{ operator.installPlanApproval | default('Automatic') }}"
 
         - name: Auto approve CSRs
-          when:
-            - edgeCluster.autoApproveCSRs is defined
-            - edgeCluster.autoApproveCSRs
+          when: edgeCluster.autoApproveCSRs | default(false)
           ansible.builtin.include_role:
             name: "edge_csr_approver"
 
@@ -128,13 +124,11 @@
           ansible.builtin.include_tasks: post_scripts.yaml
 
         - name: Clear Registry Config
-          when:
-            - edgeCluster.clearRegistryConfig is defined
-            - edgeCluster.clearRegistryConfig
+          when: edgeCluster.clearRegistryConfig | default(false)
           ansible.builtin.include_tasks: clear_registry_config.yaml
   always:
     - name: Remove Edge Cluster Namespace
-      when: ((edgeCluster.keepNamespace is defined) and (not edgeCluster.keepNamespace)) or (edgeCluster.keepNamespace is not defined)
+      when: not (edgeCluster.keepNamespace | default(false))
       block:
         - name: Delete BareMetalHosts
           loop: "{{ platform.baremetal.hosts }}"
