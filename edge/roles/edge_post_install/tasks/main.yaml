@@ -128,7 +128,7 @@
           ansible.builtin.include_tasks: clear_registry_config.yaml
   always:
     - name: Remove Edge Cluster Namespace
-      when: not (edgeCluster.keepNamespace | default(false))
+      when: not edgeCluster.keepNamespace | default(false)
       block:
         - name: Delete BareMetalHosts
           loop: "{{ platform.baremetal.hosts }}"

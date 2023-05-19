@@ -107,7 +107,7 @@
   until: k8s_result is not failed
 
 - name: Setup DU Profile
-  when: edgeCluster.duProfileManifests.enabled | default (false)
+  when: edgeCluster.duProfileManifests.enabled | default(false)
   ansible.builtin.include_tasks: du_profile.yaml
 
 - name: Configure DU Profile
