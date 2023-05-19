@@ -10,4 +10,4 @@
 
 - name: Set DU Manifest list
   ansible.builtin.set_fact:
-    du_manifests: "{{ lookup('ansible.builtin.fileglob', playbook_dir + '/cnf-features-deploy/ztp/source-crs/extra-manifest/*.yaml', wantlist=True) }}"
+    du_manifests: "{{ lookup('ansible.builtin.fileglob', playbook_dir + '/cnf-features-deploy/ztp/source-crs/extra-manifest/*.yaml', wantlist=True) | sort }}"
