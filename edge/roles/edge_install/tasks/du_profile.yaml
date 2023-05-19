@@ -1,0 +1,13 @@
+- name: Parse cluster version
+  ansible.builtin.set_fact:
+    version_array: "{{ cluster_deployment.resources[0].status.installVersion | split('.') }}"
+
+- name: Checkout ZTP repo
+  ansible.builtin.git:
+    repo: "https://github.com/openshift-kni/cnf-features-deploy.git"
+    dest: "{{ playbook_dir }}/cnf-features-deploy"
+    version: "release-{{ version_array.0 }}.{{ version_array.1 }}"
+
+- name: Set DU Manifest list
+  ansible.builtin.set_fact:
+    du_manifests: "{{ lookup('ansible.builtin.fileglob', playbook_dir + '/cnf-features-deploy/ztp/source-crs/extra-manifest/*.yaml', wantlist=True) }}"

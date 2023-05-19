@@ -97,8 +97,6 @@
       type: SpecSynced
       status: "True"
     wait_timeout: 600
-  vars:
-    install_manifests_folder: "{{ edgeCluster.installManifestsFolder }}"
   register: k8s_result
   until: k8s_result is not failed
 
@@ -114,6 +112,20 @@
 - name: Configure routingViaHost
   kubernetes.core.k8s:
     template: RoutingViaHost.yaml.j2
+    apply: true
+    state: present
+  register: k8s_result
+  until: k8s_result is not failed
+
+- name: Setup DU Profile
+  when:
+    - edgeCluster.duProfileManifests is defined
+    - edgeCluster.duProfileManifests.enabled
+  ansible.builtin.include_tasks: du_profile.yaml
+
+- name: Configure DU Profile
+  kubernetes.core.k8s:
+    template: DuProfile.yaml.j2
     apply: true
     state: present
   register: k8s_result

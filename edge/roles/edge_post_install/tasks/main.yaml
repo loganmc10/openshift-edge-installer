@@ -122,13 +122,10 @@
 
         - name: Run post-install scripts
           when: edgeCluster.postInstallScriptsFolder is defined
-          loop: "{{ lookup('ansible.builtin.fileglob', lookup('ansible.builtin.vars', 'post_install_scripts_folder') + '/*', wantlist=True) | sort }}"
+          loop: "{{ lookup('ansible.builtin.fileglob', edgeCluster.postInstallScriptsFolder + '/*', wantlist=True) | sort }}"
           loop_control:
             label: "{{ item }}"
           ansible.builtin.include_tasks: post_scripts.yaml
-          vars:
-            # this var is copied in like this because ansible.builtin.vars doesn't support dicts
-            post_install_scripts_folder: "{{ edgeCluster.postInstallScriptsFolder }}"
 
         - name: Clear Registry Config
           when:
