@@ -1,3 +1,13 @@
+- name: Wait for all Pods to be ready
+  kubernetes.core.k8s_info:
+    kind: Pod
+    field_selectors:
+      - status.phase=Pending
+  register: pending_pod_list
+  until: pending_pod_list.resources | length | int == 0
+  retries: 60
+  delay: 10
+
 - name: Get ICSPs
   kubernetes.core.k8s_info:
     api_version: operator.openshift.io/v1alpha1
