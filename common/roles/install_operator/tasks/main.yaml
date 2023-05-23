@@ -24,6 +24,36 @@
   register: create_sub
   until: create_sub is not failed
 
+- name: Approve Manual InstallPlan
+  when:
+    - create_sub.changed
+    - create_sub.result.spec.installPlanApproval == "Manual"
+  block:
+    - name: Get InstallPlanRef
+      kubernetes.core.k8s_info:
+        api_version: operators.coreos.com/v1alpha1
+        kind: Subscription
+        name: "{{ create_sub.result.metadata.name }}"
+        namespace: "{{ create_sub.result.metadata.namespace }}"
+      register: subscription
+      until: subscription.resources[0].status.installPlanRef is defined
+      retries: 60
+      delay: 10
+
+    - name: Approve InstallPlan
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: "{{ subscription.resources[0].status.installPlanRef.apiVersion }}"
+          kind: "{{ subscription.resources[0].status.installPlanRef.kind }}"
+          metadata:
+            name: "{{ subscription.resources[0].status.installPlanRef.name }}"
+            namespace: "{{ subscription.resources[0].status.installPlanRef.namespace }}"
+          spec:
+            approved: true
+        state: present
+      register: k8s_result
+      until: k8s_result is not failed
+
 - name: Wait for operator to be deployed
   kubernetes.core.k8s_info:
     api_version: operators.coreos.com/v1alpha1
