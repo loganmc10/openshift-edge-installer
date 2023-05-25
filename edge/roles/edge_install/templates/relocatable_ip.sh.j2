@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 
 # we are required to add the relocatable IP here, rather than in the NMStateConfig
+#
 # this is because NMState ignores static IP addresses when DHCP is enabled
 # see https://github.com/nmstate/nmstate/blob/a323ad9d1ae377ae39971f0f0a9f39d3ad341765/rust/src/lib/ip.rs#L190-L197
+# this appears to have been fixed in NMState v2.2.10 (https://github.com/nmstate/nmstate/pull/2303), but I'm not sure when this will make it into OCP/ACM
+#
 # configure-ovs.sh makes this same assumption, and wipes out any static IPs when DHCP is in use
-# see https://github.com/openshift/machine-config-operator/blob/69933a3dccd6f78a5b9fe09d5b3830c9c8e39a03/templates/common/_base/files/configure-ovs-network.yaml#L255-L260
+# see https://github.com/openshift/machine-config-operator/blob/master/templates/common/_base/files/configure-ovs-network.yaml
 
 mac_address=$(cat /sys/class/net/{{ edgeCluster.relocatable.interface }}/address)
 
