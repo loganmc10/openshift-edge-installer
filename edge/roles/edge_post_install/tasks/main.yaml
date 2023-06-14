@@ -145,6 +145,19 @@
             wait: true
             wait_timeout: 600
 
+        # In MCE 2.3.0, the finalizer for the ClusterDeployment hangs if it isn't deleted before the Namespace
+        - name: Delete ClusterDeployment
+          kubernetes.core.k8s:
+            definition:
+              apiVersion: hive.openshift.io/v1
+              kind: ClusterDeployment
+              metadata:
+                name: "{{ metadata.name }}"
+                namespace: "{{ metadata.name }}"
+            state: absent
+            wait: true
+            wait_timeout: 600
+
         - name: Delete Namespace
           kubernetes.core.k8s:
             definition:
