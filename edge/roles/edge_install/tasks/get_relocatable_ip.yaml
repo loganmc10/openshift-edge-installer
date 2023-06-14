@@ -10,7 +10,7 @@
   block:
     - name: Create IPv4 address line
       ansible.builtin.set_fact:
-        bash_item: "addresses_ipv4['{{ item.macAddress }}']='{{ relocatable_ipv4_subnet | ansible.utils.nthhost(interface_number | int) }}/{{ relocatable_ipv4_subnet | ansible.utils.ipaddr('prefix') }}'\n"
+        bash_item: "addresses_ipv4['{{ item['mac-address'] }}']='{{ relocatable_ipv4_subnet | ansible.utils.nthhost(interface_number | int) }}/{{ relocatable_ipv4_subnet | ansible.utils.ipaddr('prefix') }}'\n"
 
     - name: Append IPv4 to address list
       ansible.builtin.set_fact:
@@ -21,7 +21,7 @@
   block:
     - name: Create IPv6 address line
       ansible.builtin.set_fact:
-        bash_item: "addresses_ipv6['{{ item.macAddress }}']='{{ relocatable_ipv6_subnet | ansible.utils.nthhost(interface_number | int) }}/{{ relocatable_ipv6_subnet | ansible.utils.ipaddr('prefix') }}'\n"
+        bash_item: "addresses_ipv6['{{ item['mac-address'] }}']='{{ relocatable_ipv6_subnet | ansible.utils.nthhost(interface_number | int) }}/{{ relocatable_ipv6_subnet | ansible.utils.ipaddr('prefix') }}'\n"
 
     - name: Append IPv6 to address list
       ansible.builtin.set_fact:

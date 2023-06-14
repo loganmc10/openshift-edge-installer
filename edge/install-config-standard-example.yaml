@@ -74,7 +74,7 @@ platform:
           interfaces:
             - name: eno1
               type: ethernet
-              macAddress: <nic1_mac_address>
+              mac-address: <nic1_mac_address>
               state: up
               ipv4:
                 enabled: true
@@ -94,7 +94,7 @@ platform:
           interfaces:
             - name: eno1
               type: ethernet
-              macAddress: <nic1_mac_address>
+              mac-address: <nic1_mac_address>
               state: up
               ipv4:
                 enabled: true
@@ -114,7 +114,7 @@ platform:
           interfaces:
             - name: eno1
               type: ethernet
-              macAddress: <nic1_mac_address>
+              mac-address: <nic1_mac_address>
               state: up
               ipv4:
                 enabled: true
@@ -134,7 +134,7 @@ platform:
           interfaces:
             - name: eno1
               type: ethernet
-              macAddress: <nic1_mac_address>
+              mac-address: <nic1_mac_address>
               state: up
               ipv4:
                 enabled: true
@@ -154,7 +154,7 @@ platform:
           interfaces:
             - name: eno1
               type: ethernet
-              macAddress: <nic1_mac_address>
+              mac-address: <nic1_mac_address>
               state: up
               ipv4:
                 enabled: true

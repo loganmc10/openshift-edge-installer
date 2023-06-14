@@ -12,6 +12,6 @@ spec:
 {% for interface in nmstate_host.networkConfig.interfaces %}
 {% if interface.type == "ethernet" %}
     - name: "{{ interface.name }}"
-      macAddress: "{{ interface.macAddress }}"
+      macAddress: "{{ interface['mac-address'] }}"
 {% endif %}
 {% endfor %}
