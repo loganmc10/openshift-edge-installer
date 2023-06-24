@@ -16,7 +16,9 @@ edgeCluster:
     interface: <external_interface>
     ipv4Subnet: "192.168.7.0/24" # Optional, defaults to 192.168.7.0/24
     ipv6Subnet: "fd04::/64" # Optional, defaults to fd04::/64, only used for dual stack or IPv6 deployments
-  clearRegistryConfig: false # Optional, deletes mirror configuration and registry pull-secret at the end of the installation. Also disables the crio-wipe service.
+  clearInstallConfig: # Optional
+    registry: false # Defaults to false. Deletes mirror configuration and registry pull-secret at the end of the installation. Also disables the crio-wipe service
+    ssh: false # Defaults to false. Deletes the authorized SSH key(s) for the 'core' user
   routingViaHost: false # Optional, see https://docs.openshift.com/container-platform/latest/rest_api/operator_apis/network-operator-openshift-io-v1.html#spec-defaultnetwork-ovnkubernetesconfig-gatewayconfig
   odfStorage: # Optional
     # If you are using a mirror, you must configure a CatalogSource using installManifestsFolder

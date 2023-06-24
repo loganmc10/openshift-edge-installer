@@ -124,8 +124,12 @@
           ansible.builtin.include_tasks: post_scripts.yaml
 
         - name: Clear Registry Config
-          when: edgeCluster.clearRegistryConfig | default(false)
+          when: edgeCluster.clearInstallConfig.registry | default(false)
           ansible.builtin.include_tasks: clear_registry_config.yaml
+
+        - name: Clear SSH Config
+          when: edgeCluster.clearInstallConfig.ssh | default(false)
+          ansible.builtin.include_tasks: clear_ssh_key.yaml
   always:
     - name: Remove Edge Cluster Namespace
       when: not edgeCluster.keepNamespace | default(false)
