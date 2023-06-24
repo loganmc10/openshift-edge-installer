@@ -2,8 +2,6 @@
   loop:
     - 99-master-ssh
     - 99-worker-ssh
-  loop_control:
-    label: "{{ item }}"
   kubernetes.core.k8s:
     definition:
       apiVersion: machineconfiguration.openshift.io/v1
