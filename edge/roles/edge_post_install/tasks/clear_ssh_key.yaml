@@ -1,0 +1,15 @@
+- name: Delete SSH MachineConfigs
+  loop:
+    - 99-master-ssh
+    - 99-worker-ssh
+  loop_control:
+    label: "{{ item.metadata.name }}"
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: machineconfiguration.openshift.io/v1
+      kind: MachineConfig
+      metadata:
+        name: "{{ item.metadata.name }}"
+    state: absent
+    wait: true
+    wait_timeout: 600
