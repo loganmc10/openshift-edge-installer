@@ -8,6 +8,20 @@
   retries: 60
   delay: 10
 
+- name: Ensure MCPs are not updating
+  kubernetes.core.k8s_info:
+    api_version: machineconfiguration.openshift.io/v1
+    kind: MachineConfigPool
+    wait: true
+    wait_condition:
+      type: Updating
+      status: "False"
+    wait_timeout: 300
+  register: k8s_result
+  until: k8s_result is not failed
+  retries: 60
+  delay: 30
+
 - name: Get ICSPs
   kubernetes.core.k8s_info:
     api_version: operator.openshift.io/v1alpha1
