@@ -54,16 +54,14 @@
       register: k8s_result
       until: k8s_result is not failed
 
-- name: Wait for operator to be deployed
+- name: Wait for operator to create CSV
   kubernetes.core.k8s_info:
     api_version: operators.coreos.com/v1alpha1
     kind: Subscription
     name: "{{ create_sub.result.metadata.name }}"
     namespace: "{{ create_sub.result.metadata.namespace }}"
   register: subscription
-  until:
-    - subscription.resources[0].status.state is defined
-    - subscription.resources[0].status.state == "AtLatestKnown"
+  until: subscription.resources[0].status.installedCSV is defined
   retries: 60
   delay: 10
 
