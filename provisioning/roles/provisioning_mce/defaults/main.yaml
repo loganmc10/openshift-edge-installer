@@ -1,8 +1,4 @@
 os_images:
-  - openshiftVersion: "4.10"
-    version: "4.10.37"
-    url: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.10/4.10.37/rhcos-4.10.37-x86_64-live.x86_64.iso"
-    cpuArchitecture: "x86_64"
   - openshiftVersion: "4.11"
     version: "4.11.48"
     url: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.11/4.11.48/rhcos-4.11.48-x86_64-live.x86_64.iso"
