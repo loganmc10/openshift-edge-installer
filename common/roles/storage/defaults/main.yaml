@@ -1,2 +1,3 @@
 lvms_storage_class: lvms-vg1
 lvms_operator_name: lvms-operator
+noobaa: false
