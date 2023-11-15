@@ -97,6 +97,7 @@
     namespace: "{{ metadata.name }}"
   register: cluster_deployment
   until: cluster_deployment.resources[0].status.installVersion is defined
+  retries: 20
 
 - name: Configure routingViaHost
   kubernetes.core.k8s:
