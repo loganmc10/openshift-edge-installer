@@ -13,7 +13,7 @@ jobs:
       - name: Install packages
         run: |
           dnf -q -y update
-          dnf -q -y install python3-pip git ShellCheck
+          dnf -q -y install python3-pip git ShellCheck gcc python3-devel
           pip3 install --upgrade pip
           pip3 install --upgrade ansible-core kubernetes ansible-lint netaddr
           ansible-galaxy collection install -U kubernetes.core community.general ansible.utils
