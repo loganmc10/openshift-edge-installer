@@ -49,7 +49,7 @@
 
     - name: Create new networkConfig
       ansible.builtin.set_fact:
-        relocatable_networkConfig: "{{ nmstate_host.networkConfig | combine({'interfaces': interfaces_list}, recursive=true) }}"
+        relocatable_network_config: "{{ nmstate_host.networkConfig | combine({'interfaces': interfaces_list}, recursive=true) }}"
 
 - name: Create NMStateConfig
   kubernetes.core.k8s:
