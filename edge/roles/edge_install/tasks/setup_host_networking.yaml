@@ -70,7 +70,7 @@
 
         - name: Update DNS config
           ansible.builtin.set_fact:
-            relocatable_network_config: "{{ relocatable_network_config | combine({'dns-resolver':{'config':{'server':dns_servers}}}, recursive=true) }}"
+            relocatable_network_config: "{{ relocatable_network_config | combine({'dns-resolver': {'config': {'server': dns_servers}}}, recursive=true) }}"
 
 - name: Create NMStateConfig
   kubernetes.core.k8s:
