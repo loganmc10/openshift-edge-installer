@@ -26,14 +26,4 @@ data:
               path: /etc/default/nodeip-configuration
               user:
                 name: root
-  relocatable_ip_{{ node_type }}.yaml: |
-    apiVersion: machineconfiguration.openshift.io/v1
-    kind: MachineConfig
-    metadata:
-      labels:
-        machineconfiguration.openshift.io/role: {{ node_type }}
-      name: 99-{{ node_type }}-relocatable-ip
-    spec:
-      config:
-        {{ lookup('ansible.builtin.template', 'RelocatableConfig.yaml.j2') | indent(8) }}
 {% endfor %}
