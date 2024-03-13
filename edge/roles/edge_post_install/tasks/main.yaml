@@ -39,44 +39,49 @@
           ansible.builtin.set_fact:
             access_control_node: true
 
-        - name: Get BareMetalHosts
+        - name: Get Agents
           kubernetes.core.k8s_info:
-            api_version: metal3.io/v1alpha1
-            kind: BareMetalHost
+            api_version: agent-install.openshift.io/v1beta1
+            kind: Agent
             namespace: "{{ metadata.name }}"
-          register: bmh_list
-          until: bmh_list is not failed
+          register: agent_list
+          until: agent_list is not failed
 
         - name: Find control plane node
-          loop: "{{ bmh_list.resources }}"
+          loop: "{{ agent_list.resources }}"
           loop_control:
             label: "{{ item.metadata.name }}"
-          when: item.metadata.annotations['bmac.agent-install.openshift.io/role'] == "master"
+          when: item.spec.role == "master"
           ansible.builtin.set_fact:
             control_plane_node: "{{ item }}"
 
-        - name: Find IPv4 for first control plane node
-          loop: "{{ control_plane_node.status.hardware.nics }}"
+        - name: Get list of IPv4 addresses for first control plane node
+          loop: "{{ control_plane_node.status.inventory.interfaces }}"
           loop_control:
-            label: "{{ item.ip | default(item.name) }}"
-          when:
-            - item.ip is defined
-            - item.ip | ansible.utils.ipv4
-            - not (relocatable_ipv4_subnet | ansible.utils.network_in_usable(item.ip))
+            label: "{{ item.name }}"
           ansible.builtin.set_fact:
-            node_ip: "{{ item.ip }}"
+            node_ipv4_addresses: "{{ node_ipv4_addresses + item.ipV4Addresses }}"
 
-        - name: Find IPv6 for first control plane node
-          loop: "{{ control_plane_node.status.hardware.nics }}"
-          loop_control:
-            label: "{{ item.ip | default(item.name) }}"
+        - name: Find suitable IPv4 address for first control plane node
+          loop: "{{ node_ipv4_addresses }}"
           when:
-            - node_ip is not defined
-            - item.ip is defined
-            - item.ip | ansible.utils.ipv6
-            - not (relocatable_ipv6_subnet | ansible.utils.network_in_usable(item.ip))
+            - not (relocatable_ipv4_subnet | ansible.utils.network_in_usable(item | ansible.utils.ipaddr('address')))
           ansible.builtin.set_fact:
-            node_ip: "{{ item.ip }}"
+            node_ip: "{{ item | ansible.utils.ipaddr('address') }}"
+
+        - name: Get list of IPv6 addresses for first control plane node
+          loop: "{{ control_plane_node.status.inventory.interfaces }}"
+          loop_control:
+            label: "{{ item.name }}"
+          ansible.builtin.set_fact:
+            node_ipv6_addresses: "{{ node_ipv6_addresses + item.ipV6Addresses }}"
+
+        - name: Find suitable IPv6 address for first control plane node
+          loop: "{{ node_ipv6_addresses }}"
+          when:
+            - not (relocatable_ipv6_subnet | ansible.utils.network_in_usable(item | ansible.utils.ipaddr('address')))
+          ansible.builtin.set_fact:
+            node_ip: "{{ item | ansible.utils.ipaddr('address') }}"
 
         - name: Add required environment vars
           ansible.builtin.set_fact:
