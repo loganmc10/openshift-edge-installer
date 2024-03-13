@@ -51,27 +51,6 @@
       ansible.builtin.set_fact:
         relocatable_network_config: "{{ nmstate_host.networkConfig | combine({'interfaces': interfaces_list}, recursive=true) }}"
 
-    - name: Add DNS config
-      when: controlPlane.replicas == 3
-      block:
-        - name: Get current DNS config
-          ansible.builtin.set_fact:
-            dns_servers: "{{ nmstate_host.networkConfig['dns-resolver'].config.server | default([]) }}"
-
-        - name: Append relocatable IPv4 DNS server
-          when: cluster_ipv4
-          ansible.builtin.set_fact:
-            dns_servers: "{{ dns_servers + [relocatable_ipv4_subnet | ansible.utils.nthhost(2)] }}"
-
-        - name: Append relocatable IPv6 DNS server
-          when: cluster_ipv6
-          ansible.builtin.set_fact:
-            dns_servers: "{{ dns_servers + [relocatable_ipv6_subnet | ansible.utils.nthhost(2)] }}"
-
-        - name: Update DNS config
-          ansible.builtin.set_fact:
-            relocatable_network_config: "{{ relocatable_network_config | combine({'dns-resolver': {'config': {'server': dns_servers}}}, recursive=true) }}"
-
 - name: Create NMStateConfig
   kubernetes.core.k8s:
     template: NMStateConfig.yaml.j2
