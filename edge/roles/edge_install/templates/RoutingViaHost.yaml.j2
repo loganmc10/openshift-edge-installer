@@ -4,8 +4,7 @@ metadata:
   name: "routing-via-host"
   namespace: "{{ metadata.name }}"
 data:
-{% if edgeCluster.routingViaHost | default(false) or
-      (edgeCluster.relocatable is defined and cluster_deployment.resources[0].status.installVersion is ansible.builtin.version("4.13.0", "lt")) %}
+{% if edgeCluster.routingViaHost | default(false) %}
   routing_via_host.yaml: |
     apiVersion: operator.openshift.io/v1
     kind: Network

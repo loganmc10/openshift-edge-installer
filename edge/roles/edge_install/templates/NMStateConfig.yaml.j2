@@ -7,7 +7,11 @@ metadata:
     nmstate-cluster: "{{ metadata.name }}"
 spec:
   config:
+{% if edgeCluster.relocatable is defined %}
+    {{ relocatable_network_config | to_nice_yaml(indent=2) | trim | indent(4) }}
+{% else %}
     {{ nmstate_host.networkConfig | to_nice_yaml(indent=2) | trim | indent(4) }}
+{% endif %}
   interfaces:
 {% for interface in nmstate_host.networkConfig.interfaces %}
 {% if interface.type == "ethernet" %}

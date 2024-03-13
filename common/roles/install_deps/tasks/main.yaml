@@ -3,3 +3,4 @@
     name:
       - kubernetes
       - netaddr
+      - jmespath

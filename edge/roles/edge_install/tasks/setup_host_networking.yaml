@@ -1,3 +1,56 @@
+- name: Calculate relocatable IP
+  when: edgeCluster.relocatable is defined
+  block:
+    - name: Increment relocatable IP address
+      ansible.builtin.set_fact:
+        interface_number: "{{ (interface_number | int) + 1 }}"
+
+    - name: Filter the relocatable interface
+      ansible.builtin.set_fact:
+        filtered_interface: "{{ nmstate_host.networkConfig.interfaces | json_query('[?name == `' + edgeCluster.relocatable.interface + '`]') | first }}"
+
+    - name: Create entry for IPv4 address list
+      when: cluster_ipv4
+      block:
+        - name: Get IPv4 addresses
+          ansible.builtin.set_fact:
+            ipv4_addresses: "{{ filtered_interface.ipv4.address | default([]) }}"
+
+        - name: Append IPv4 relocatable address
+          ansible.builtin.set_fact:
+            ipv4_addresses: "{{ ipv4_addresses + [{'ip': relocatable_ipv4_subnet | ansible.utils.nthhost(interface_number | int), 'prefix-length': relocatable_ipv4_subnet | ansible.utils.ipaddr('prefix')}] }}"
+
+        - name: Update IPv4 addresses
+          ansible.builtin.set_fact:
+            filtered_interface: "{{ filtered_interface | combine({'ipv4': {'address': ipv4_addresses}}, recursive=true) }}"
+
+    - name: Create entry for IPv6 address list
+      when: cluster_ipv6
+      block:
+        - name: Get IPv6 addresses
+          ansible.builtin.set_fact:
+            ipv6_addresses: "{{ filtered_interface.ipv6.address | default([]) }}"
+
+        - name: Append IPv6 relocatable address
+          ansible.builtin.set_fact:
+            ipv6_addresses: "{{ ipv6_addresses + [{'ip': relocatable_ipv6_subnet | ansible.utils.nthhost(interface_number | int), 'prefix-length': relocatable_ipv6_subnet | ansible.utils.ipaddr('prefix')}] }}"
+
+        - name: Update IPv6 addresses
+          ansible.builtin.set_fact:
+            filtered_interface: "{{ filtered_interface | combine({'ipv6': {'address': ipv6_addresses}}, recursive=true) }}"
+
+    - name: Get all non-reloctable interfaces
+      ansible.builtin.set_fact:
+        interfaces_list: "{{ nmstate_host.networkConfig.interfaces | json_query('[?name != `' + edgeCluster.relocatable.interface + '`]') }}"
+
+    - name: Add reloctable interface
+      ansible.builtin.set_fact:
+        interfaces_list: "{{ interfaces_list + [filtered_interface] }}"
+
+    - name: Create new networkConfig
+      ansible.builtin.set_fact:
+        relocatable_network_config: "{{ nmstate_host.networkConfig | combine({'interfaces': interfaces_list}, recursive=true) }}"
+
 - name: Create NMStateConfig
   kubernetes.core.k8s:
     template: NMStateConfig.yaml.j2
@@ -5,13 +58,3 @@
     state: present
   register: k8s_result
   until: k8s_result is not failed
-
-- name: Calculate relocatable IP
-  when: edgeCluster.relocatable is defined
-  block:
-    - name: Get relocatable interface index
-      loop: "{{ nmstate_host.networkConfig.interfaces }}"
-      loop_control:
-        label: "{{ item.name }}"
-      when: item.name == edgeCluster.relocatable.interface
-      ansible.builtin.include_tasks: get_relocatable_ip.yaml
