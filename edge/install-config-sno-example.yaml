@@ -97,7 +97,7 @@ platform:
 pullSecret: '{"auths":{"<mirror_hostname>:8443":{"auth":"<base64 encoded auth>"}}}'
 sshKey: |
   ssh-rsa ...
-imageContentSources:
+imageDigestSources:
   - mirrors:
       - <mirror_hostname>:8443/openshift/release
     source: quay.io/openshift-release-dev/ocp-v4.0-art-dev

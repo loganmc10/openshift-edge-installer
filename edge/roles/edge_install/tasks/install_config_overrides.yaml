@@ -8,10 +8,10 @@
   ansible.builtin.set_fact:
     install_overrides: "{{ install_overrides | combine({'capabilities': capabilities}, recursive=true) }}"
 
-- name: Add imageContentSources to config
-  when: imageContentSources is defined
+- name: Add imageDigestSources to config
+  when: imageDigestSources is defined
   ansible.builtin.set_fact:
-    install_overrides: "{{ install_overrides | combine({'imageContentSources': imageContentSources}, recursive=true) }}"
+    install_overrides: "{{ install_overrides | combine({'imageDigestSources': imageDigestSources}, recursive=true) }}"
 
 - name: Add additionalTrustBundle to config
   when: additionalTrustBundle is defined
