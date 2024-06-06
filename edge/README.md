@@ -41,7 +41,7 @@ The mirror registry should be populated using the [oc mirror](https://docs.opens
 
 If the provisioning cluster was configured to use a mirror registry, then the SSL certificate for the mirror registry will automatically be added to additionalTrustedCA on the edge cluster.
 
-If you want to install Operators on the edge cluster from the disconnected registry, you'll need to add ImageContentSources for those operators in your install-config.yaml, as well as create a CatalogSource pointing to the mirror registry.
+If you want to install Operators on the edge cluster from the disconnected registry, you'll need to add imageDigestSources for those operators in your install-config.yaml, as well as create a CatalogSource pointing to the mirror registry.
 
 See the ```install_manifests_mirror_example``` folder for an example of how you can use the ```installManifestsFolder``` option in the install-config to configure a CatalogSource during the installation process.
 # Automatic installation via virtual media
