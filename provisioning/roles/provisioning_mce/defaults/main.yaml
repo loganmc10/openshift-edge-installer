@@ -16,8 +16,8 @@ os_images:
     url: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.15/4.15.0/rhcos-4.15.0-x86_64-live.x86_64.iso"
     cpuArchitecture: "x86_64"
   - openshiftVersion: "4.16"
-    version: "4.16.0-rc.1"
-    url: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/pre-release/4.16.0-rc.1/rhcos-4.16.0-rc.1-x86_64-live.x86_64.iso"
+    version: "4.16.0-rc.4"
+    url: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/pre-release/4.16.0-rc.4/rhcos-4.16.0-rc.4-x86_64-live.x86_64.iso"
     cpuArchitecture: "x86_64"
 asc_db_size: 10Gi
 asc_fs_size: 50Gi
