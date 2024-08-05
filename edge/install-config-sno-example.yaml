@@ -99,11 +99,8 @@ sshKey: |
   ssh-rsa ...
 imageDigestSources:
   - mirrors:
-      - <mirror_hostname>:8443/openshift-release-dev/ocp-v4.0-art-dev
-    source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
-  - mirrors:
-      - <mirror_hostname>:8443/openshift-release-dev/ocp-release
-    source: quay.io/openshift-release-dev/ocp-release
+      - <mirror_hostname>:8443/openshift-release-dev
+    source: quay.io/openshift-release-dev
   - mirrors:
       - <mirror_hostname>:8443/multicluster-engine
     source: registry.redhat.io/multicluster-engine
@@ -113,6 +110,9 @@ imageDigestSources:
   - mirrors:
       - <mirror_hostname>:8443/rhel8
     source: registry.redhat.io/rhel8
+  - mirrors:
+      - <mirror_hostname>:8443/rhel9
+    source: registry.redhat.io/rhel9
   - mirrors:
       - <mirror_hostname>:8443/openshift4
     source: registry.redhat.io/openshift4

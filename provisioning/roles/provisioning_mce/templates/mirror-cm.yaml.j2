@@ -13,19 +13,11 @@ data:
 
     [[registry]]
        prefix = ""
-       location = "quay.io/openshift-release-dev/ocp-v4.0-art-dev"
+       location = "quay.io/openshift-release-dev"
        mirror-by-digest-only = true
 
        [[registry.mirror]]
-       location = "{{ mirror_hostname }}{% if mirror_port != 443 %}:{{ mirror_port }}{% endif %}{% if mirror_subpath is defined %}/{{ mirror_subpath }}{% endif %}/openshift-release-dev/ocp-v4.0-art-dev"
-
-    [[registry]]
-       prefix = ""
-       location = "quay.io/openshift-release-dev/ocp-release"
-       mirror-by-digest-only = true
-
-       [[registry.mirror]]
-       location = "{{ mirror_hostname }}{% if mirror_port != 443 %}:{{ mirror_port }}{% endif %}{% if mirror_subpath is defined %}/{{ mirror_subpath }}{% endif %}/openshift-release-dev/ocp-release"
+       location = "{{ mirror_hostname }}{% if mirror_port != 443 %}:{{ mirror_port }}{% endif %}{% if mirror_subpath is defined %}/{{ mirror_subpath }}{% endif %}/openshift-release-dev"
 
     [[registry]]
        prefix = ""
