@@ -102,26 +102,32 @@ imageDigestSources:
       - <mirror_hostname>:8443/openshift-release-dev
     source: quay.io/openshift-release-dev
   - mirrors:
-      - <mirror_hostname>:8443/multicluster-engine
-    source: registry.redhat.io/multicluster-engine
-  - mirrors:
-      - <mirror_hostname>:8443/redhat
-    source: registry.redhat.io/redhat
-  - mirrors:
-      - <mirror_hostname>:8443/rhel8
-    source: registry.redhat.io/rhel8
-  - mirrors:
-      - <mirror_hostname>:8443/rhel9
-    source: registry.redhat.io/rhel9
-  - mirrors:
-      - <mirror_hostname>:8443/openshift4
-    source: registry.redhat.io/openshift4
-  - mirrors:
       - <mirror_hostname>:8443/rhceph
     source: registry.redhat.io/rhceph
+  - mirrors:
+      - <mirror_hostname>:8443/openshift-gitops-1
+    source: registry.redhat.io/openshift-gitops-1
+  - mirrors:
+      - <mirror_hostname>:8443/lvms4
+    source: registry.redhat.io/lvms4
   - mirrors:
       - <mirror_hostname>:8443/odf4
     source: registry.redhat.io/odf4
   - mirrors:
-      - <mirror_hostname>:8443/lvms4
-    source: registry.redhat.io/lvms4
+      - <mirror_hostname>:8443/rhacm2
+    source: registry.redhat.io/rhacm2
+  - mirrors:
+      - <mirror_hostname>:8443/rhel9
+    source: registry.redhat.io/rhel9
+  - mirrors:
+      - <mirror_hostname>:8443/rhel8
+    source: registry.redhat.io/rhel8
+  - mirrors:
+      - <mirror_hostname>:8443/openshift4
+    source: registry.redhat.io/openshift4
+  - mirrors:
+      - <mirror_hostname>:8443/multicluster-engine
+    source: registry.redhat.io/multicluster-engine
+  - mirrors:
+      - <mirror_hostname>:8443/rh-sso-7
+    source: registry.redhat.io/rh-sso-7
