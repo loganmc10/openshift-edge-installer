@@ -35,7 +35,7 @@ podman run -it --rm -v </path/to/provisioning/kubeconfig>:/kubeconfig:Z \
 The Events URL will be printed to the console (so that you can check the progress of the installation). A kubeconfig file will be written to the playbook folder with this name: ```kubeconfigs/<cluster-name>-admin-kubeconfig```
 # Disconnected registry
 
-The mirror registry should be populated using the [oc mirror](https://docs.openshift.com/container-platform/latest/installing/disconnected_install/installing-mirroring-disconnected.html) plugin.
+The mirror registry should be populated using the [oc mirror](https://docs.openshift.com/container-platform/latest/disconnected/mirroring/about-installing-oc-mirror-v2.html) plugin.
 
 ---
 
