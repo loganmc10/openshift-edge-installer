@@ -28,5 +28,5 @@ The edge cluster is installed by creating a slightly modified [install-config.ya
 
 ## Notes
 * Connected and disconnected/mirrored installations are both supported.
-  * If you are using a mirror registry, it should be populated using the [oc mirror](https://docs.openshift.com/container-platform/latest/installing/disconnected_install/installing-mirroring-disconnected.html) plugin.
+  * If you are using a mirror registry, it should be populated using the [oc mirror](https://docs.openshift.com/container-platform/latest/disconnected/mirroring/about-installing-oc-mirror-v2.html) plugin.
 * Only bare metal installations are supported for the edge cluster. The provisioning cluster can be any platform.
