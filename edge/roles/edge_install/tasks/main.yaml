@@ -49,10 +49,6 @@
       ansible.builtin.set_fact:
         worker_count: "{{ (worker_count | int) + item.replicas }}"
 
-    - name: Setup workload partitioning
-      when: edgeCluster.reservedCpuSet is defined
-      ansible.builtin.include_tasks: workload_partitioning.yaml
-
     - name: Cluster install
       ansible.builtin.include_tasks: install.yaml
   rescue:

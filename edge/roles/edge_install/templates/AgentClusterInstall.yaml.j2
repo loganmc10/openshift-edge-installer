@@ -21,9 +21,6 @@ spec:
     - name: "manifest-{{ loop.index0 }}"
 {% endfor %}
 {% endif %}
-{% if edgeCluster.reservedCpuSet is defined %}
-    - name: "workload-partitioning"
-{% endif %}
     - name: "crio-wipe"
     - name: "routing-via-host"
     - name: "du-profile"

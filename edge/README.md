@@ -7,7 +7,7 @@ The install config uses the same format as an IPI install, except that it also r
 
 If you are not using a mirror registry, the clusterImageSet would look something like this:
 ```
-clusterImageSet: quay.io/openshift-release-dev/ocp-release:4.12.0-x86_64
+clusterImageSet: quay.io/openshift-release-dev/ocp-release:4.16.0-x86_64
 ```
 You can also optionally set a path to a folder containing extra manifests (YAML) to be applied early in the installation process:
 ```
