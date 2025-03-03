@@ -1,7 +1,7 @@
 # Purpose
 This playbook installs an edge cluster. You should already have a provisioning cluster configured.
 # Usage
-Example [install config](https://docs.openshift.com/container-platform/latest/installing/installing_bare_metal_ipi/ipi-install-installation-workflow.html#additional-resources_config) files are provided in ```install-config-sno-example.yaml``` and ```install-config-standard-example.yaml```.
+Example [install config](https://docs.openshift.com/container-platform/latest/installing/installing_bare_metal/ipi/ipi-install-installation-workflow.html#additional-resources_config) files are provided in ```install-config-sno-example.yaml``` and ```install-config-standard-example.yaml```.
 
 The install config uses the same format as an IPI install, except that it also requires you to set clusterImageSet. The example shows how to point the clusterImageSet to a mirror registry.
 
@@ -45,7 +45,7 @@ If you want to install Operators on the edge cluster from the disconnected regis
 
 See the ```install_manifests_mirror_example``` folder for an example of how you can use the ```installManifestsFolder``` option in the install-config to configure a CatalogSource during the installation process.
 # Automatic installation via virtual media
-Firmware requirements for booting via virtual media are documented [here](https://docs.openshift.com/container-platform/latest/installing/installing_bare_metal_ipi/ipi-install-prerequisites.html#ipi-install-firmware-requirements-for-installing-with-virtual-media_ipi-install-prerequisites)
+Firmware requirements for booting via virtual media are documented [here](https://docs.openshift.com/container-platform/latest/installing/installing_bare_metal/ipi/ipi-install-prerequisites.html#ipi-install-firmware-requirements-for-installing-with-virtual-media_ipi-install-prerequisites)
 
 For Dell, the BMC address format is ```idrac-virtualmedia://<out-of-band-ip>/redfish/v1/Systems/System.Embedded.1```
 
