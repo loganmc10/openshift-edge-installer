@@ -1,19 +1,19 @@
 os_images:
   - openshiftVersion: "4.14"
     version: "4.14.34"
-    url: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.14/latest/rhcos-4.14.34-x86_64-live.x86_64.iso"
+    url: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.14/4.14.34/rhcos-4.14.34-x86_64-live.x86_64.iso"
     cpuArchitecture: "x86_64"
   - openshiftVersion: "4.16"
     version: "4.16.36"
-    url: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.16/latest/rhcos-4.16.36-x86_64-live.x86_64.iso"
+    url: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.16/4.16.36/rhcos-4.16.36-x86_64-live.x86_64.iso"
     cpuArchitecture: "x86_64"
   - openshiftVersion: "4.18"
     version: "4.18.1"
-    url: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.18/latest/rhcos-4.18.1-x86_64-live.x86_64.iso"
+    url: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.18/4.18.1/rhcos-4.18.1-x86_64-live.x86_64.iso"
     cpuArchitecture: "x86_64"
   - openshiftVersion: "4.19"
     version: "4.19.0-ec.5"
-    url: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/pre-release/latest-4.19/rhcos-4.19.0-ec.5-x86_64-live-iso.x86_64.iso"
+    url: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/pre-release/4.19.0-ec.5/rhcos-4.19.0-ec.5-x86_64-live-iso.x86_64.iso"
     cpuArchitecture: "x86_64"
 asc_db_size: 10Gi
 asc_fs_size: 50Gi
