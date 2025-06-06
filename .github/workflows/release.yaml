@@ -44,4 +44,4 @@ jobs:
       - name: Push latest tag
         if: ${{ github.event_name == 'release' }}
         run: |
-          podman manifest push netplay docker://quay.io/loganmc10/openshift-edge-installer:latest
+          podman manifest push edgeinstaller docker://quay.io/loganmc10/openshift-edge-installer:latest
