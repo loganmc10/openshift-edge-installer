@@ -18,7 +18,7 @@ jobs:
           pip3 install --upgrade ansible-core kubernetes ansible-lint netaddr
           ansible-galaxy collection install -U kubernetes.core community.general ansible.utils
           git config --global --add safe.directory /__w/openshift-edge-installer/openshift-edge-installer
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Check code
         run: |
           ansible-lint -s -x yaml[line-length],var-naming[no-role-prefix] --exclude .github
@@ -27,7 +27,7 @@ jobs:
   test-container:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Build container
         run: |
           podman build .
