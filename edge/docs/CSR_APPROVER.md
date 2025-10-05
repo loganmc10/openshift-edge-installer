@@ -3,7 +3,7 @@ If a cluster has been offline for an extended period of time, some of the certif
 
 Manual intervention is typically required in order to approve the new certificates after this has happened.
 
-See https://docs.openshift.com/container-platform/latest/backup_and_restore/control_plane_backup_and_restore/disaster_recovery/scenario-3-expired-certs.html
+See https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/backup_and_restore/control-plane-backup-and-restore#dr-recovering-expired-certs
 
 ---
 

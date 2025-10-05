@@ -1,7 +1,7 @@
 # Purpose
 This playbook installs an edge cluster. You should already have a provisioning cluster configured.
 # Usage
-Example [install config](https://docs.openshift.com/container-platform/latest/installing/installing_bare_metal/ipi/ipi-install-installation-workflow.html#additional-resources_config) files are provided in ```install-config-sno-example.yaml``` and ```install-config-standard-example.yaml```.
+Example [install config](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/installing_on_bare_metal/installer-provisioned-infrastructure#ipi-install-installation-workflow) files are provided in ```install-config-sno-example.yaml``` and ```install-config-standard-example.yaml```.
 
 The install config uses the same format as an IPI install, except that it also requires you to set clusterImageSet. The example shows how to point the clusterImageSet to a mirror registry.
 
@@ -35,7 +35,7 @@ podman run -it --rm -v </path/to/provisioning/kubeconfig>:/kubeconfig:Z \
 The Events URL will be printed to the console (so that you can check the progress of the installation). A kubeconfig file will be written to the playbook folder with this name: ```kubeconfigs/<cluster-name>-admin-kubeconfig```
 # Disconnected registry
 
-The mirror registry should be populated using the [oc mirror](https://docs.openshift.com/container-platform/latest/disconnected/mirroring/about-installing-oc-mirror-v2.html) plugin.
+The mirror registry should be populated using the [oc mirror](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/disconnected_environments/mirroring-in-disconnected-environments#about-installing-oc-mirror-v2) plugin.
 
 ---
 
@@ -45,7 +45,7 @@ If you want to install Operators on the edge cluster from the disconnected regis
 
 See the ```install_manifests_mirror_example``` folder for an example of how you can use the ```installManifestsFolder``` option in the install-config to configure a CatalogSource during the installation process.
 # Automatic installation via virtual media
-Firmware requirements for booting via virtual media are documented [here](https://docs.openshift.com/container-platform/latest/installing/installing_bare_metal/ipi/ipi-install-prerequisites.html#ipi-install-firmware-requirements-for-installing-with-virtual-media_ipi-install-prerequisites)
+Firmware requirements for booting via virtual media are documented [here](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/installing_on_bare_metal/installer-provisioned-infrastructure#ipi-install-prerequisites)
 
 For Dell, the BMC address format is ```idrac-virtualmedia://<out-of-band-ip>/redfish/v1/Systems/System.Embedded.1```
 

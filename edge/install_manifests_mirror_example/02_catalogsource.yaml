@@ -3,7 +3,7 @@
 #   baselineCapabilitySet: None
 #   additionalEnabledCapabilities:
 #     - NodeTuning # (for OCP 4.13+)
-# See: https://docs.openshift.com/container-platform/latest/installing/cluster-capabilities.html
+# See: https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/installation_overview/cluster-capabilities
 apiVersion: operators.coreos.com/v1alpha1
 kind: CatalogSource
 metadata:
