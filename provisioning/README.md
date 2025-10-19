@@ -16,7 +16,7 @@ Alternatively, using a container:
 podman run -it --rm -v </path/to/kubeconfig>:/kubeconfig:Z quay.io/loganmc10/openshift-edge-installer:<tag> provisioning
 ```
 ## With mirror registry or provisioning customizations
-The mirror registry should be populated using the [oc mirror](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/disconnected_environments/mirroring-in-disconnected-environments#about-installing-oc-mirror-v2) plugin.
+The mirror registry should be populated using the [oc mirror](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/disconnected_environments/about-installing-oc-mirror-v2) plugin.
 
 ---
 
