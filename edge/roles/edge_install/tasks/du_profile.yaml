@@ -7,8 +7,9 @@
   ansible.builtin.copy:
     content: "{{ pullSecret }}"
     dest: "{{ temp_pull_secret.path }}"
+    mode: "0600"
 
-- name: Get Cluster Version
+- name: Get Cluster Version # noqa no-changed-when
   ansible.builtin.command: oc adm release info -a {{ temp_pull_secret.path }} {{ edgeCluster.clusterImageSet }} -o json
   register: release_info_raw
 
