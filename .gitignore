@@ -6,3 +6,4 @@ post_scripts/
 cnf-features-deploy/
 kubeconfigs/
 .ansible
+.vscode
