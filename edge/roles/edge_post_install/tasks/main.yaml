@@ -100,6 +100,7 @@
             name: "{{ playbook_dir }}/../common/roles/storage"
           vars:
             catalog_source: "{{ edgeCluster.odfStorage.catalogSource | default('redhat-operators') }}"
+            noobaa: "{{ edgeCluster.odfStorage.noobaa | default(false) }}"
 
         - name: Install operator # noqa role-name[path]
           loop: "{{ edgeCluster.operators | default([]) }}"
