@@ -56,6 +56,7 @@
       status: "True"
   register: k8s_result
   until: k8s_result is not failed
+  retries: 10
 
 - name: Wait for StorageClass
   kubernetes.core.k8s_info:
