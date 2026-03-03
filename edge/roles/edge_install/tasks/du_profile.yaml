@@ -1,6 +1,25 @@
+- name: Create temporary file for pull secret
+  ansible.builtin.tempfile:
+    state: file
+  register: temp_pull_secret
+
+- name: Copy pull secret to file
+  ansible.builtin.copy:
+    content: "{{ pullSecret }}"
+    dest: "{{ temp_pull_secret.path }}"
+
+- name: Get Cluster Version
+  ansible.builtin.command: oc adm release info -a {{ temp_pull_secret.path }} {{ edgeCluster.clusterImageSet }} -o json
+  register: release_info_raw
+
+- name: Remove pull secret
+  ansible.builtin.file:
+    path: "{{ temp_pull_secret.path }}"
+    state: absent
+
 - name: Parse cluster version
   ansible.builtin.set_fact:
-    version_array: "{{ cluster_deployment.resources[0].status.installVersion | split('.') }}"
+    version_array: "{{ (release_info_raw.stdout | from_json).metadata.version | split('.') }}"
 
 - name: Checkout ZTP repo
   ansible.builtin.git:

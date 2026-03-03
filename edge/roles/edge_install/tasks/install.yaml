@@ -15,13 +15,13 @@
 
 - name: Check for IPv4
   loop: "{{ networking.serviceNetwork }}"
-  when: item | ansible.utils.ipv4
+  when: item is ansible.utils.ipv4
   ansible.builtin.set_fact:
     cluster_ipv4: true
 
 - name: Check for IPv6
   loop: "{{ networking.serviceNetwork }}"
-  when: item | ansible.utils.ipv6
+  when: item is ansible.utils.ipv6
   ansible.builtin.set_fact:
     cluster_ipv6: true
 
@@ -88,16 +88,6 @@
     wait_timeout: 600
   register: k8s_result
   until: k8s_result is not failed
-
-- name: Get Cluster Version
-  kubernetes.core.k8s_info:
-    api_version: hive.openshift.io/v1
-    kind: ClusterDeployment
-    name: "{{ metadata.name }}"
-    namespace: "{{ metadata.name }}"
-  register: cluster_deployment
-  until: cluster_deployment.resources[0].status.installVersion is defined
-  retries: 20
 
 - name: Configure routingViaHost
   kubernetes.core.k8s:
