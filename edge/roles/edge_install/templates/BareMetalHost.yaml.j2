@@ -6,6 +6,7 @@ metadata:
   annotations:
     bmac.agent-install.openshift.io/role: "{{ item.role }}"
     bmac.agent-install.openshift.io/hostname: "{{ item.name }}"
+    inspect.metal3.io: disabled
   labels:
     infraenvs.agent-install.openshift.io: "{{ metadata.name }}"
 spec:
