@@ -4,7 +4,7 @@
     label: "{{ item.path }}"
   when: item.type == "disk" and item.size > 0
   ansible.builtin.shell: |
-    oc debug node/{{ node.spec.nodeName }} -- chroot /host sgdisk --zap-all {{ item.path }}
+    oc debug node/{{ node.spec.nodeName }} -- chroot /host bash -c "sgdisk --zap-all {{ item.path }} && blockdev --rereadpt {{ item.path }}"
 
 # there might be a better way to do this, could be dangerous if OpenShift ever uses LVM for the base install in the future
 - name: Remove old device mappings # noqa no-changed-when
