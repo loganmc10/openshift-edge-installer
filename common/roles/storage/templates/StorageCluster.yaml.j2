@@ -4,7 +4,10 @@ metadata:
   name: ocs-storagecluster
   namespace: openshift-storage
 spec:
-  manageNodes: false
+  managedResources:
+    cephCluster:
+      cleanupPolicy:
+        wipeDevicesFromOtherClusters: true
   monDataDirHostPath: /var/lib/rook
   storageDeviceSets:
     - count: {{ ((worker_nodes.resources | length | int) / 3) | int }}
