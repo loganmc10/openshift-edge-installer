@@ -22,3 +22,4 @@ os_images:
 asc_db_size: 10Gi
 asc_fs_size: 50Gi
 asc_im_size: 50Gi
+acm: false

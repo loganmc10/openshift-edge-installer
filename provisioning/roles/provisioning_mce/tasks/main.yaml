@@ -7,7 +7,8 @@
   register: k8s_result
   until: k8s_result is not failed
 
-- name: Install MCE and CIM
+- name: Install MCE
+  when: not (acm | bool)
   block:
     - name: Install MCE operator # noqa role-name[path]
       ansible.builtin.include_role:
@@ -42,7 +43,125 @@
         - mce.resources[0].status.phase == "Available"
       retries: 60
       delay: 10
+  rescue: # CRs need to be removed before the namespaces holding the operators are removed, or else the CR finalizers will get stuck
+    - name: Delete ManagedCluster
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: cluster.open-cluster-management.io/v1
+          kind: ManagedCluster
+          metadata:
+            name: local-cluster
+        state: absent
+        wait: true
+        wait_timeout: 600
+      ignore_errors: true # noqa ignore-errors
 
+    - name: Delete MCE
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: multicluster.openshift.io/v1
+          kind: MultiClusterEngine
+          metadata:
+            name: multiclusterengine
+        state: absent
+        wait: true
+        wait_timeout: 600
+      ignore_errors: true # noqa ignore-errors
+
+    - name: Delete Namespace
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: v1
+          kind: Namespace
+          metadata:
+            name: multicluster-engine
+        state: absent
+        wait: true
+        wait_timeout: 600
+
+    - name: End playbook
+      ansible.builtin.meta: end_play
+
+- name: Install ACM
+  when: (acm | bool)
+  block:
+    - name: Install ACM operator # noqa role-name[path]
+      ansible.builtin.include_role:
+        name: "{{ playbook_dir }}/../common/roles/install_operator"
+      vars:
+        operator_name: advanced-cluster-management
+        operator_namespace: open-cluster-management
+        all_namespaces: false
+        cluster_monitoring: false
+
+    - name: Create MultiClusterHub
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: operator.open-cluster-management.io/v1
+          kind: MultiClusterHub
+          metadata:
+            name: multiclusterhub
+            namespace: open-cluster-management
+          spec: {}
+        apply: true
+        state: present
+      register: create_mch
+      until: create_mch is not failed
+
+    - name: Wait for MultiClusterHub to be deployed
+      kubernetes.core.k8s_info:
+        api_version: operator.open-cluster-management.io/v1
+        kind: MultiClusterHub
+        name: multiclusterhub
+        namespace: open-cluster-management
+      register: mch
+      until:
+        - mch.resources[0].status.phase is defined
+        - mch.resources[0].status.phase == "Running"
+      retries: 120
+      delay: 10
+  rescue: # CRs need to be removed before the namespaces holding the operators are removed, or else the CR finalizers will get stuck
+    - name: Delete ManagedCluster
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: cluster.open-cluster-management.io/v1
+          kind: ManagedCluster
+          metadata:
+            name: local-cluster
+        state: absent
+        wait: true
+        wait_timeout: 600
+      ignore_errors: true # noqa ignore-errors
+
+    - name: Delete MultiClusterHub
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: operator.open-cluster-management.io/v1
+          kind: MultiClusterHub
+          metadata:
+            name: multiclusterhub
+            namespace: open-cluster-management
+        state: absent
+        wait: true
+        wait_timeout: 600
+      ignore_errors: true # noqa ignore-errors
+
+    - name: Delete Namespace
+      kubernetes.core.k8s:
+        definition:
+          apiVersion: v1
+          kind: Namespace
+          metadata:
+            name: open-cluster-management
+        state: absent
+        wait: true
+        wait_timeout: 600
+
+    - name: End playbook
+      ansible.builtin.meta: end_play
+
+- name: Post Install
+  block:
     # this config map is referenced by the AgentServiceConfig, these mirror settings are copied to the edge clusters
     - name: Create mirror registry config map for edge cluster
       when: mirror_hostname is defined
@@ -81,41 +200,6 @@
         wait: true
         wait_timeout: 600
       ignore_errors: true # noqa ignore-errors
-
-    - name: Delete ManagedCluster
-      kubernetes.core.k8s:
-        definition:
-          apiVersion: cluster.open-cluster-management.io/v1
-          kind: ManagedCluster
-          metadata:
-            name: local-cluster
-        state: absent
-        wait: true
-        wait_timeout: 600
-      ignore_errors: true # noqa ignore-errors
-
-    - name: Delete MCE
-      kubernetes.core.k8s:
-        definition:
-          apiVersion: multicluster.openshift.io/v1
-          kind: MultiClusterEngine
-          metadata:
-            name: multiclusterengine
-        state: absent
-        wait: true
-        wait_timeout: 600
-      ignore_errors: true # noqa ignore-errors
-
-    - name: Delete Namespace
-      kubernetes.core.k8s:
-        definition:
-          apiVersion: v1
-          kind: Namespace
-          metadata:
-            name: multicluster-engine
-        state: absent
-        wait: true
-        wait_timeout: 600
 
     - name: End playbook
       ansible.builtin.meta: end_play
