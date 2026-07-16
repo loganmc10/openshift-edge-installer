@@ -94,6 +94,13 @@
         all_namespaces: false
         cluster_monitoring: false
 
+    - name: Install TALM operator # noqa role-name[path]
+      ansible.builtin.include_role:
+        name: "{{ playbook_dir }}/../common/roles/install_operator"
+      vars:
+        operator_name: topology-aware-lifecycle-manager
+        operator_namespace: openshift-operators
+
     - name: Create MultiClusterHub
       kubernetes.core.k8s:
         definition:
