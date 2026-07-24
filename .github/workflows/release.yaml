@@ -27,7 +27,7 @@ jobs:
         uses: docker/setup-qemu-action@v4
 
       - name: Log in to Quay.io
-        uses: redhat-actions/podman-login@v1
+        uses: redhat-actions/podman-login@v2
         with:
           username: ${{ env.REGISTRY_USER }}
           password: ${{ env.REGISTRY_PASSWORD }}
