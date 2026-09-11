@@ -21,7 +21,6 @@ spec:
     - name: "manifest-{{ loop.index0 }}"
 {% endfor %}
 {% endif %}
-    - name: "crio-wipe"
     - name: "routing-via-host"
     - name: "du-profile"
 {% if controlPlane.replicas == 3 %}
